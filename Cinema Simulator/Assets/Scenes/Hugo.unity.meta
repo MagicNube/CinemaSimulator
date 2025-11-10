@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: 2822dc5df6179f547a6f6d58644a827c
+<<<<<<<< HEAD:Cinema Simulator/Assets/Scenes/Hugo.unity.meta
+guid: dfcb6ff6c78f95f48a50584a99418b92
+========
+guid: 4aea7e408489e814cbbc00fe347f982a
+>>>>>>>> 3e87bd0 (Fix escenas):Cinema Simulator/Assets/Scenes/Javi.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
