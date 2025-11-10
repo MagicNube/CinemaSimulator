@@ -9,12 +9,12 @@ public class OpenDoor : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("NPC"))
             anim.SetBool("Open", true);
     }
     void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("NPC"))
             anim.SetBool("Open", false);
     }
 }

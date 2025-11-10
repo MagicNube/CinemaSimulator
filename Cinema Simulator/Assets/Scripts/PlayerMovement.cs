@@ -45,10 +45,10 @@ public class PlayerMovement : MonoBehaviour
 
         // Rotar la CÁMARA (eje X) de arriba a abajo
         cameraVerticalAngle -= mouseY;
-        
+
         // Limitar la rotación vertical (para no "romperse el cuello")
-        cameraVerticalAngle = Mathf.Clamp(cameraVerticalAngle, -85f, 85f);
-        
+        cameraVerticalAngle = Mathf.Clamp(cameraVerticalAngle, -60f, 60f);
+
         // Aplicar la rotación vertical solo a la cámara
         playerCamera.localRotation = Quaternion.Euler(cameraVerticalAngle, 0f, 0f);
 
@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
         // Mover el CharacterController
         controller.Move(moveDirection * moveSpeed * Time.deltaTime);
 
-        
+
         // --- 3. GESTIÓN DE LA GRAVEDAD ---
 
         // Si estamos tocando el suelo, reseteamos la velocidad vertical
