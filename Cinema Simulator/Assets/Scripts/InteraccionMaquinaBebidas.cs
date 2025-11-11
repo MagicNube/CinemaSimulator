@@ -1,15 +1,16 @@
-// Pon este script en tu Cámara principal o en el objeto Jugador
+// Pon este script en tu Cï¿½mara principal o en el objeto Jugador
 using UnityEngine;
 
 public class InteracionMaquinaBebidas : MonoBehaviour
 {
-    // ---- VARIABLES DE INTERACCIÓN ----
-    public float distanciaInteraccion = 3f; // Distancia máxima para interactuar
-    public Camera camaraJugador; // Arrastra tu cámara aquí en el Inspector
+    // ---- VARIABLES DE INTERACCIï¿½N ----
+    public float distanciaInteraccion = 3f; // Distancia mï¿½xima para interactuar
+    public Camera camaraJugador; // Arrastra tu cï¿½mara aquï¿½ en el Inspector
+    public Animator animadorDelPersonaje;
 
     // ---- VARIABLES DEL VASO ----
-    public GameObject vasoPrefab; // Arrastra tu Prefab del vaso aquí
-    public Transform puntoDeAgarre; // Arrastra tu objeto vacío "PuntoDeAgarre" aquí
+    public GameObject vasoPrefab; // Arrastra tu Prefab del vaso aquï¿½
+    public Transform puntoDeAgarre; // Arrastra tu objeto vacï¿½o "PuntoDeAgarre" aquï¿½
     private GameObject vasoActual; // Para guardar el vaso que ya tenemos
 
     // ---- VARIABLES DE RESALTADO ----
@@ -17,7 +18,7 @@ public class InteracionMaquinaBebidas : MonoBehaviour
 
     void Start()
     {
-        // Si no asignas la cámara, la busca automáticamente
+        // Si no asignas la cï¿½mara, la busca automï¿½ticamente
         if (camaraJugador == null)
         {
             camaraJugador = Camera.main;
@@ -26,13 +27,13 @@ public class InteracionMaquinaBebidas : MonoBehaviour
 
     void Update()
     {
-        // Creamos un rayo desde la cámara hacia adelante
+        // Creamos un rayo desde la cï¿½mara hacia adelante
         Ray ray = new Ray(camaraJugador.transform.position, camaraJugador.transform.forward);
-        RaycastHit hit; // Variable para guardar la información del golpe
+        RaycastHit hit; // Variable para guardar la informaciï¿½n del golpe
 
         Transform seleccionActual = null;
 
-        // 1. LÓGICA DE DETECCIÓN (PARA RESALTAR)
+        // 1. Lï¿½GICA DE DETECCIï¿½N (PARA RESALTAR)
         if (Physics.Raycast(ray, out hit, distanciaInteraccion))
         {
             // Si golpeamos un objeto con el tag "MaquinaBebidas"
@@ -48,7 +49,7 @@ public class InteracionMaquinaBebidas : MonoBehaviour
             // Dejamos de mirar el objeto anterior
             if (objetoMirado != null)
             {
-                // Aquí va tu código para DESACTIVAR el resaltado
+                // Aquï¿½ va tu cï¿½digo para DESACTIVAR el resaltado
                 // Ejemplo: objetoMirado.GetComponent<Outline>()?.enabled = false;
                 Debug.Log("Dejando de mirar " + objetoMirado.name);
             }
@@ -56,7 +57,7 @@ public class InteracionMaquinaBebidas : MonoBehaviour
             // Empezamos a mirar el objeto nuevo
             if (seleccionActual != null)
             {
-                // Aquí va tu código para ACTIVAR el resaltado
+                // Aquï¿½ va tu cï¿½digo para ACTIVAR el resaltado
                 // Ejemplo: seleccionActual.GetComponent<Outline>()?.enabled = true;
                 Debug.Log("Mirando " + seleccionActual.name);
             }
@@ -66,10 +67,10 @@ public class InteracionMaquinaBebidas : MonoBehaviour
         }
 
 
-        // 2. LÓGICA DE INTERACCIÓN (AL HACER CLIC)
+        // 2. Lï¿½GICA DE INTERACCIï¿½N (AL HACER CLIC)
         if (Input.GetMouseButtonDown(0)) // Si el jugador hace clic izquierdo
         {
-            // Y si estamos mirando un objeto interactuable (la máquina)
+            // Y si estamos mirando un objeto interactuable (la mï¿½quina)
             if (objetoMirado != null)
             {
                 CogerBebida();
@@ -90,9 +91,15 @@ public class InteracionMaquinaBebidas : MonoBehaviour
         vasoActual = Instantiate(vasoPrefab, puntoDeAgarre.position, puntoDeAgarre.rotation);
 
         // 2. Lo hacemos hijo del "PuntoDeAgarre"
-        // Esto es CLAVE: hace que el vaso se mueva con tu mano/cámara
+        // Esto es CLAVE: hace que el vaso se mueva con tu mano/cï¿½mara
         vasoActual.transform.parent = puntoDeAgarre;
 
-        Debug.Log("¡Has cogido un vaso!");
+        if (animadorDelPersonaje != null)
+        {
+            animadorDelPersonaje.SetBool("isHolding", true);
+            Debug.Log("isHolding a true");
+        }
+
+        Debug.Log("ï¿½Has cogido un vaso!");
     }
 }
