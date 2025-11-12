@@ -45,6 +45,16 @@ public class ControladorInteraccion : MonoBehaviour
                 if (objetoMirado.GetComponent<CampanaInteractiva>() != null) { objetoMirado.GetComponent<CampanaInteractiva>().Interactuar(); return; }
                 if (objetoMirado.GetComponent<ItemData>() != null) { CogerItemDelSuelo(objetoMirado.gameObject); return; }
             }
+
+            if (objetoMirado.CompareTag("Bell"))
+                {
+                    AudioSource bellSound = objetoMirado.GetComponent<AudioSource>();
+                    if (bellSound != null)
+                    {
+                        bellSound.Play();
+                    }
+                    return;
+                }
         }
         if (Input.GetKeyDown(teclaSoltar)) { SoltarItemAlSuelo(); }
     }
@@ -69,6 +79,7 @@ public class ControladorInteraccion : MonoBehaviour
         if (objeto.GetComponent<Papelera>() != null) { return (itemActual != null); }
         if (objeto.GetComponent<CampanaInteractiva>() != null) { return true; }
         if (objeto.GetComponent<ItemData>() != null) { return (itemActual == null); }
+        if (objeto.CompareTag("Bell")) { return true; }
         return false;
     }
 
