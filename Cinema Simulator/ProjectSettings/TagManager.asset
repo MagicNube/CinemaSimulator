@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Bell
+  - NPC
+  - MaquinaBebidas
   layers:
   - Default
   - TransparentFX
