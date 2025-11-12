@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7373695700537282265}
   m_Layer: 0
-  m_Name: PuntoDeAgarre
+  m_Name: Mano
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,8 +24,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3117492367082721808}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.19, z: 0.535}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.18999934, z: 0.513}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -140,6 +140,51 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &5567860110572119979
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2314890378656716748}
+  - component: {fileID: 864408215592204738}
+  m_Layer: 0
+  m_Name: PuntoDeAgarre
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2314890378656716748
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5567860110572119979}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.36499977, y: 0.2900001, z: 0.8471026}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1870890691028012094}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &864408215592204738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5567860110572119979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2844cf26b6805724a9140ca405e49fb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  huesoASeguir: {fileID: 7373695700537282265}
 --- !u!1 &6130239542481675207
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,6 +359,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3880881551112450126}
+  - {fileID: 2314890378656716748}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6633209486355499990
@@ -430,6 +476,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 3880881551112450126}
   moveSpeed: 4
+  sprintSpeed: 10
   gravity: -19.62
   mouseSensitivity: 2
 --- !u!114 &7622142195883440005
@@ -446,6 +493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanciaInteraccion: 3
   camaraJugador: {fileID: 4602575934059662346}
-  puntoDeAgarre: {fileID: 7373695700537282265}
+  puntoDeAgarre: {fileID: 2314890378656716748}
   animadorDelPersonaje: {fileID: 2895269405031854256}
   itemActual: {fileID: 0}
+  teclaSoltar: 103

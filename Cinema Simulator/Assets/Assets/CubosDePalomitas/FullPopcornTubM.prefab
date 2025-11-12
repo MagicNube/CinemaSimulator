@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 850529269459765171}
   - component: {fileID: -993092254406535778}
+  - component: {fileID: 3607871615836021842}
+  - component: {fileID: 6739136759073783217}
   m_Layer: 0
   m_Name: FullPopcornTubM
   m_TagString: Untagged
@@ -48,6 +50,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tipoDeItem: 0
   nivel: 2
+  prefabItemLleno: {fileID: 0}
+--- !u!65 &3607871615836021842
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2363047355539900103}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.22997901, y: 0.3294019, z: 0.23157349}
+  m_Center: {x: 0.0011095256, y: 0.12070766, z: -0.0007889159}
+--- !u!54 &6739136759073783217
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2363047355539900103}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &4094484284705683936
 GameObject:
   m_ObjectHideFlags: 0

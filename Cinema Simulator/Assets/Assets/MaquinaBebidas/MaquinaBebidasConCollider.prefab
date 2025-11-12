@@ -16,25 +16,41 @@ PrefabInstance:
       propertyPath: m_TagString
       value: MaquinaBebidas
       objectReference: {fileID: 0}
+    - target: {fileID: -3787087154054157166, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0154476315
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.010000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.010000003
+      objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.33997
+      value: -0.00075
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5017769
+      value: 0.00115
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -64.69311
+      value: 0.00552
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalRotation.y
@@ -46,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -103,7 +119,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1.5, z: 1}
-  m_Center: {x: 0, y: 0.5, z: 0.2}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &3947119564940527799
 MonoBehaviour:
   m_ObjectHideFlags: 0

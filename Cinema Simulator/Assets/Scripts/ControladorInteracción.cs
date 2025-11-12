@@ -1,6 +1,4 @@
-// ControladorInteraccion.cs
 using UnityEngine;
-// using QuickOutline; // O el 'using' que sea de tu asset de Outline
 
 public class ControladorInteraccion : MonoBehaviour
 {
@@ -9,185 +7,137 @@ public class ControladorInteraccion : MonoBehaviour
     public Transform puntoDeAgarre;
     public Animator animadorDelPersonaje;
     public GameObject itemActual;
-
+    public KeyCode teclaSoltar = KeyCode.G;
     private Outline outlineScriptMirado;
-    private Transform objetoMirado; // ¡Este objetoMirado es solo para el clic!
+    private Transform objetoMirado;
 
     void Update()
     {
         Ray ray = new Ray(camaraJugador.transform.position, camaraJugador.transform.forward);
         RaycastHit hit;
+        Transform seleccionActual = null;
+        Outline outlineActual = null;
 
-        Transform seleccionActual = null; // Para el clic
-        Outline outlineActual = null; // Para el brillo
-
-        // 1. LÓGICA DE DETECCIÓN Y RESALTADO (¡MODIFICADA!)
         if (Physics.Raycast(ray, out hit, distanciaInteraccion))
         {
-            // A. Guardamos lo que estamos mirando (para la lógica del clic)
             seleccionActual = hit.transform;
-
-            // B. Comprobamos si podemos interactuar con ello
-            // ¡Aquí está la nueva magia!
             if (PuedeInteractuar(hit.transform))
             {
-                // C. Si SÍ podemos, guardamos su Outline para activarlo
                 outlineActual = hit.collider.GetComponent<Outline>();
             }
-            // Si no podemos interactuar, 'outlineActual' se queda 'null'
-            // y el outline no se mostrará, que es lo que quieres.
         }
-
-        // 2. GESTIÓN DEL RESALTADO (Esta parte no cambia)
         if (outlineScriptMirado != outlineActual)
         {
             if (outlineScriptMirado != null) outlineScriptMirado.enabled = false;
             if (outlineActual != null) outlineActual.enabled = true;
             outlineScriptMirado = outlineActual;
         }
-
-        // 3. LÓGICA DE INTERACCIÓN (AL HACER CLIC)
-        // Guardamos el objeto mirado para el clic
         objetoMirado = seleccionActual;
 
         if (Input.GetMouseButtonDown(0))
         {
             if (objetoMirado != null)
             {
-                // CASO A: ¿Es una máquina de palomitas (inteligente)?
-                MaquinaDePalomitas maquinaPalomitas = objetoMirado.GetComponent<MaquinaDePalomitas>();
-                if (maquinaPalomitas != null)
-                {
-                    maquinaPalomitas.Interactuar(this);
-                    return;
-                }
-
-                // CASO B: ¿Es una máquina de items (simple)? (Ej: Bebidas)
-                MaquinaDeItems maquinaItems = objetoMirado.GetComponent<MaquinaDeItems>();
-                if (maquinaItems != null)
-                {
-                    CogerItem(maquinaItems.itemPrefab);
-                    return;
-                }
-
-                // CASO C: ¿Es una papelera?
-                Papelera papelera = objetoMirado.GetComponent<Papelera>();
-                if (papelera != null)
-                {
-                    SoltarItem();
-                    return;
-                }
-
-                if (objetoMirado.CompareTag("Bell"))
-                {
-                    AudioSource bellSound = objetoMirado.GetComponent<AudioSource>();
-                    if (bellSound != null)
-                    {
-                        bellSound.Play();
-                    }
-                    return;
-                }
-
-                MaquinaDeBebidas maquinaBebidas = objetoMirado.GetComponent<MaquinaDeBebidas>();
-                if (maquinaBebidas != null)
-                {
-                    maquinaBebidas.Interactuar(this);
-                    return;
-                }
-
+                if (objetoMirado.GetComponent<MaquinaDePalomitas>() != null) { objetoMirado.GetComponent<MaquinaDePalomitas>().Interactuar(this); return; }
+                if (objetoMirado.GetComponent<MaquinaDeBebidas>() != null) { objetoMirado.GetComponent<MaquinaDeBebidas>().Interactuar(this); return; }
+                if (objetoMirado.GetComponent<MaquinaDeItems>() != null) { CogerItem(objetoMirado.GetComponent<MaquinaDeItems>().itemPrefab); return; }
+                if (objetoMirado.GetComponent<Papelera>() != null) { DestruirItem(); return; }
+                if (objetoMirado.GetComponent<CampanaInteractiva>() != null) { objetoMirado.GetComponent<CampanaInteractiva>().Interactuar(); return; }
+                if (objetoMirado.GetComponent<ItemData>() != null) { CogerItemDelSuelo(objetoMirado.gameObject); return; }
             }
         }
+        if (Input.GetKeyDown(teclaSoltar)) { SoltarItemAlSuelo(); }
     }
 
-    // --- ¡NUEVA FUNCIÓN DE AYUDA! ---
-    // Comprueba si la interacción es válida (para mostrar el outline)
     bool PuedeInteractuar(Transform objeto)
     {
-        // Caso A: Máquina de palomitas
         if (objeto.GetComponent<MaquinaDePalomitas>() != null)
         {
-            // Solo podemos interactuar si tenemos un CuboVacio
-            if (itemActual == null) return false; // Mano vacía, no brilla
-
+            if (itemActual == null) return false;
             ItemData data = itemActual.GetComponent<ItemData>();
-            if (data == null) return false; // No es un item con DNI, no brilla
-
-            // ¿Es un CuboVacio? ¡SÍ brilla!
+            if (data == null) return false;
             return (data.tipoDeItem == ItemData.TipoDeItem.CuboVacio);
         }
-
-        // Caso B: Máquina de items simple (Bebidas)
-        if (objeto.GetComponent<MaquinaDeItems>() != null)
-        {
-            // Solo podemos interactuar si tenemos la mano vacía
-            // Si la mano está vacía, ¡SÍ brilla!
-            return (itemActual == null);
-        }
-
-        // Caso C: Papelera
-        if (objeto.GetComponent<Papelera>() != null)
-        {
-            // Solo podemos interactuar si tenemos algo en la mano
-            // Si la mano tiene algo, ¡SÍ brilla!
-            return (itemActual != null);
-        }
-
-        if (objeto.CompareTag("Bell"))
-        {
-            // Siempre se puede interactuar con la campana
-            return true;
-        }
-
         if (objeto.GetComponent<MaquinaDeBebidas>() != null)
         {
             if (itemActual == null) return false;
             ItemData data = itemActual.GetComponent<ItemData>();
             if (data == null) return false;
-            // ¿Es un VasoVacio? ¡SÍ brilla!
             return (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio);
         }
-
-        // Si no es ninguno de estos, no se puede interactuar
+        if (objeto.GetComponent<MaquinaDeItems>() != null) { return (itemActual == null); }
+        if (objeto.GetComponent<Papelera>() != null) { return (itemActual != null); }
+        if (objeto.GetComponent<CampanaInteractiva>() != null) { return true; }
+        if (objeto.GetComponent<ItemData>() != null) { return (itemActual == null); }
         return false;
     }
 
-    // --- (El resto de tus funciones no cambian) ---
+    void CogerItemDelSuelo(GameObject itemObject)
+    {
+        if (itemActual != null) return;
+
+        Rigidbody rb = itemObject.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+
+        itemObject.transform.parent = puntoDeAgarre;
+        itemObject.transform.localPosition = Vector3.zero;
+        itemObject.transform.localRotation = Quaternion.identity;
+
+        ItemData data = itemObject.GetComponent<ItemData>();
+        if (data != null)
+        {
+            itemObject.transform.localScale = data.escalaOriginal;
+        }
+
+        itemActual = itemObject;
+
+        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
+    }
+
+    void SoltarItemAlSuelo()
+    {
+        if (itemActual == null) return;
+
+        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
+        Rigidbody rb = itemActual.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = false;
+
+        itemActual.transform.parent = null;
+        itemActual = null;
+    }
 
     public void AsignarItem(GameObject nuevoItemPrefab)
     {
-        if (itemActual != null)
-        {
-            Destroy(itemActual);
-            itemActual = null;
-        }
+        if (itemActual != null) { Destroy(itemActual); itemActual = null; }
+
         itemActual = Instantiate(nuevoItemPrefab, puntoDeAgarre.position, puntoDeAgarre.rotation);
+        ItemData data = itemActual.GetComponent<ItemData>();
+
         itemActual.transform.parent = puntoDeAgarre;
-        if (animadorDelPersonaje != null)
+        itemActual.transform.localPosition = Vector3.zero;
+        itemActual.transform.localRotation = Quaternion.identity;
+
+        if (data != null)
         {
-            animadorDelPersonaje.SetBool("estaSujetando", true);
+            itemActual.transform.localScale = data.escalaOriginal;
         }
+
+        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
     }
 
     void CogerItem(GameObject prefabDelItem)
     {
-        if (itemActual != null)
-        {
-            Debug.Log("Ya tienes un item. Tíralo primero.");
-            return;
-        }
+        if (itemActual != null) { Debug.Log("Ya tienes un item. Tíralo primero."); return; }
         AsignarItem(prefabDelItem);
     }
 
-    public void SoltarItem()
+    public void DestruirItem()
     {
         if (itemActual != null)
         {
             Destroy(itemActual);
             itemActual = null;
-            if (animadorDelPersonaje != null)
-            {
-                animadorDelPersonaje.SetBool("estaSujetando", false);
-            }
+            if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
             Debug.Log("Has tirado el item.");
         }
     }
