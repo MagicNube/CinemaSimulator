@@ -10,7 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6689036041284674117, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_Name
-      value: generic_soda_dispenser
+      value: MaquinaBebidasConCollider
+      objectReference: {fileID: 0}
+    - target: {fileID: -6689036041284674117, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
+      propertyPath: m_TagString
+      value: MaquinaBebidas
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       propertyPath: m_LocalPosition.x
@@ -59,6 +63,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -6689036041284674117, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1871164694711692332}
+    - targetCorrespondingSourceObject: {fileID: -6689036041284674117, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3947119564940527799}
+    - targetCorrespondingSourceObject: {fileID: -6689036041284674117, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2022656626202043366}
   m_SourcePrefab: {fileID: -5645937942226959685, guid: 52eb9ee15b4b1b64581ba7ed940a8172, type: 3}
 --- !u!1 &2721793469475124222 stripped
 GameObject:
@@ -86,3 +96,34 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1.3}
   m_Center: {x: 0, y: 0, z: 0.6}
+--- !u!114 &3947119564940527799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2721793469475124222}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!114 &2022656626202043366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2721793469475124222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fde3a84a0c8aad419daa5f15964950d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPrefab: {fileID: 6578405930656286778, guid: 6fe2a125e4d589345a37eac2b3b0ea82, type: 3}
