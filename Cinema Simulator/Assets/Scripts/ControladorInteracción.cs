@@ -77,6 +77,14 @@ public class ControladorInteraccion : MonoBehaviour
                     SoltarItem();
                     return;
                 }
+
+                CampanaInteractiva campana = objetoMirado.GetComponent<CampanaInteractiva>();
+                if (campana != null)
+                {
+                    campana.Interactuar();
+                    return;
+                }
+
             }
         }
     }
@@ -112,6 +120,12 @@ public class ControladorInteraccion : MonoBehaviour
             // Solo podemos interactuar si tenemos algo en la mano
             // Si la mano tiene algo, ¡SÍ brilla!
             return (itemActual != null);
+        }
+
+        if (objeto.GetComponent<CampanaInteractiva>() != null)
+        {
+            // Siempre se puede interactuar con la campana
+            return true;
         }
 
         // Si no es ninguno de estos, no se puede interactuar
