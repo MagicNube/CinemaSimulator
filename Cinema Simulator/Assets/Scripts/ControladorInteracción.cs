@@ -78,10 +78,13 @@ public class ControladorInteraccion : MonoBehaviour
                     return;
                 }
 
-                CampanaInteractiva campana = objetoMirado.GetComponent<CampanaInteractiva>();
-                if (campana != null)
+                if (objetoMirado.CompareTag("Bell"))
                 {
-                    campana.Interactuar();
+                    AudioSource bellSound = objetoMirado.GetComponent<AudioSource>();
+                    if (bellSound != null)
+                    {
+                        bellSound.Play();
+                    }
                     return;
                 }
 
@@ -122,7 +125,7 @@ public class ControladorInteraccion : MonoBehaviour
             return (itemActual != null);
         }
 
-        if (objeto.GetComponent<CampanaInteractiva>() != null)
+        if (objeto.CompareTag("Bell"))
         {
             // Siempre se puede interactuar con la campana
             return true;

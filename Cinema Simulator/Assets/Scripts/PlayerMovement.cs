@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movimiento")]
     public float moveSpeed = 4f;
+    public float sprintSpeed = 10f;
     public float gravity = -19.62f; // Doble de la gravedad normal para un feeling más "arcade"
 
     [Header("Vista (Ratón)")]
@@ -56,6 +57,9 @@ public class PlayerMovement : MonoBehaviour
         // --- 2. GESTIÓN DEL MOVIMIENTO (TECLADO) ---
 
         // Obtener la entrada del teclado
+        bool isSprinting = Input.GetKey(KeyCode.LeftShift);
+        float currentSpeed = isSprinting ? sprintSpeed : moveSpeed;
+
         float horizontal = Input.GetAxis("Horizontal"); // A/D
         float vertical = Input.GetAxis("Vertical");     // W/S
 
@@ -66,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 moveDirection = transform.TransformDirection(inputDirection);
 
         // Mover el CharacterController
-        controller.Move(moveDirection * moveSpeed * Time.deltaTime);
+        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
 
 
         // --- 3. GESTIÓN DE LA GRAVEDAD ---
@@ -84,8 +88,18 @@ public class PlayerMovement : MonoBehaviour
 
         // --- 4. GESTIÓN DEL ANIMATOR ---
 
-        // Actualizar el parámetro "Speed" del Animator.
+        /*
+        // TODO: Actualizar el parámetro "Speed" del Animator.
         // Usamos inputDirection.magnitude, que será 0 (quieto) o 1 (moviéndose).
-        animator.SetFloat("Speed", inputDirection.magnitude);
+        if (inputDirection.magnitude > 0)
+        {
+        // Si nos estamos moviendo Y esprintando -> 2
+        // Si nos estamos moviendo Y NO esprintando -> 1
+        animationSpeedValue = isSprinting ? 1.0f : 1.0f;
+        }
+
+    // *** LÍNEA MODIFICADA ***
+        animator.SetFloat("Speed", animationSpeedValue);
+    */
     }
 }
