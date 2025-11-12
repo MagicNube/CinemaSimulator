@@ -85,6 +85,13 @@ public class ControladorInteraccion : MonoBehaviour
                     return;
                 }
 
+                MaquinaDeBebidas maquinaBebidas = objetoMirado.GetComponent<MaquinaDeBebidas>();
+                if (maquinaBebidas != null)
+                {
+                    maquinaBebidas.Interactuar(this);
+                    return;
+                }
+
             }
         }
     }
@@ -126,6 +133,15 @@ public class ControladorInteraccion : MonoBehaviour
         {
             // Siempre se puede interactuar con la campana
             return true;
+        }
+
+        if (objeto.GetComponent<MaquinaDeBebidas>() != null)
+        {
+            if (itemActual == null) return false;
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data == null) return false;
+            // ¿Es un VasoVacio? ¡SÍ brilla!
+            return (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio);
         }
 
         // Si no es ninguno de estos, no se puede interactuar

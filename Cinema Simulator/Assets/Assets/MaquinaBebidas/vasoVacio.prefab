@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &8674201704727991681
+--- !u!1001 &2765479142382342018
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6689036041284674117, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
       propertyPath: m_Name
-      value: vasoEscalado
+      value: vasoVacio
       objectReference: {fileID: 0}
     - target: {fileID: -2322593536623716399, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
       propertyPath: m_LocalPosition.y
@@ -42,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.5715013
+      value: -9.21373
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
       propertyPath: m_LocalPosition.y
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -64.02358
+      value: -63.504192
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
       propertyPath: m_LocalRotation.w
@@ -81,29 +81,32 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -7275139381870495308, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
+    - {fileID: -4977663252903924139, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -6689036041284674117, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -1465343583561440559}
+      addedObject: {fileID: 7935232441408247188}
   m_SourcePrefab: {fileID: -5645937942226959685, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
---- !u!1 &6578405930656286778 stripped
+--- !u!1 &381453060842623545 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -6689036041284674117, guid: cc116147da91ab24ab2df87ae13e1035, type: 3}
-  m_PrefabInstance: {fileID: 8674201704727991681}
+  m_PrefabInstance: {fileID: 2765479142382342018}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &-1465343583561440559
+--- !u!114 &7935232441408247188
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6578405930656286778}
+  m_GameObject: {fileID: 381453060842623545}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d753f030d5912874cada39d63f516827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tipoDeItem: 0
+  tipoDeItem: 4
   nivel: 1
+  prefabItemLleno: {fileID: 6578405930656286778, guid: 6fe2a125e4d589345a37eac2b3b0ea82, type: 3}
