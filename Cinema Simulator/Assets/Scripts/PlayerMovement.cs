@@ -63,13 +63,23 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal"); // A/D
         float vertical = Input.GetAxis("Vertical");     // W/S
 
-        // Crear el vector de dirección basado en la entrada
-        Vector3 inputDirection = new Vector3(horizontal, 0f, vertical).normalized;
+        // Crear el vector de entrada (sin normalizar inmediatamente)
+        Vector3 rawInput = new Vector3(horizontal, 0f, vertical);
 
-        // Convertir la dirección local (basada en W/A/S/D) a dirección global (basada en dónde mira el jugador)
-        Vector3 moveDirection = transform.TransformDirection(inputDirection);
+        // Deadzone para evitar movimientos residuales por el suavizado del Input.GetAxis
+        const float deadZone = 0.1f;
+        if (rawInput.sqrMagnitude < deadZone * deadZone)
+        {
+            rawInput = Vector3.zero;
+        }
+        else if (rawInput.sqrMagnitude > 1f)
+        {
+            // Normalizar solo si la magnitud supera 1 (p. ej. joystick en diagonal)
+            rawInput.Normalize();
+        }
 
-        // Mover el CharacterController
+        // Convertir a dirección global y mover
+        Vector3 moveDirection = transform.TransformDirection(rawInput);
         controller.Move(moveDirection * currentSpeed * Time.deltaTime);
 
 
