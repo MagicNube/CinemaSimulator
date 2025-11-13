@@ -882,7 +882,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1882540186055622423, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2143292895}
   m_SourcePrefab: {fileID: 100100000, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
 --- !u!1 &381929533
 GameObject:
@@ -1279,6 +1282,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8312048714351969857, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
   m_PrefabInstance: {fileID: 2110946157}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &660853172 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 669068437605289371, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
+  m_PrefabInstance: {fileID: 2110946157}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &660853174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660853172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fde3a84a0c8aad419daa5f15964950d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPrefab: {fileID: 6772925269334468346, guid: 0eeb86fcf3c7a51448222deea9825a2f, type: 3}
 --- !u!4 &664800888 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3791522347347060269, guid: 36b1859a4af6c4b4f9f4eaf038848cfa, type: 3}
@@ -2219,6 +2240,11 @@ Transform:
   - {fileID: 1168374265}
   m_Father: {fileID: 1393747434}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1002529656 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1882540186055622423, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
+  m_PrefabInstance: {fileID: 356375083}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1006260826
 GameObject:
   m_ObjectHideFlags: 0
@@ -2816,6 +2842,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4713248520598613596, guid: 17e6d3f09140a3e449b4d64adf42fb34, type: 3}
   m_PrefabInstance: {fileID: 1214310301}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1233644450 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8798555697812848462, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
+  m_PrefabInstance: {fileID: 1885889995}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1247977149
 PrefabInstance:
@@ -3478,6 +3509,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4988220819472892809, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
   m_PrefabInstance: {fileID: 1885889995}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1679005488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233644450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fde3a84a0c8aad419daa5f15964950d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPrefab: {fileID: 2341434496850288454, guid: c8f1f3aedb8a59848b186a05547cf53d, type: 3}
 --- !u!1 &1699821478
 GameObject:
   m_ObjectHideFlags: 0
@@ -3740,7 +3784,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hola
+  m_text: Hola! Para atenderme dale a la campana
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3774,8 +3818,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -4026,7 +4070,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8798555697812848462, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1679005488}
   m_SourcePrefab: {fileID: 100100000, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
 --- !u!4 &1914539695 stripped
 Transform:
@@ -4249,6 +4296,8 @@ MonoBehaviour:
     itemRequerido: 1
   - textoDelPedido: "\xBFMe das un perrito?"
     itemRequerido: 2
+  - textoDelPedido: Un ticket por favor
+    itemRequerido: 5
 --- !u!1001 &2110946157
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4304,7 +4353,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 669068437605289371, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 660853174}
   m_SourcePrefab: {fileID: 100100000, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
 --- !u!1001 &2136398913
 PrefabInstance:
@@ -4707,6 +4759,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8900858912899131487, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
   m_PrefabInstance: {fileID: 356375083}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2143292895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002529656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fde3a84a0c8aad419daa5f15964950d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPrefab: {fileID: 2308013529067372705, guid: 7c881c2370b45284386c585641c99710, type: 3}
 --- !u!1001 &3615664558210297686
 PrefabInstance:
   m_ObjectHideFlags: 0

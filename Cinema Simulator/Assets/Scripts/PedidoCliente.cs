@@ -75,7 +75,7 @@ public class PedidoCliente : MonoBehaviour
         {
             // Caso 3: ¡Item incorrecto!
             // --- ¡CAMBIO AQUÍ! ---
-            string mensajeError = "No quiero eso... Quiero " + pedidoActual.textoDelPedido;
+            string mensajeError = "No quiero eso...  " + pedidoActual.textoDelPedido;
             StartCoroutine(MostrarMensajeTemporal(mensajeError, 2.5f)); // 2.5s para que dé tiempo a leerlo
             return false; // No fue un éxito
         }
@@ -94,7 +94,7 @@ public class PedidoCliente : MonoBehaviour
         if (pedidoCompletado)
         {
             // Si el pedido fue "OK" (Gracias), genera uno nuevo
-            GenerarNuevoPedido();
+            textoDelPedido.text = "Dale a la campana para atenderme otra vez.";
         }
         else
         {

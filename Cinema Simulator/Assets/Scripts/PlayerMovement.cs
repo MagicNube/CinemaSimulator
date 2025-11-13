@@ -38,8 +38,8 @@ public class PlayerMovement : MonoBehaviour
         // --- 1. GESTIÓN DE LA VISTA (RATÓN) ---
 
         // Obtener la entrada del ratón
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        float mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 
         // Rotar el CUERPO del jugador (eje Y) de izquierda a derecha
         transform.Rotate(Vector3.up * mouseX);
