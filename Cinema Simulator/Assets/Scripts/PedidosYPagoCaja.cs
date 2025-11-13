@@ -119,7 +119,7 @@ public class RegisterUI : MonoBehaviour
 
     void ActualizarUI()
     {
-        comandaText.text = "🧾 COMANDA:\n";
+        comandaText.text = "COMANDA:\n";
         foreach (string item in comanda)
             comandaText.text += "- " + item + "\n";
 
