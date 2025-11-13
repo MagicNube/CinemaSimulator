@@ -55,6 +55,26 @@ public class ControladorInteraccion : MonoBehaviour
                     }
                     return;
                 }
+
+                if (objetoMirado.CompareTag("NPC"))
+                {
+                    PedidoCliente cliente = objetoMirado.GetComponent<PedidoCliente>();
+                    if (cliente != null)
+                    {
+                        ItemData itemEnMano = (itemActual != null) ? itemActual.GetComponent<ItemData>() : null;
+                        bool exito = cliente.RecibirItem(itemEnMano);
+
+                        if (exito)
+                        {
+                            DestruirItem();
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Objeto con tag 'NPC' no tiene script 'PedidoCliente.cs'");
+                    }
+                    return;
+                }
             }
 
         }
@@ -82,6 +102,10 @@ public class ControladorInteraccion : MonoBehaviour
         if (objeto.GetComponent<CampanaInteractiva>() != null) { return true; }
         if (objeto.GetComponent<ItemData>() != null) { return (itemActual == null); }
         if (objeto.CompareTag("Bell")) { return true; }
+        if (objeto.CompareTag("NPC"))
+        {
+            return true;
+        }
         return false;
     }
 
