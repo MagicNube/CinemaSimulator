@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 public class RegisterUI : MonoBehaviour
 {
-    [Header("Entradas")]
-    public Toggle entradaNormalToggle;
-    public Toggle entradaReducidaToggle;
+    [Header("Entradas (ahora botones)")]
+    public Button entradaNormalButton;
+    public Button entradaReducidaButton;
 
     [Header("Botones Snacks")]
     public Button palomitaSButton;
@@ -26,11 +26,14 @@ public class RegisterUI : MonoBehaviour
     private List<string> comanda = new List<string>();
     private float total = 0f;
 
+    // Seguimos controlando si alguna entrada está activa
+    private string entradaSeleccionada = "";
+
     void Start()
     {
         // Entradas
-        entradaNormalToggle.onValueChanged.AddListener(delegate { SeleccionarEntrada(); });
-        entradaReducidaToggle.onValueChanged.AddListener(delegate { SeleccionarEntrada(); });
+        entradaNormalButton.onClick.AddListener(() => SeleccionarEntrada("Entrada Normal", 10f));
+        entradaReducidaButton.onClick.AddListener(() => SeleccionarEntrada("Entrada Reducida", 7f));
 
         // Snacks
         palomitaSButton.onClick.AddListener(() => AgregarItem("Palomitas S", 3f));
@@ -49,23 +52,25 @@ public class RegisterUI : MonoBehaviour
         ActualizarUI();
     }
 
-    void SeleccionarEntrada()
+    void SeleccionarEntrada(string nombre, float precio)
     {
-        if (entradaNormalToggle.isOn)
+        if (entradaSeleccionada == nombre)
         {
-            entradaReducidaToggle.isOn = false;
-            AgregarItemUnico("Entrada Normal", 10f);
-        }
-        else if (entradaReducidaToggle.isOn)
-        {
-            entradaNormalToggle.isOn = false;
-            AgregarItemUnico("Entrada Reducida", 7f);
+            // Si ya estaba seleccionada, la eliminamos
+            EliminarItem(nombre);
+            entradaSeleccionada = "";
         }
         else
         {
-            EliminarItem("Entrada Normal");
-            EliminarItem("Entrada Reducida");
+            // Eliminamos la anterior si había
+            if (!string.IsNullOrEmpty(entradaSeleccionada))
+                EliminarItem(entradaSeleccionada);
+
+            // Agregamos la nueva entrada
+            AgregarItemUnico(nombre, precio);
+            entradaSeleccionada = nombre;
         }
+
         ActualizarUI();
     }
 
@@ -94,8 +99,10 @@ public class RegisterUI : MonoBehaviour
     float CalcularTotal()
     {
         float nuevoTotal = 0f;
-        if (entradaNormalToggle.isOn) nuevoTotal += 10f;
-        if (entradaReducidaToggle.isOn) nuevoTotal += 7f;
+
+        // Entradas
+        if (entradaSeleccionada == "Entrada Normal") nuevoTotal += 10f;
+        else if (entradaSeleccionada == "Entrada Reducida") nuevoTotal += 7f;
 
         foreach (string item in comanda)
         {
@@ -123,13 +130,8 @@ public class RegisterUI : MonoBehaviour
     {
         Debug.Log("Pago realizado por $" + total);
         comanda.Clear();
-        DesmarcarEntradas();
+        entradaSeleccionada = "";
         ActualizarUI();
     }
-
-    void DesmarcarEntradas()
-    {
-        entradaNormalToggle.isOn = false;
-        entradaReducidaToggle.isOn = false;
-    }
 }
+
