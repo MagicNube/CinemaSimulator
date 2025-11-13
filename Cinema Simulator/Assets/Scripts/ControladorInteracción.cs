@@ -10,6 +10,7 @@ public class ControladorInteraccion : MonoBehaviour
     public KeyCode teclaSoltar = KeyCode.G;
     private Outline outlineScriptMirado;
     private Transform objetoMirado;
+    public PedidoCliente pedidoCliente;
 
     void Update()
     {
@@ -44,17 +45,18 @@ public class ControladorInteraccion : MonoBehaviour
                 if (objetoMirado.GetComponent<Papelera>() != null) { DestruirItem(); return; }
                 if (objetoMirado.GetComponent<CampanaInteractiva>() != null) { objetoMirado.GetComponent<CampanaInteractiva>().Interactuar(); return; }
                 if (objetoMirado.GetComponent<ItemData>() != null) { CogerItemDelSuelo(objetoMirado.gameObject); return; }
-            }
-
-            if (objetoMirado.CompareTag("Bell"))
+                if (objetoMirado.CompareTag("Bell"))
                 {
                     AudioSource bellSound = objetoMirado.GetComponent<AudioSource>();
                     if (bellSound != null)
                     {
                         bellSound.Play();
+                        pedidoCliente.GenerarNuevoPedido();
                     }
                     return;
                 }
+            }
+
         }
         if (Input.GetKeyDown(teclaSoltar)) { SoltarItemAlSuelo(); }
     }
