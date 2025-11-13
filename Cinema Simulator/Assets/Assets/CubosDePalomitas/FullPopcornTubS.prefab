@@ -220,7 +220,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d753f030d5912874cada39d63f516827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tipoDeItem: 0
+  tipoDeItem: 1
+  escalaOriginal: {x: 0, y: 0, z: 0}
   nivel: 1
   prefabItemLleno: {fileID: 0}
 --- !u!54 &208913740663205737

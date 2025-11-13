@@ -4292,7 +4292,7 @@ MonoBehaviour:
   posiblesPedidos:
   - textoDelPedido: Quiero una bebida
     itemRequerido: 0
-  - textoDelPedido: Dame palomitas
+  - textoDelPedido: Dame unas palomitas
     itemRequerido: 1
   - textoDelPedido: "\xBFMe das un perrito?"
     itemRequerido: 2
@@ -4980,6 +4980,10 @@ PrefabInstance:
     - target: {fileID: 1870890691028012094, guid: 9d7890c707896bb4fb8c3fc8d1df8068, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2302952122739756163, guid: 9d7890c707896bb4fb8c3fc8d1df8068, type: 3}
+      propertyPath: moveSpeed
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7622142195883440005, guid: 9d7890c707896bb4fb8c3fc8d1df8068, type: 3}
       propertyPath: pedidoCliente
