@@ -108,6 +108,8 @@ public class ControladorInteraccion : MonoBehaviour
     void SoltarItemAlSuelo()
     {
         if (itemActual == null) return;
+        ItemData data = itemActual.GetComponent<ItemData>();
+        if(data.tipoDeItem == ItemData.TipoDeItem.Ticket) return;
 
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
         Rigidbody rb = itemActual.GetComponent<Rigidbody>();

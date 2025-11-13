@@ -8,7 +8,8 @@ public class ItemData : MonoBehaviour
         Palomitas,
         Perrito,
         CuboVacio,
-        VasoVacio
+        VasoVacio,
+        Ticket
     }
 
     public TipoDeItem tipoDeItem;
