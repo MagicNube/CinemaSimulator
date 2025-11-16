@@ -1,105 +1,99 @@
 using UnityEngine;
-using TMPro; // ¡Importante para el texto!
-using System.Collections; // ¡Importante para las esperas!
-
-// --- ¡NUEVO! Definición de la clase "Pedido" ---
-// [System.Serializable] permite que esto aparezca en el Inspector.
-[System.Serializable]
-public class Pedido
-{
-    public string textoDelPedido;           // "¡Quiero un perrito!"
-    public ItemData.TipoDeItem itemRequerido; // ItemData.TipoDeItem.Perrito
-}
+using TMPro;
+using System.Collections;
 
 public class PedidoCliente : MonoBehaviour
 {
-    // Arrastra tu TextMeshPro (TextoPedido) aquí en el Inspector
-    // *** ¡OJO! Asegúrate de que sea TextMeshProUGUI si es un Canvas, o TextMeshPro si es 3D ***
-    // Si usaste el Canvas (como te expliqué), cambia la línea de abajo por:
-    // public TextMeshProUGUI textoDelPedido;
-    public TextMeshPro textoDelPedido;
-
-
-    // --- ¡MODIFICADO! ---
-    // Ya no es un string[], ahora es un array de nuestra nueva clase "Pedido"
+    public GameObject contenedorBocadillo;
+    public TextMeshProUGUI textoDelPedido;
     public Pedido[] posiblesPedidos;
 
-    // Guardamos el pedido actual para poder comprobarlo
     private Pedido pedidoActual;
+    private Coroutine typewriterCoroutine;
 
     void Start()
     {
-        // El cliente empieza pidiendo algo
-        //GenerarNuevoPedido();
+        if (contenedorBocadillo != null)
+        {
+            contenedorBocadillo.SetActive(false);
+        }
     }
 
-    // Esta función sigue siendo pública, para que la campana la llame
     public void GenerarNuevoPedido()
     {
-        if (textoDelPedido == null || posiblesPedidos.Length == 0)
+        if (textoDelPedido == null || posiblesPedidos.Length == 0 || contenedorBocadillo == null)
         {
-            Debug.LogError("¡Falta el TextoMeshPro o la lista de pedidos!");
+            Debug.LogError("Â¡Falta el BocadilloCanvas, el TextoMeshPro o la lista de pedidos!");
             return;
         }
 
-        // 1. Elige un pedido al azar de la lista
+        contenedorBocadillo.SetActive(true);
         int indiceAleatorio = Random.Range(0, posiblesPedidos.Length);
-        pedidoActual = posiblesPedidos[indiceAleatorio]; // Guardamos el pedido COMPLETO
+        pedidoActual = posiblesPedidos[indiceAleatorio];
 
-        // 2. Muestra el texto del pedido en el bocadillo
-        textoDelPedido.text = pedidoActual.textoDelPedido;
-
-        Debug.Log("¡NUEVO PEDIDO!: " + pedidoActual.textoDelPedido);
+        if (typewriterCoroutine != null)
+        {
+            StopCoroutine(typewriterCoroutine);
+        }
+        typewriterCoroutine = StartCoroutine(EscribirFrase("Buenos dÃ­as.\n" + pedidoActual.textoDelPedido));
     }
 
-    // --- ¡FUNCIÓN TOTALMENTE NUEVA! ---
-    // Esta es la función que llamará el JUGADOR al hacer clic
     public bool RecibirItem(ItemData itemDelJugador)
     {
-        // Caso 1: El jugador hace clic con las manos vacías
-        if (itemDelJugador == null)
+        if (pedidoActual == null)
         {
-            StartCoroutine(MostrarMensajeTemporal("¡Manos vacías!", 1.5f));
-            return false; // No fue un éxito
+            Debug.Log("No hay pedido activo. Toca la campana.");
+            return false;
         }
 
-        // Caso 2: El jugador entrega un item. ¿Es el correcto?
+        if (itemDelJugador == null)
+        {
+            StartCoroutine(MostrarMensajeTemporal("Â¡Manos vacÃ­as! " + pedidoActual.textoDelPedido, 1.5f));
+            return false;
+        }
+
         if (itemDelJugador.tipoDeItem == pedidoActual.itemRequerido)
         {
-            // ¡ÉXITO!
-            // --- ¡CAMBIO AQUÍ! ---
-            StartCoroutine(MostrarMensajeTemporal("Gracias", 2f, true));
-            return true; // ¡Sí fue un éxito!
+            StartCoroutine(MostrarMensajeTemporal("Â¡Gracias!", 2f, true));
+            return true;
         }
         else
         {
-            // Caso 3: ¡Item incorrecto!
-            // --- ¡CAMBIO AQUÍ! ---
-            string mensajeError = "No quiero eso...  " + pedidoActual.textoDelPedido;
-            StartCoroutine(MostrarMensajeTemporal(mensajeError, 2.5f)); // 2.5s para que dé tiempo a leerlo
-            return false; // No fue un éxito
+            string mensajeError = "No quiero eso... " + pedidoActual.textoDelPedido;
+            StartCoroutine(MostrarMensajeTemporal(mensajeError, 2.5f));
+            return false;
         }
     }
 
-    // --- ¡NUEVA FUNCIÓN DE AYUDA (Corrutina)! ---
-    // Muestra un mensaje ("OK", "No", etc.) y luego vuelve al pedido
+    IEnumerator EscribirFrase(string frase)
+    {
+        textoDelPedido.text = "";
+
+        foreach (char letra in frase.ToCharArray())
+        {
+            textoDelPedido.text += letra;
+            yield return new WaitForSeconds(0.02f);
+        }
+    }
+
     IEnumerator MostrarMensajeTemporal(string mensaje, float duracion, bool pedidoCompletado = false)
     {
-        // Guarda el texto original para después
-        string textoOriginal = pedidoActual.textoDelPedido;
-
+        if (typewriterCoroutine != null)
+        {
+            StopCoroutine(typewriterCoroutine);
+        }
         textoDelPedido.text = mensaje;
+
         yield return new WaitForSeconds(duracion);
 
         if (pedidoCompletado)
         {
-            // Si el pedido fue "OK" (Gracias), genera uno nuevo
-            textoDelPedido.text = "Dale a la campana para atenderme otra vez.";
+            contenedorBocadillo.SetActive(false);
+            pedidoActual = null;
         }
         else
         {
-            // Si fue "No", vuelve a mostrar el pedido original
-            textoDelPedido.text = textoOriginal;
+            typewriterCoroutine = StartCoroutine(EscribirFrase(pedidoActual.textoDelPedido));
         }
     }
 }

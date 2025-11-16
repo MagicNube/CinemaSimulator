@@ -1,5 +1,14 @@
 using UnityEngine;
 
+
+[System.Serializable]
+public class Pedido
+{
+    public string textoDelPedido;
+    public ItemData.TipoDeItem itemRequerido;
+}
+
+
 public class ItemData : MonoBehaviour
 {
     public enum TipoDeItem
@@ -13,14 +22,11 @@ public class ItemData : MonoBehaviour
     }
 
     public TipoDeItem tipoDeItem;
+    public int nivel = 1;
+    public GameObject prefabItemLleno;
 
     [HideInInspector]
     public Vector3 escalaOriginal;
-
-    // Nivel 1 = Peque�o, 2 = Mediano, 3 = Grande
-    public int nivel = 1;
-
-    public GameObject prefabItemLleno;
 
     void Awake()
     {

@@ -1,38 +1,43 @@
-// CampanaInteractiva.cs
 using UnityEngine;
 
-// Asegúrate de que el objeto tiene estos componentes
 [RequireComponent(typeof(AudioSource))]
-[RequireComponent(typeof(Outline))] // O como se llame tu script de outline
+[RequireComponent(typeof(Outline))]
 [RequireComponent(typeof(Collider))]
-
 public class CampanaInteractiva : MonoBehaviour
 {
+    public PedidoCliente clienteAsociado;
+
     private AudioSource audioSource;
     private Animator animator;
-
-    // Un "cooldown" para que no se pueda spamear
     private bool puedeSonar = true;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
     }
 
-    // Esta función será llamada por el jugador
+    // Esta funciÃ³n serÃ¡ llamada por el jugador
     public void Interactuar()
     {
-        if (puedeSonar)
+        if (puedeSonar && clienteAsociado != null)
         {
-            // 1. Reproducir sonido
+            // 1. Sonar
             audioSource.Play();
+            if (animator != null) animator.SetTrigger("Sonar");
+
+            // 2. Â¡LLAMAR AL CLIENTE!
+            clienteAsociado.GenerarNuevoPedido();
 
             // 3. Iniciar cooldown
             puedeSonar = false;
-            // Permitir que suene de nuevo después de 2 segundos
             Invoke("ResetearCooldown", 2.0f);
 
-            Debug.Log("¡DING!");
+            Debug.Log("Â¡DING! Llamando al cliente.");
+        }
+        else if (clienteAsociado == null)
+        {
+            Debug.LogError("Â¡La campana no tiene un cliente asociado!");
         }
     }
 

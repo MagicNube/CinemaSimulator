@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class ControladorInteraccion : MonoBehaviour
 {
@@ -10,7 +11,15 @@ public class ControladorInteraccion : MonoBehaviour
     public KeyCode teclaSoltar = KeyCode.G;
     private Outline outlineScriptMirado;
     private Transform objetoMirado;
-    public PedidoCliente pedidoCliente;
+    public TextMeshProUGUI textoAyudaSoltar;
+
+    void Start()
+    {
+        if (textoAyudaSoltar != null)
+        {
+            textoAyudaSoltar.enabled = false;
+        }
+    }
 
     void Update()
     {
@@ -39,42 +48,27 @@ public class ControladorInteraccion : MonoBehaviour
         {
             if (objetoMirado != null)
             {
+                PedidoCliente cliente = objetoMirado.GetComponent<PedidoCliente>();
+                if (cliente != null)
+                {
+                    ItemData itemDataEnMano = (itemActual != null) ? itemActual.GetComponent<ItemData>() : null;
+
+                    bool exito = cliente.RecibirItem(itemDataEnMano);
+
+                    if (exito)
+                    {
+                        DestruirItem();
+                    }
+                    return;
+                }
+
+
                 if (objetoMirado.GetComponent<MaquinaDePalomitas>() != null) { objetoMirado.GetComponent<MaquinaDePalomitas>().Interactuar(this); return; }
                 if (objetoMirado.GetComponent<MaquinaDeBebidas>() != null) { objetoMirado.GetComponent<MaquinaDeBebidas>().Interactuar(this); return; }
                 if (objetoMirado.GetComponent<MaquinaDeItems>() != null) { CogerItem(objetoMirado.GetComponent<MaquinaDeItems>().itemPrefab); return; }
                 if (objetoMirado.GetComponent<Papelera>() != null) { DestruirItem(); return; }
                 if (objetoMirado.GetComponent<CampanaInteractiva>() != null) { objetoMirado.GetComponent<CampanaInteractiva>().Interactuar(); return; }
                 if (objetoMirado.GetComponent<ItemData>() != null) { CogerItemDelSuelo(objetoMirado.gameObject); return; }
-                if (objetoMirado.CompareTag("Bell"))
-                {
-                    AudioSource bellSound = objetoMirado.GetComponent<AudioSource>();
-                    if (bellSound != null)
-                    {
-                        bellSound.Play();
-                        pedidoCliente.GenerarNuevoPedido();
-                    }
-                    return;
-                }
-
-                if (objetoMirado.CompareTag("NPC"))
-                {
-                    PedidoCliente cliente = objetoMirado.GetComponent<PedidoCliente>();
-                    if (cliente != null)
-                    {
-                        ItemData itemEnMano = (itemActual != null) ? itemActual.GetComponent<ItemData>() : null;
-                        bool exito = cliente.RecibirItem(itemEnMano);
-
-                        if (exito)
-                        {
-                            DestruirItem();
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Objeto con tag 'NPC' no tiene script 'PedidoCliente.cs'");
-                    }
-                    return;
-                }
             }
 
         }
@@ -98,70 +92,75 @@ public class ControladorInteraccion : MonoBehaviour
             return (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio);
         }
         if (objeto.GetComponent<MaquinaDeItems>() != null) { return (itemActual == null); }
-        if (objeto.GetComponent<Papelera>() != null) { return (itemActual != null); }
+        if (objeto.GetComponent<Papelera>() != null)
+        {
+            if (itemActual == null) return false;
+            return true;
+        }
         if (objeto.GetComponent<CampanaInteractiva>() != null) { return true; }
         if (objeto.GetComponent<ItemData>() != null) { return (itemActual == null); }
-        if (objeto.CompareTag("Bell")) { return true; }
-        if (objeto.CompareTag("NPC"))
+        if (objeto.GetComponent<PedidoCliente>() != null)
         {
             return true;
         }
+
         return false;
-    }
-
-    void CogerItemDelSuelo(GameObject itemObject)
-    {
-        if (itemActual != null) return;
-
-        Rigidbody rb = itemObject.GetComponent<Rigidbody>();
-        if (rb != null) rb.isKinematic = true;
-
-        itemObject.transform.parent = puntoDeAgarre;
-        itemObject.transform.localPosition = Vector3.zero;
-        itemObject.transform.localRotation = Quaternion.identity;
-
-        ItemData data = itemObject.GetComponent<ItemData>();
-        if (data != null)
-        {
-            itemObject.transform.localScale = data.escalaOriginal;
-        }
-
-        itemActual = itemObject;
-
-        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
-    }
-
-    void SoltarItemAlSuelo()
-    {
-        if (itemActual == null) return;
-        ItemData data = itemActual.GetComponent<ItemData>();
-        if(data.tipoDeItem == ItemData.TipoDeItem.Ticket) return;
-
-        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
-        Rigidbody rb = itemActual.GetComponent<Rigidbody>();
-        if (rb != null) rb.isKinematic = false;
-
-        itemActual.transform.parent = null;
-        itemActual = null;
     }
 
     public void AsignarItem(GameObject nuevoItemPrefab)
     {
         if (itemActual != null) { Destroy(itemActual); itemActual = null; }
-
-        itemActual = Instantiate(nuevoItemPrefab, puntoDeAgarre.position, puntoDeAgarre.rotation);
+        itemActual = Instantiate(nuevoItemPrefab);
         ItemData data = itemActual.GetComponent<ItemData>();
-
         itemActual.transform.parent = puntoDeAgarre;
         itemActual.transform.localPosition = Vector3.zero;
         itemActual.transform.localRotation = Quaternion.identity;
-
-        if (data != null)
+        if (data != null) { itemActual.transform.localScale = data.escalaOriginal; }
+        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
+        if (textoAyudaSoltar != null)
         {
-            itemActual.transform.localScale = data.escalaOriginal;
+            if (data == null || data.tipoDeItem != ItemData.TipoDeItem.Ticket)
+            {
+                textoAyudaSoltar.enabled = true;
+            }
+        }
+    }
+    void CogerItemDelSuelo(GameObject itemObject)
+    {
+        if (itemActual != null) return;
+        Rigidbody rb = itemObject.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+        itemObject.transform.parent = puntoDeAgarre;
+        itemObject.transform.localPosition = Vector3.zero;
+        itemObject.transform.localRotation = Quaternion.identity;
+        ItemData data = itemObject.GetComponent<ItemData>();
+        if (data != null) { itemObject.transform.localScale = data.escalaOriginal; }
+        itemActual = itemObject;
+        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
+        if (textoAyudaSoltar != null)
+        {
+            if (data == null || data.tipoDeItem != ItemData.TipoDeItem.Ticket)
+            {
+                textoAyudaSoltar.enabled = true;
+            }
+        }
+    }
+    void SoltarItemAlSuelo()
+    {
+        if (itemActual == null) return;
+        ItemData data = itemActual.GetComponent<ItemData>();
+        if (data != null && data.tipoDeItem == ItemData.TipoDeItem.Ticket)
+        {
+            Debug.Log("No puedes soltar este item.");
+            return;
         }
 
-        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
+        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
+        Rigidbody rb = itemActual.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = false;
+        itemActual.transform.parent = null;
+        itemActual = null;
+        if (textoAyudaSoltar != null) { textoAyudaSoltar.enabled = false; }
     }
 
     void CogerItem(GameObject prefabDelItem)
@@ -172,12 +171,12 @@ public class ControladorInteraccion : MonoBehaviour
 
     public void DestruirItem()
     {
-        if (itemActual != null)
-        {
-            Destroy(itemActual);
-            itemActual = null;
-            if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
-            Debug.Log("Has tirado el item.");
-        }
+        if (itemActual == null) return;
+
+        Destroy(itemActual);
+        itemActual = null;
+        if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
+        Debug.Log("Has tirado el item.");
+        if (textoAyudaSoltar != null) { textoAyudaSoltar.enabled = false; }
     }
 }
