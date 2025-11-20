@@ -1,48 +1,83 @@
 // MaquinaDeBebidas.cs
 using UnityEngine;
 
+using UnityEngine.UI;
+
 // Asegúrate de que tiene los componentes necesarios
 [RequireComponent(typeof(Outline))] // O como se llame tu script de outline
 [RequireComponent(typeof(Collider))]
 public class MaquinaDeBebidas : MonoBehaviour
 {
-    // Esta función será llamada por el jugador cuando haga clic
+    public ItemData.TipoDeItem tipoDeCajaRequerida;
+
+    [SerializeField] private int capacidadMaxima = 10;
+    [SerializeField] private int _capacidadActual = 0;
+
+    [SerializeField] private Image barraRellenoImage;
+
+    public int CapacidadActual
+    {
+        get { return _capacidadActual; }
+        private set
+        {
+            _capacidadActual = Mathf.Clamp(value, 0, capacidadMaxima);
+            ActualizarBarraVisual();
+        }
+    }
+
+    private void Start()
+    {
+        ActualizarBarraVisual();
+    }
+
     public void Interactuar(ControladorInteraccion jugador)
     {
-        // 1. Ver qué item tiene el jugador
         GameObject itemSujetado = jugador.itemActual;
 
-        // 2. Si no tiene nada, no hacemos nada
         if (itemSujetado == null)
         {
-            Debug.Log("¡Necesitas un vaso vacío primero!");
+            Debug.Log($"Estado: {CapacidadActual}/{capacidadMaxima}");
             return;
         }
 
-        // 3. Obtener el "DNI" del item
         ItemData data = itemSujetado.GetComponent<ItemData>();
 
-        if (data == null)
+        if (data == null) return;
+
+        if(data.tipoDeItem == tipoDeCajaRequerida)
         {
-            Debug.Log("Eso no es un item válido.");
+            if(Input.GetMouseButton(1))
+            {
+                CapacidadActual = capacidadMaxima;
+                jugador.AsignarItem(null);
+            }
+            else
+            {
+                if (CapacidadActual < capacidadMaxima) CapacidadActual++;
+            }
             return;
         }
 
-        // 4. ¡LA LÓGICA CLAVE!
-        // ¿Es un VasoVacio Y tiene un "Prefab Lleno" asignado?
-        if (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio && data.prefabItemLleno != null)
+        if (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio)
         {
-            // ¡Sí! Le decimos al jugador que intercambie el item
-            // por el prefab "lleno" que tenía guardado
-            jugador.AsignarItem(data.prefabItemLleno);
+            if (CapacidadActual > 0)
+            {
+                if (data.prefabItemLleno != null)
+                {
+                    jugador.AsignarItem(data.prefabItemLleno);
+                    CapacidadActual--;
+                }
+            }
+            return;
         }
-        else if (data.tipoDeItem == ItemData.TipoDeItem.Bebida)
+    }
+
+    private void ActualizarBarraVisual()
+    {
+        if (barraRellenoImage != null)
         {
-            Debug.Log("¡Tu vaso ya está lleno!");
-        }
-        else
-        {
-            Debug.Log("¡Eso no se puede rellenar de bebida!");
+            float porcentaje = (float)CapacidadActual / (float)capacidadMaxima;
+            barraRellenoImage.fillAmount = porcentaje;
         }
     }
 }

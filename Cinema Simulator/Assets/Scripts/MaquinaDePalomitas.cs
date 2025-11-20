@@ -1,46 +1,85 @@
-// MaquinaDePalomitas.cs
 using UnityEngine;
+// IMPORTANTE: Necesitamos esta línea para trabajar con elementos de UI
+using UnityEngine.UI;
 
 public class MaquinaDePalomitas : MonoBehaviour
 {
-    // Esta función será llamada por el jugador cuando haga clic
+    public ItemData.TipoDeItem tipoDeCajaRequerida;
+
+    private int capacidadMaxima = 10;
+    // Hacemos que se vea en el inspector para debug, pero no editable
+    [SerializeField] private int _capacidadActual = 0;
+
+    [SerializeField] private Image barraRellenoImage;
+
+    // Propiedad para asegurar que la barra se actualiza siempre que cambie la variable
+    public int CapacidadActual
+    {
+        get { return _capacidadActual; }
+        private set
+        {
+            // Aseguramos que no baje de 0 ni suba del máximo
+            _capacidadActual = Mathf.Clamp(value, 0, capacidadMaxima);
+            ActualizarBarraVisual();
+        }
+    }
+
+    private void Start()
+    {
+        // Inicializamos la barra visual al empezar
+        ActualizarBarraVisual();
+    }
+
     public void Interactuar(ControladorInteraccion jugador)
     {
-        // 1. Ver qué item tiene el jugador
         GameObject itemSujetado = jugador.itemActual;
 
-        // 2. Si no tiene nada, no hacemos nada
         if (itemSujetado == null)
         {
-            Debug.Log("¡Necesitas un cubo vacío primero!");
+            // Feedback opcional si clickas sin nada
+            Debug.Log($"Estado: {CapacidadActual}/{capacidadMaxima}");
             return;
         }
 
-        // 3. Obtener el "DNI" del item
         ItemData data = itemSujetado.GetComponent<ItemData>();
+        if (data == null) return;
 
-        // 4. Validar el item
-        if (data == null)
+        // --- LÓGICA DE RELLENADO (Usando una Caja) ---
+        if (data.tipoDeItem == tipoDeCajaRequerida)
         {
-            Debug.Log("Eso no es un item válido.");
+            if (Input.GetMouseButton(1)) // Click Derecho
+            {
+                CapacidadActual = capacidadMaxima;
+                jugador.AsignarItem(null);
+            }
+            else // Click Izquierdo
+            {
+                if (CapacidadActual < capacidadMaxima) CapacidadActual++; 
+            }
             return;
         }
 
-        // 5. ¡LA LÓGICA CLAVE!
-        // ¿Es un CuboVacio Y tiene un "Prefab Lleno" asignado?
-        if (data.tipoDeItem == ItemData.TipoDeItem.CuboVacio && data.prefabItemLleno != null)
+        // --- LÓGICA DE SERVIDO (Usando Cubo Vacío) ---
+        //TODO: Falta añadir los tamaños de palomitas en la capacidad
+        if (data.tipoDeItem == ItemData.TipoDeItem.CuboVacio)
         {
-            // ¡Sí! Le decimos al jugador que intercambie el item
-            // por el prefab "lleno" que tenía guardado
-            jugador.AsignarItem(data.prefabItemLleno);
+            if (CapacidadActual > 0)
+            {
+                if (data.prefabItemLleno != null)
+                {
+                    jugador.AsignarItem(data.prefabItemLleno);
+                    CapacidadActual--; // Usamos la propiedad
+                }
+            }
         }
-        else if (data.tipoDeItem == ItemData.TipoDeItem.Palomitas)
+    }
+
+    private void ActualizarBarraVisual()
+    {
+        if (barraRellenoImage != null)
         {
-            Debug.Log("¡Tu cubo ya está lleno!");
-        }
-        else
-        {
-            Debug.Log("¡Eso no se puede rellenar de palomitas!");
+            float porcentaje = (float)CapacidadActual / (float)capacidadMaxima;
+            barraRellenoImage.fillAmount = porcentaje;
         }
     }
 }

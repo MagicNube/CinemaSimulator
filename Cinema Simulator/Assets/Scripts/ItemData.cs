@@ -18,7 +18,12 @@ public class ItemData : MonoBehaviour
         Perrito,
         CuboVacio,
         VasoVacio,
-        Ticket
+        Ticket,
+        CajaPalomitas,
+        CajaBebidas,
+        CajaEnvasesPalomitas,
+        CajaEnvasesBebidas,
+        CajaPerritos
     }
 
     public TipoDeItem tipoDeItem;
