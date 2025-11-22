@@ -3,13 +3,16 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
-public class RegisterUI : MonoBehaviour
+public class PopupRegisterUI : MonoBehaviour
 {
-    [Header("Entradas (ahora botones)")]
+    [Header("Panel principal (dentro del prefab)")]
+    public GameObject popupPanel;
+
+    [Header("Entradas")]
     public Button entradaNormalButton;
     public Button entradaReducidaButton;
 
-    [Header("Botones Snacks")]
+    [Header("Snacks")]
     public Button palomitaSButton;
     public Button palomitaMButton;
     public Button palomitaLButton;
@@ -22,15 +25,17 @@ public class RegisterUI : MonoBehaviour
     public TextMeshProUGUI comandaText;
     public TextMeshProUGUI totalText;
     public Button pagarButton;
+    public Button cerrarButton;
 
     private List<string> comanda = new List<string>();
     private float total = 0f;
-
-    // Seguimos controlando si alguna entrada está activa
     private string entradaSeleccionada = "";
 
     void Start()
     {
+        // activar el panel
+        popupPanel.SetActive(true);
+
         // Entradas
         entradaNormalButton.onClick.AddListener(() => SeleccionarEntrada("Entrada Normal", 10f));
         entradaReducidaButton.onClick.AddListener(() => SeleccionarEntrada("Entrada Reducida", 7f));
@@ -39,38 +44,37 @@ public class RegisterUI : MonoBehaviour
         palomitaSButton.onClick.AddListener(() => AgregarItem("Palomitas S", 3f));
         palomitaMButton.onClick.AddListener(() => AgregarItem("Palomitas M", 4f));
         palomitaLButton.onClick.AddListener(() => AgregarItem("Palomitas L", 5f));
-
         bebidaSButton.onClick.AddListener(() => AgregarItem("Bebida S", 2f));
         bebidaMButton.onClick.AddListener(() => AgregarItem("Bebida M", 3f));
         bebidaLButton.onClick.AddListener(() => AgregarItem("Bebida L", 4f));
-
         perritoButton.onClick.AddListener(() => AgregarItem("Perrito Caliente", 3.5f));
 
-        // Botón Pagar
         pagarButton.onClick.AddListener(Pagar);
+        cerrarButton.onClick.AddListener(CerrarPopup);
 
         ActualizarUI();
+    }
+
+    public void CerrarPopup()
+    {
+        Destroy(gameObject); // mata el prefab completo
     }
 
     void SeleccionarEntrada(string nombre, float precio)
     {
         if (entradaSeleccionada == nombre)
         {
-            // Si ya estaba seleccionada, la eliminamos
             EliminarItem(nombre);
             entradaSeleccionada = "";
         }
         else
         {
-            // Eliminamos la anterior si había
             if (!string.IsNullOrEmpty(entradaSeleccionada))
                 EliminarItem(entradaSeleccionada);
 
-            // Agregamos la nueva entrada
             AgregarItemUnico(nombre, precio);
             entradaSeleccionada = nombre;
         }
-
         ActualizarUI();
     }
 
@@ -100,7 +104,6 @@ public class RegisterUI : MonoBehaviour
     {
         float nuevoTotal = 0f;
 
-        // Entradas
         if (entradaSeleccionada == "Entrada Normal") nuevoTotal += 10f;
         else if (entradaSeleccionada == "Entrada Reducida") nuevoTotal += 7f;
 
@@ -114,6 +117,7 @@ public class RegisterUI : MonoBehaviour
             else if (item.Contains("Bebida L")) nuevoTotal += 4f;
             else if (item.Contains("Perrito Caliente")) nuevoTotal += 3.5f;
         }
+
         return nuevoTotal;
     }
 
@@ -132,6 +136,6 @@ public class RegisterUI : MonoBehaviour
         comanda.Clear();
         entradaSeleccionada = "";
         ActualizarUI();
+        CerrarPopup();
     }
 }
-

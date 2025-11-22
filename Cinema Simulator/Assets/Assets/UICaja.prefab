@@ -621,7 +621,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 5976006743008581104}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.9999883
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -900,7 +900,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 431482345474435975}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.99995005
+  m_Size: 0.9999719
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1280,7 +1280,7 @@ GameObject:
   - component: {fileID: 3863093387840996303}
   - component: {fileID: 5693003959088428344}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Pagar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3236,6 +3236,7 @@ GameObject:
   - component: {fileID: 7020968372984050204}
   - component: {fileID: 5683920454390612974}
   - component: {fileID: 5411258395309922901}
+  - component: {fileID: 5005902369101531854}
   m_Layer: 5
   m_Name: UICaja
   m_TagString: Untagged
@@ -3250,7 +3251,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6428528052396017703}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.001, y: 0.0009999998, z: 0.0009999998}
   m_ConstrainProportionsScale: 0
@@ -3326,6 +3327,32 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5005902369101531854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6428528052396017703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e13cdc6c44f4e2498b8beb53b51b1b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupPanel: {fileID: 7085171288569471623}
+  entradaNormalButton: {fileID: 8677424602159750937}
+  entradaReducidaButton: {fileID: 6748751142913557160}
+  palomitaSButton: {fileID: 5540151940014932723}
+  palomitaMButton: {fileID: 5287036508422372354}
+  palomitaLButton: {fileID: 6858237223982544530}
+  bebidaSButton: {fileID: 4587704570180029459}
+  bebidaMButton: {fileID: 945406684546272033}
+  bebidaLButton: {fileID: 3505263854533682930}
+  perritoButton: {fileID: 6327432901582663215}
+  comandaText: {fileID: 8852360099564508466}
+  totalText: {fileID: 8740672373924925188}
+  pagarButton: {fileID: 5693003959088428344}
+  cerrarButton: {fileID: 5693003959088428344}
 --- !u!1 &6556187638108870195
 GameObject:
   m_ObjectHideFlags: 0
@@ -4690,7 +4717,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.029818801, y: -0.0004075542}
+  m_AnchoredPosition: {x: 0.0019261398, y: -0.004072845}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &8120941105322658705

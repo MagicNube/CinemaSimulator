@@ -47,7 +47,7 @@ public class ControladorInteraccion : MonoBehaviour
             if (objetoMirado != null)
             {
                 // Prioridad: Pedidos (solo click izquierdo normalmente, pero lo dejamos pasar)
-                PedidoCliente cliente = objetoMirado.GetComponent<PedidoCliente>();
+                GestorPedidos cliente = objetoMirado.GetComponent<GestorPedidos>();
                 if (cliente != null && Input.GetMouseButtonDown(0))
                 {
                     ItemData itemDataEnMano = (itemActual != null) ? itemActual.GetComponent<ItemData>() : null;
