@@ -4862,6 +4862,10 @@ PrefabInstance:
       value: TicketMachinePrefab
       objectReference: {fileID: 0}
     - target: {fileID: 6950028185664382025, guid: 17e6d3f09140a3e449b4d64adf42fb34, type: 3}
+      propertyPath: _capacidadActual
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6950028185664382025, guid: 17e6d3f09140a3e449b4d64adf42fb34, type: 3}
       propertyPath: tipoDeCajaRequerida
       value: 5
       objectReference: {fileID: 0}
