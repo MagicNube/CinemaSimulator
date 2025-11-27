@@ -99,6 +99,11 @@ public class GestorPedidos : MonoBehaviour
             // Primero marcamos visualmente
             MarcarItemComoEntregado(coincidencia);
 
+            if (EconomyManager.Instance != null)
+            {
+                EconomyManager.Instance.SumarDinero(itemDelJugador.precio);
+            }         
+
             pedidoActual.itemsPendientes.Remove(coincidencia);
 
             if (pedidoActual.itemsPendientes.Count == 0)
