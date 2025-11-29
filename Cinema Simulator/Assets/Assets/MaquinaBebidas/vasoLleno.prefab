@@ -112,8 +112,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tipoDeItem: 0
+  precio: 4
   nivel: 1
   prefabItemLleno: {fileID: 6578405930656286778}
+  escalaOriginal: {x: 0, y: 0, z: 0}
 --- !u!54 &8998496346291856839
 Rigidbody:
   m_ObjectHideFlags: 0

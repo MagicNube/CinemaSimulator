@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class CampanaInteractiva : MonoBehaviour
 {
-    public PedidoCliente clienteAsociado;
+    public GestorPedidos clienteAsociado;
 
     private AudioSource audioSource;
     private Animator animator;

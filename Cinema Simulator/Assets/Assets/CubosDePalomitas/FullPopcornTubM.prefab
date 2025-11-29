@@ -49,9 +49,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tipoDeItem: 1
-  escalaOriginal: {x: 0, y: 0, z: 0}
+  precio: 5
   nivel: 2
   prefabItemLleno: {fileID: 0}
+  escalaOriginal: {x: 0, y: 0, z: 0}
 --- !u!65 &3607871615836021842
 BoxCollider:
   m_ObjectHideFlags: 0
