@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/02MainMenu.unity
     guid: 25ba9b926e8e3c3498e004bceca8ce5c
+  - enabled: 1
+    path: Assets/Scenes/Javi.unity
+    guid: ef1e4d3d7841a2044a81643693232364
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -16,7 +16,7 @@ public class MainMenuSceneManager : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("03LevelOne");
+        SceneManager.LoadScene("Javi");
     }
 
     public void QuitGame()
