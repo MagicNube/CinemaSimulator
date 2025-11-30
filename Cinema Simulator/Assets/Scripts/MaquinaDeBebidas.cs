@@ -44,18 +44,55 @@ public class MaquinaDeBebidas : MonoBehaviour
 
         if (data == null) return;
 
-        if(data.tipoDeItem == tipoDeCajaRequerida)
+        if (data.tipoDeItem == tipoDeCajaRequerida)
         {
-            if(Input.GetMouseButton(1))
+            // Obtenemos el script de la caja para gestionar cantidades
+            CajaDeSuministros cajaScript = itemSujetado.GetComponent<CajaDeSuministros>();
+
+            // Si la caja no tiene el script, usamos la lógica antigua (rellenar todo y destruir)
+            if (cajaScript == null)
             {
+                Debug.LogWarning("Esta caja no tiene script de suministros. Se consumirá entera.");
                 CapacidadActual = capacidadMaxima;
                 jugador.AsignarItem(null);
+                return;
             }
+
+            // Calculamos cuánto espacio libre tiene la máquina
+            int espacioLibre = capacidadMaxima - CapacidadActual;
+
+            if (espacioLibre <= 0)
+            {
+                Debug.Log("¡La máquina ya está llena!");
+                return;
+            }
+
+            // Click Derecho: Intentar llenar al MÁXIMO
+            if (Input.GetMouseButton(1))
+            {
+                int cantidadRecibida = cajaScript.SacarSuministros(espacioLibre);
+                CapacidadActual += cantidadRecibida;
+
+                if (cantidadRecibida > 0)
+                    Debug.Log($"Máquina rellenada. ({CapacidadActual}/{capacidadMaxima})");
+                else
+                    Debug.Log("¡La caja está vacía! Tírala a la papelera.");
+            }
+            // Click Izquierdo: Rellenar solo 1 unidad
             else
             {
-                if (CapacidadActual < capacidadMaxima) CapacidadActual++;
+                int cantidadRecibida = cajaScript.SacarSuministros(1);
+
+                if (cantidadRecibida > 0)
+                {
+                    CapacidadActual++;
+                    Debug.Log("Has añadido 1 unidad.");
+                }
+                else
+                {
+                    Debug.Log("No queda nada en la caja.");
+                }
             }
-            return;
         }
 
         if (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio)

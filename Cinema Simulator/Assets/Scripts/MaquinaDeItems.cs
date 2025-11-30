@@ -5,7 +5,7 @@ public class MaquinaDeItems : MonoBehaviour
 {
     public GameObject itemPrefab; // El objeto que el jugador recoge (ej. Vaso Vacio)
 
-    // Qué tipo de caja se necesita para rellenar esta máquina específica
+    // Quï¿½ tipo de caja se necesita para rellenar esta mï¿½quina especï¿½fica
     public ItemData.TipoDeItem tipoDeCajaRequerida;
 
     [SerializeField] private int capacidadMaxima = 10;
@@ -32,7 +32,7 @@ public class MaquinaDeItems : MonoBehaviour
     {
         GameObject itemSujetado = jugador.itemActual;
 
-        // --- CASO 1: MANO VACÍA (El jugador quiere coger un item) ---
+        // --- CASO 1: MANO VACï¿½A (El jugador quiere coger un item) ---
         if (itemSujetado == null)
         {
             if (CapacidadActual > 0)
@@ -43,43 +43,68 @@ public class MaquinaDeItems : MonoBehaviour
             }
             else
             {
-                Debug.Log("¡La máquina está vacía! Necesitas rellenarla.");
+                Debug.Log("ï¿½La mï¿½quina estï¿½ vacï¿½a! Necesitas rellenarla.");
             }
             return;
         }
 
-        // --- CASO 2: EL JUGADOR TIENE ALGO EN LA MANO (¿Es una caja?) ---
+        // --- CASO 2: EL JUGADOR TIENE ALGO EN LA MANO (ï¿½Es una caja?) ---
         ItemData data = itemSujetado.GetComponent<ItemData>();
         if (data == null) return;
 
-        // Comprobamos si el item es la caja CORRECTA para esta máquina
         if (data.tipoDeItem == tipoDeCajaRequerida)
         {
-            // Detectar Click Derecho (Rellenar todo)
-            // Nota: El click derecho se detecta gracias al cambio en ControladorInteraccion
+            // Obtenemos el script de la caja para gestionar cantidades
+            CajaDeSuministros cajaScript = itemSujetado.GetComponent<CajaDeSuministros>();
+
+            // Si la caja no tiene el script, usamos la lÃ³gica antigua (rellenar todo y destruir)
+            if (cajaScript == null)
+            {
+                Debug.LogWarning("Esta caja no tiene script de suministros. Se consumirÃ¡ entera.");
+                CapacidadActual = capacidadMaxima;
+                jugador.AsignarItem(null);
+                return;
+            }
+
+            // Calculamos cuÃ¡nto espacio libre tiene la mÃ¡quina
+            int espacioLibre = capacidadMaxima - CapacidadActual;
+
+            if (espacioLibre <= 0)
+            {
+                Debug.Log("Â¡La mÃ¡quina ya estÃ¡ llena!");
+                return;
+            }
+
+            // Click Derecho: Intentar llenar al MÃXIMO
             if (Input.GetMouseButton(1))
             {
-                CapacidadActual = capacidadMaxima;
-                Debug.Log("¡Máquina rellenada al máximo! Caja consumida.");
-                jugador.AsignarItem(null); // Destruir la caja
+                int cantidadRecibida = cajaScript.SacarSuministros(espacioLibre);
+                CapacidadActual += cantidadRecibida;
+
+                if (cantidadRecibida > 0)
+                    Debug.Log($"MÃ¡quina rellenada. ({CapacidadActual}/{capacidadMaxima})");
+                else
+                    Debug.Log("Â¡La caja estÃ¡ vacÃ­a! TÃ­rala a la papelera.");
             }
-            // Click Izquierdo (Rellenar 1 unidad)
+            // Click Izquierdo: Rellenar solo 1 unidad
             else
             {
-                if (CapacidadActual < capacidadMaxima)
+                int cantidadRecibida = cajaScript.SacarSuministros(1);
+
+                if (cantidadRecibida > 0)
                 {
                     CapacidadActual++;
-                    Debug.Log($"Has rellenado 1 unidad. ({CapacidadActual}/{capacidadMaxima})");
+                    Debug.Log("Has aÃ±adido 1 unidad.");
                 }
                 else
                 {
-                    Debug.Log("La máquina ya está llena.");
+                    Debug.Log("No queda nada en la caja.");
                 }
             }
         }
         else
         {
-            Debug.Log("Ese objeto no sirve para esta máquina.");
+            Debug.Log("Ese objeto no sirve para esta mï¿½quina.");
         }
     }
 

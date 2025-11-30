@@ -1,5 +1,5 @@
 using UnityEngine;
-// IMPORTANTE: Necesitamos esta l�nea para trabajar con elementos de UI
+// IMPORTANTE: Necesitamos esta l�nea para trabajar con elementos de UI
 using UnityEngine.UI;
 
 public class MaquinaDePalomitas : MonoBehaviour
@@ -18,7 +18,7 @@ public class MaquinaDePalomitas : MonoBehaviour
         get { return _capacidadActual; }
         private set
         {
-            // Aseguramos que no baje de 0 ni suba del m�ximo
+            // Aseguramos que no baje de 0 ni suba del m�ximo
             _capacidadActual = Mathf.Clamp(value, 0, capacidadMaxima);
             ActualizarBarraVisual();
         }
@@ -44,23 +44,59 @@ public class MaquinaDePalomitas : MonoBehaviour
         ItemData data = itemSujetado.GetComponent<ItemData>();
         if (data == null) return;
 
-        // --- L�GICA DE RELLENADO (Usando una Caja) ---
         if (data.tipoDeItem == tipoDeCajaRequerida)
         {
-            if (Input.GetMouseButton(1)) // Click Derecho
+            // Obtenemos el script de la caja para gestionar cantidades
+            CajaDeSuministros cajaScript = itemSujetado.GetComponent<CajaDeSuministros>();
+
+            // Si la caja no tiene el script, usamos la lógica antigua (rellenar todo y destruir)
+            if (cajaScript == null)
             {
+                Debug.LogWarning("Esta caja no tiene script de suministros. Se consumirá entera.");
                 CapacidadActual = capacidadMaxima;
                 jugador.AsignarItem(null);
+                return;
             }
-            else // Click Izquierdo
+
+            // Calculamos cuánto espacio libre tiene la máquina
+            int espacioLibre = capacidadMaxima - CapacidadActual;
+
+            if (espacioLibre <= 0)
             {
-                if (CapacidadActual < capacidadMaxima) CapacidadActual++; 
+                Debug.Log("¡La máquina ya está llena!");
+                return;
             }
-            return;
+
+            // Click Derecho: Intentar llenar al MÁXIMO
+            if (Input.GetMouseButton(1))
+            {
+                int cantidadRecibida = cajaScript.SacarSuministros(espacioLibre);
+                CapacidadActual += cantidadRecibida;
+
+                if (cantidadRecibida > 0)
+                    Debug.Log($"Máquina rellenada. ({CapacidadActual}/{capacidadMaxima})");
+                else
+                    Debug.Log("¡La caja está vacía! Tírala a la papelera.");
+            }
+            // Click Izquierdo: Rellenar solo 1 unidad
+            else
+            {
+                int cantidadRecibida = cajaScript.SacarSuministros(1);
+
+                if (cantidadRecibida > 0)
+                {
+                    CapacidadActual++;
+                    Debug.Log("Has añadido 1 unidad.");
+                }
+                else
+                {
+                    Debug.Log("No queda nada en la caja.");
+                }
+            }
         }
 
-        // --- L�GICA DE SERVIDO (Usando Cubo Vac�o) ---
-        //TODO: Falta a�adir los tama�os de palomitas en la capacidad
+        // --- L�GICA DE SERVIDO (Usando Cubo Vac�o) ---
+        //TODO: Falta a�adir los tama�os de palomitas en la capacidad
         if (data.tipoDeItem == ItemData.TipoDeItem.CuboVacio)
         {
             if (CapacidadActual > 0)

@@ -398,6 +398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69f46e6c18da2a5438765b65fb598565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tipoDeCajaRequerida: 6
   _capacidadActual: 10
   barraRellenoImage: {fileID: 3208348992196292740}
 --- !u!4 &8547819104073577634 stripped

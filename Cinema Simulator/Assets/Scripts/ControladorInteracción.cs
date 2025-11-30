@@ -94,11 +94,18 @@ public class ControladorInteraccion : MonoBehaviour
         // --- Bebidas ---
         if (objeto.GetComponent<MaquinaDeBebidas>() != null)
         {
+            // 1. Si no llevas nada, permitimos interactuar (para ver el estado)
             if (itemActual == null) return true;
+
             ItemData data = itemActual.GetComponent<ItemData>();
             if (data == null) return false;
-            return (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio);
-            // NOTA: Aquí deberías añadir "|| data.tipoDeItem == ItemData.TipoDeItem.CajaBebidas" si quieres recargarla igual
+
+            // Obtenemos la referencia a la máquina específica
+            MaquinaDeBebidas maquina = objeto.GetComponent<MaquinaDeBebidas>();
+
+            // 2. Permitimos SI es Vaso Vacío O SI es la Caja que pide esa máquina
+            return (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio ||
+                    data.tipoDeItem == maquina.tipoDeCajaRequerida);
         }
         // --- CAMBIO 3: Maquina De Items Genérica ---
         if (objeto.GetComponent<MaquinaDeItems>() != null)
@@ -177,7 +184,9 @@ public class ControladorInteraccion : MonoBehaviour
     void SoltarItemAlSuelo()
     {
         if (itemActual == null) return;
+
         ItemData data = itemActual.GetComponent<ItemData>();
+
         if (data != null && data.tipoDeItem == ItemData.TipoDeItem.Ticket)
         {
             Debug.Log("No puedes soltar este item.");
@@ -185,9 +194,17 @@ public class ControladorInteraccion : MonoBehaviour
         }
 
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
+
         Rigidbody rb = itemActual.GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = false;
+
         itemActual.transform.parent = null;
+
+        if (data != null)
+        {
+            itemActual.transform.localScale = data.escalaOriginal;
+        }
+
         itemActual = null;
         if (textoAyudaSoltar != null) { textoAyudaSoltar.enabled = false; }
     }
