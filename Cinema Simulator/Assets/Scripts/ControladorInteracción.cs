@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
 public class ControladorInteraccion : MonoBehaviour
 {
@@ -11,11 +11,19 @@ public class ControladorInteraccion : MonoBehaviour
     public KeyCode teclaSoltar = KeyCode.G;
     private Outline outlineScriptMirado;
     private Transform objetoMirado;
-    public TextMeshProUGUI textoAyudaSoltar;
+
+    [Header("Interfaz UI")]
+    public Image imagenAyudaSoltar;
+
+    [Header("Control de Movimiento")]
+    public MonoBehaviour scriptMovimiento;
 
     void Start()
     {
-        if (textoAyudaSoltar != null) textoAyudaSoltar.enabled = false;
+        if (imagenAyudaSoltar != null)
+        {
+            imagenAyudaSoltar.enabled = false;
+        }
     }
 
     void Update()
@@ -54,6 +62,8 @@ public class ControladorInteraccion : MonoBehaviour
                     if (cliente.RecibirItem(itemDataEnMano)) DestruirItem();
                     return;
                 }
+                //Tablet pedidos
+                if (objetoMirado.GetComponent<TabletPedidos>() != null) { objetoMirado.GetComponent<TabletPedidos>().AbrirTablet(this); return; }
 
                 // Maquinas complejas
                 if (objetoMirado.GetComponent<MaquinaDePalomitas>() != null) { objetoMirado.GetComponent<MaquinaDePalomitas>().Interactuar(this); return; }
@@ -120,6 +130,9 @@ public class ControladorInteraccion : MonoBehaviour
 
             return false;
         }
+        //Tablet
+        if (objeto.GetComponent<TabletPedidos>() != null) return true;
+
 
         // --- Resto de interacciones ---
         if (objeto.GetComponent<Papelera>() != null) { return (itemActual != null); }
@@ -145,10 +158,10 @@ public class ControladorInteraccion : MonoBehaviour
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
 
         // Lógica del texto de ayuda
-        if (textoAyudaSoltar != null)
+        if (imagenAyudaSoltar != null)
         {
             if (data == null || data.tipoDeItem != ItemData.TipoDeItem.Ticket)
-                textoAyudaSoltar.enabled = true;
+                imagenAyudaSoltar.enabled = true;
         }
     }
 
@@ -172,11 +185,11 @@ public class ControladorInteraccion : MonoBehaviour
         if (data != null) { itemObject.transform.localScale = data.escalaOriginal; }
         itemActual = itemObject;
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
-        if (textoAyudaSoltar != null)
+        if (imagenAyudaSoltar != null)
         {
             if (data == null || data.tipoDeItem != ItemData.TipoDeItem.Ticket)
             {
-                textoAyudaSoltar.enabled = true;
+                imagenAyudaSoltar.enabled = true;
             }
         }
     }
@@ -206,7 +219,7 @@ public class ControladorInteraccion : MonoBehaviour
         }
 
         itemActual = null;
-        if (textoAyudaSoltar != null) { textoAyudaSoltar.enabled = false; }
+        if (imagenAyudaSoltar != null) { imagenAyudaSoltar.enabled = false; }
     }
 
     public void DestruirItem()
@@ -217,6 +230,11 @@ public class ControladorInteraccion : MonoBehaviour
         itemActual = null;
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
         Debug.Log("Has tirado el item.");
-        if (textoAyudaSoltar != null) { textoAyudaSoltar.enabled = false; }
+        if (imagenAyudaSoltar != null) { imagenAyudaSoltar.enabled = false; }
+    }
+
+    public void AlternarControlJugador(bool activo)
+    {
+        if (scriptMovimiento != null) scriptMovimiento.enabled = activo;
     }
 }

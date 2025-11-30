@@ -5,7 +5,7 @@ public class EconomyManager : MonoBehaviour
 {
     public static EconomyManager Instance;
 
-    [Header("Configuraci�n UI")]
+    [Header("Configuraci�n UI")]
     public TextMeshProUGUI textoDineroTotal;
 
     [Header("Datos de Juego")]
@@ -34,6 +34,22 @@ public class EconomyManager : MonoBehaviour
         {
             // Muestra el dinero, ej: "$ 150"
             textoDineroTotal.text = "$ " + dineroActual.ToString();
+        }
+    }
+
+    public bool GastarDinero(int cantidad)
+    {
+        // 1. Comprobamos si nos alcanza
+        if (dineroActual >= cantidad)
+        {
+            dineroActual -= cantidad;
+            ActualizarTextoDinero();
+            return true; // ¡Compra exitosa!
+        }
+        else
+        {
+            Debug.Log("No tienes suficiente dinero.");
+            return false; // ¡Compra fallida!
         }
     }
 }
