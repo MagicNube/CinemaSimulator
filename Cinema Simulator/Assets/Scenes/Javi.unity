@@ -9204,7 +9204,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1383102964009015474, guid: 16ac10a017ca8fc48a70fe2a80d079bf, type: 3}
   m_PrefabInstance: {fileID: 1086529800}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
 --- !u!1001 &1096391728
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9917,8 +9916,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3247076576046398827, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
   m_PrefabInstance: {fileID: 1096391728}
   m_PrefabAsset: {fileID: 0}
-=======
->>>>>>> 164e4dd (no se)
 --- !u!1 &1120433235
 GameObject:
   m_ObjectHideFlags: 0
@@ -15467,11 +15464,8 @@ SceneRoots:
   - {fileID: 33916178}
   - {fileID: 1630949213}
   - {fileID: 501196643}
-<<<<<<< HEAD
   - {fileID: 257815676}
-=======
   - {fileID: 1615982849}
   - {fileID: 1144614847}
   - {fileID: 1169127357}
   - {fileID: 495555681}
->>>>>>> 164e4dd (no se)
