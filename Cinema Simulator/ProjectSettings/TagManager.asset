@@ -7,12 +7,9 @@ TagManager:
   - Bell
   - NPC
   - MaquinaBebidas
-<<<<<<< HEAD
   - BotonFases
-=======
   - Ghost Box
   - GHOST_BOX
->>>>>>> 164e4dd (no se)
   layers:
   - Default
   - TransparentFX
