@@ -37,19 +37,16 @@ public class ControlAleatorioBasura : MonoBehaviour
 
         foreach (Transform contenedorFila in this.transform)
         {
-
             if (contenedorFila.childCount == 0)
             {
                 objetosBasura.Add(contenedorFila.gameObject);
                 continue;
             }
-
             foreach (Transform prefabBasura in contenedorFila)
             {
                 objetosBasura.Add(prefabBasura.gameObject);
             }
         }
-
-        Debug.Log($"Se han cargado {objetosBasura.Count} objetos principales (sin partes internas).");
+        Debug.Log($"Se han cargado {objetosBasura.Count} objetos principales.");
     }
 }

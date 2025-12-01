@@ -35,7 +35,6 @@ public class ControladorInteraccion : MonoBehaviour
         Outline outlineActual = null;
 
         // ESTE BLOQUE CONTROLA SOLO EL "OUTLINE" (EL BORDE BRILLANTE)
-        // Lo dejamos fuera del bloqueo de UI para que sigas viendo qué miras aunque tengas un menú abierto (opcional)
         if (Physics.Raycast(ray, out hit, distanciaInteraccion))
         {
             seleccionActual = hit.transform;
@@ -55,14 +54,11 @@ public class ControladorInteraccion : MonoBehaviour
         // --- DETECCIÓN DE CLICK ---
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
-            // <--- !!! 2. EL BLOQUEO MÁGICO !!! ---
-            // Preguntamos al EventSystem si el ratón está encima de algún botón o panel
+            // Bloqueo de UI
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {
-                // Si la respuesta es SÍ, paramos aquí. El click se lo queda la UI.
                 return;
             }
-            // -------------------------------------
 
             if (objetoMirado != null)
             {
@@ -109,47 +105,31 @@ public class ControladorInteraccion : MonoBehaviour
             if (itemActual == null) return true; // Ver estado
             ItemData data = itemActual.GetComponent<ItemData>();
             if (data == null) return false;
-
-            // Obtenemos la referencia a la máquina para saber qué caja pide
             MaquinaDePalomitas maquina = objeto.GetComponent<MaquinaDePalomitas>();
-
-            // 1. Si es un Cubo Vacío -> OK
-            // 2. O SI es la caja que pide la máquina (leyendo la variable) -> OK
             return (data.tipoDeItem == ItemData.TipoDeItem.CuboVacio ||
                     data.tipoDeItem == maquina.tipoDeCajaRequerida);
         }
         // --- Bebidas ---
         if (objeto.GetComponent<MaquinaDeBebidas>() != null)
         {
-            // 1. Si no llevas nada, permitimos interactuar (para ver el estado)
             if (itemActual == null) return true;
-
             ItemData data = itemActual.GetComponent<ItemData>();
             if (data == null) return false;
-
-            // Obtenemos la referencia a la máquina específica
             MaquinaDeBebidas maquina = objeto.GetComponent<MaquinaDeBebidas>();
-
-            // 2. Permitimos SI es Vaso Vacío O SI es la Caja que pide esa máquina
             return (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio ||
                     data.tipoDeItem == maquina.tipoDeCajaRequerida);
         }
-        // --- CAMBIO 3: Maquina De Items Genérica ---
+        // --- Maquina De Items Genérica ---
         if (objeto.GetComponent<MaquinaDeItems>() != null)
         {
-            // Permitimos interactuar si no tenemos nada (para coger)
             if (itemActual == null) return true;
-
-            // O si tenemos la caja correcta (para rellenar)
             ItemData data = itemActual.GetComponent<ItemData>();
             MaquinaDeItems maquina = objeto.GetComponent<MaquinaDeItems>();
             if (data != null && data.tipoDeItem == maquina.tipoDeCajaRequerida) return true;
-
             return false;
         }
         //Tablet
         if (objeto.GetComponent<TabletManager>() != null) return true;
-
 
         // --- Resto de interacciones ---
         if (objeto.GetComponent<Papelera>() != null) { return (itemActual != null); }
@@ -160,11 +140,10 @@ public class ControladorInteraccion : MonoBehaviour
         return false;
     }
 
-    // ... (El resto de métodos AsignarItem, CogerItemDelSuelo, DestruirItem siguen igual) ...
     public void AsignarItem(GameObject nuevoItemPrefab)
     {
         if (itemActual != null) { Destroy(itemActual); itemActual = null; }
-        if (nuevoItemPrefab == null) return; // Manejo de null para destruir items (cajas)
+        if (nuevoItemPrefab == null) return;
 
         itemActual = Instantiate(nuevoItemPrefab);
         ItemData data = itemActual.GetComponent<ItemData>();
@@ -174,7 +153,6 @@ public class ControladorInteraccion : MonoBehaviour
         if (data != null) { itemActual.transform.localScale = data.escalaOriginal; }
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
 
-        // Lógica del texto de ayuda
         if (imagenAyudaSoltar != null)
         {
             if (data == null || data.tipoDeItem != ItemData.TipoDeItem.Ticket)
@@ -182,14 +160,12 @@ public class ControladorInteraccion : MonoBehaviour
         }
     }
 
-    // He añadido este método auxiliar que usabas antes por si acaso, pero ya no se llama directamente desde MaquinaDeItems
     void CogerItem(GameObject prefabDelItem)
     {
         if (itemActual != null) { Debug.Log("Ya tienes un item. Tíralo primero."); return; }
         AsignarItem(prefabDelItem);
     }
 
-    // ... resto de métodos (CogerItemDelSuelo, SoltarItemAlSuelo, DestruirItem) mantenlos igual ...
     void CogerItemDelSuelo(GameObject itemObject)
     {
         if (itemActual != null) return;
@@ -239,12 +215,22 @@ public class ControladorInteraccion : MonoBehaviour
         if (imagenAyudaSoltar != null) { imagenAyudaSoltar.enabled = false; }
     }
 
+    // --- AQUÍ ESTABA LA CLAVE ---
     public void DestruirItem()
     {
         if (itemActual == null) return;
 
+        // 1. ANTES de destruir el objeto, avisamos al Manager del Minijuego
+        // El Manager comprobará si este objeto era basura que había que limpiar
+        if (MinijuegoLimpiezaManager.Instance != null)
+        {
+            MinijuegoLimpiezaManager.Instance.ObjetoRecogido(itemActual);
+        }
+
+        // 2. Ahora sí, lo destruimos
         Destroy(itemActual);
         itemActual = null;
+
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
         Debug.Log("Has tirado el item.");
         if (imagenAyudaSoltar != null) { imagenAyudaSoltar.enabled = false; }
