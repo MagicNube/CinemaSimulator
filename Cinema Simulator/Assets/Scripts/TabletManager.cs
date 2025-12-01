@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System;
+using System.Linq; // <--- IMPRESCINDIBLE PARA EL CINE
+
 
 public class TabletManager : MonoBehaviour
 {
@@ -13,13 +15,12 @@ public class TabletManager : MonoBehaviour
     public GameObject pantallaBanco;
     public GameObject pantallaCine;
 
-
     // Variables internas
     private ControladorInteraccion jugador;
     private bool interfazAbierta = false;
 
     // ==========================================
-    // SECCIÓN 1: TIENDA (Lo que ya tenías)
+    // SECCIÓN 1: TIENDA
     // ==========================================
     [System.Serializable]
     public struct ProductoTienda
@@ -43,34 +44,44 @@ public class TabletManager : MonoBehaviour
     private int precioTotalCarrito = 0;
 
     // ==========================================
-    // SECCIÓN 2: BANCO (Nueva)
+    // SECCIÓN 2: BANCO
     // ==========================================
     [Header("APP BANCO")]
     public TextMeshProUGUI textoDeudaUI;
-    public TextMeshProUGUI textoDineroDisponibleBanco; // Para ver cuánto tenemos al pagar
-
+    public TextMeshProUGUI textoDineroDisponibleBanco;
     public TMP_InputField inputCantidadPago;
 
     // ==========================================
-    // SECCIÓN 3: CINE (Nueva)
+    // SECCIÓN 3: CINE (SISTEMA COMPLETO)
     // ==========================================
-    [Header("APP CINE")]
-    //public MeshRenderer pantallaDelCine; // La pantalla gigante 3D del cine
-    public Material[] peliculasDisponibles; // Materiales con los posters/películas
-    public Transform contenedorBotonesPeliculas;
-    public GameObject botonPeliculaPrefab; // Un botón simple con imagen
+    [Header("APP CINE - CONFIGURACIÓN")]
+    public List<NewsScenario> tablaDeNoticias; // Arrastra aquí tus noticias (Noticia + 3 Géneros)
+    public List<MovieAsset> peliculasDisponibles; // Arrastra aquí tus pelis (Titulo + Poster + Material + Género)
+
+    [Header("APP CINE - UI")]
+    public TextMeshProUGUI textoNoticiaDia; // El texto grande de la noticia
+    public Button[] botonesEleccion; // Tienen que ser 3 botones fijos en la UI
+    public Image[] postersEleccion; // Las 3 imagenes (Image) dentro de esos botones
+
+    // Estado del Cine
+    [HideInInspector] public float multiplicadorClientes = 1.0f; // 1.5 = Bueno, 0.6 = Malo
+    private NewsScenario noticiaActual;
+    private MovieAsset[] peliculasOpcion = new MovieAsset[3];
+    private CinemaGenre[] generosOpcion = new CinemaGenre[3];
 
     // ----------------------------------------------------------------------
-    // FUNCIONES PRINCIPALES (Abrir/Cerrar/Navegar)
+    // FUNCIONES PRINCIPALES
     // ----------------------------------------------------------------------
 
     void Start()
     {
         // Inicializar todo
         panelTabletGeneral.SetActive(false);
-        GenerarTienda(); // Preparamos la tienda
-        GenerarSelectorPeliculas(); // Preparamos el cine
+        GenerarTienda();
         ActualizarUIBanco();
+
+        // Iniciamos el día 1 del cine
+        NuevoDiaCine();
     }
 
     void Update()
@@ -110,28 +121,12 @@ public class TabletManager : MonoBehaviour
         pantallaBanco.SetActive(false);
         pantallaCine.SetActive(false);
     }
-
-    public void AbrirAppTienda()
-    {
-        pantallaHome.SetActive(false);
-        pantallaTienda.SetActive(true);
-    }
-
-    public void AbrirAppBanco()
-    {
-        pantallaHome.SetActive(false);
-        pantallaBanco.SetActive(true);
-        ActualizarUIBanco(); // Refrescamos los datos al entrar
-    }
-
-    public void AbrirAppCine()
-    {
-        pantallaHome.SetActive(false);
-        pantallaCine.SetActive(true);
-    }
+    public void AbrirAppTienda() { pantallaHome.SetActive(false); pantallaTienda.SetActive(true); }
+    public void AbrirAppBanco() { pantallaHome.SetActive(false); pantallaBanco.SetActive(true); ActualizarUIBanco(); }
+    public void AbrirAppCine() { pantallaHome.SetActive(false); pantallaCine.SetActive(true); }
 
     // ----------------------------------------------------------------------
-    // LÓGICA DE LA TIENDA (Simplificada de tu anterior script)
+    // LÓGICA DE LA TIENDA
     // ----------------------------------------------------------------------
     void GenerarTienda()
     {
@@ -151,7 +146,9 @@ public class TabletManager : MonoBehaviour
             if (icono && catalogo[i].icono) icono.GetComponent<Image>().sprite = catalogo[i].icono;
 
             // Click
-            btn.GetComponent<Button>().onClick.AddListener(() => AgregarAlCarrito(idx));
+            Button btnComp = btn.GetComponent<Button>();
+            btnComp.onClick.RemoveAllListeners();
+            btnComp.onClick.AddListener(() => AgregarAlCarrito(idx));
         }
     }
 
@@ -173,13 +170,13 @@ public class TabletManager : MonoBehaviour
         foreach (var item in carrito)
         {
             GameObject linea = Instantiate(lineaCarritoPrefab, contenedorListaCarrito);
-            linea.transform.localScale = Vector3.one; // Bug fix escala
+            linea.transform.localScale = Vector3.one;
             string text = $"{numeroDeItem}. {item.nombre} ({item.precio}$)";
             linea.GetComponent<TextMeshProUGUI>().SetText(text);
             numeroDeItem++;
         }
         textoTotalPrecio.text = $"Total: ${precioTotalCarrito} ({carrito.Count}/{maxItemsCarrito})";
-        textoTotalPrecio.color = Color.black;
+        textoTotalPrecio.color = Color.black; // O Color.white si el fondo es oscuro
     }
 
     public void ComprarCarrito()
@@ -195,7 +192,6 @@ public class TabletManager : MonoBehaviour
                 altura += 0.5f;
             }
             CancelarCarrito();
-            // Opcional: CerrarTablet();
         }
         else
         {
@@ -211,7 +207,7 @@ public class TabletManager : MonoBehaviour
     }
 
     // ----------------------------------------------------------------------
-    // LÓGICA DEL BANCO (Pagar Deuda)
+    // LÓGICA DEL BANCO
     // ----------------------------------------------------------------------
     void ActualizarUIBanco()
     {
@@ -224,6 +220,7 @@ public class TabletManager : MonoBehaviour
         if (EconomyManager.Instance.deuda <= 0)
         {
             Debug.Log("¡Ya eres libre de deudas!");
+            StartCoroutine(AnimacionAvisoBanco("¡LIBRE DE DEUDAS!", Color.green));
             return;
         }
 
@@ -233,44 +230,37 @@ public class TabletManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(AnimacionAvisoBanco());
+            StartCoroutine(AnimacionAvisoBanco("¡FONDOS INSUFICIENTES!", Color.red));
         }
     }
 
     public void PagarDeudaTodo()
     {
-        if (EconomyManager.Instance.deuda <= 0)
-        {
-            Debug.Log("¡Ya eres libre de deudas!");
-            return;
-        }
+        if (EconomyManager.Instance.deuda <= 0) return;
 
-        if (EconomyManager.Instance.PagarDeuda(EconomyManager.Instance.dineroActual))
+        // LÓGICA MEJORADA: Pagamos el menor valor entre (lo que tengo) y (lo que debo)
+        // Evita pagar 5000 si solo debes 100.
+        int cantidadAPagar = Mathf.Min(EconomyManager.Instance.dineroActual, EconomyManager.Instance.deuda);
+
+        if (cantidadAPagar > 0)
         {
-            ActualizarUIBanco();
+            PagarDeuda(cantidadAPagar);
         }
         else
         {
-            StartCoroutine(AnimacionAvisoBanco());
+            StartCoroutine(AnimacionAvisoBanco("¡FONDOS INSUFICIENTES!", Color.red));
         }
     }
 
     public void PagarCantidadPersonalizada()
     {
-        // 1. Verificamos que no esté vacío
         if (string.IsNullOrEmpty(inputCantidadPago.text)) return;
 
-        // 2. Intentamos convertir el texto a número (int)
-        // int.TryParse es la forma segura: si escriben letras, no explota, solo devuelve false
         if (int.TryParse(inputCantidadPago.text, out int cantidadA_Pagar))
         {
-            // 3. Verificamos que sea un número positivo
             if (cantidadA_Pagar > 0)
             {
-                // Llamamos a tu función original que ya gestiona la lógica
                 PagarDeuda(cantidadA_Pagar);
-
-                // 4. Limpiamos el campo de texto para que quede bonito
                 inputCantidadPago.text = "";
             }
         }
@@ -281,39 +271,121 @@ public class TabletManager : MonoBehaviour
     }
 
     // ----------------------------------------------------------------------
-    // LÓGICA DEL CINE (Cambiar Película)
+    // LÓGICA DEL CINE (NUEVA: NOTICIAS Y GÉNEROS)
     // ----------------------------------------------------------------------
-    void GenerarSelectorPeliculas()
+
+    // Llamar a esto al iniciar el juego o dormir
+    public void NuevoDiaCine()
     {
-        foreach (Transform child in contenedorBotonesPeliculas) Destroy(child.gameObject);
+        if (tablaDeNoticias.Count == 0 || peliculasDisponibles.Count == 0) return;
 
-        for (int i = 0; i < peliculasDisponibles.Length; i++)
+        // 1. Elegir noticia al azar
+        noticiaActual = tablaDeNoticias[UnityEngine.Random.Range(0, tablaDeNoticias.Count)];
+
+        // 2. Actualizar texto UI
+        if (textoNoticiaDia != null)
+            textoNoticiaDia.text = $"NOTICIA DEL DÍA:\n\n\"{noticiaActual.headline}\"";
+
+        // 3. Buscar 3 películas (Correcta, Neutral, Incorrecta) y asignarlas a botones
+        PrepararOpcionesPeliculas();
+
+        // 4. Reactivar botones para elegir
+        for (int i = 0; i < botonesEleccion.Length; i++)
         {
-            int idx = i;
-            GameObject btn = Instantiate(botonPeliculaPrefab, contenedorBotonesPeliculas);
-
-            // Asignamos la imagen del botón (asumiendo que el material tiene una textura principal)
-            if (peliculasDisponibles[i].mainTexture != null)
-            {
-                // Convertir textura a sprite al vuelo (truco rápido)
-                Texture2D tex = (Texture2D)peliculasDisponibles[i].mainTexture;
-                Sprite cartel = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-                btn.GetComponent<Image>().sprite = cartel;
-            }
-
-            // Al hacer click, cambiamos el material de la pantalla gigante
-            //btn.GetComponent<Button>().onClick.AddListener(() => CambiarPelicula(idx));
+            if (botonesEleccion[i] != null) botonesEleccion[i].interactable = true;
         }
     }
 
-    // void CambiarPelicula(int index)
-    // {
-    //     if (pantallaDelCine != null && peliculasDisponibles.Length > index)
-    //     {
-    //         pantallaDelCine.material = peliculasDisponibles[index];
-    //         Debug.Log("Película cambiada a: " + peliculasDisponibles[index].name);
-    //     }
-    // }
+    public void PrepararOpcionesPeliculas()
+    {
+        // Buscamos una peli para cada caso
+        MovieAsset peliCorrecta = BuscarPeliPorGenero(noticiaActual.correctGenre);
+        MovieAsset peliNeutral = BuscarPeliPorGenero(noticiaActual.neutralGenre);
+        MovieAsset peliIncorrecta = BuscarPeliPorGenero(noticiaActual.incorrectGenre);
+
+        // --- CORRECCIÓN: Usamos la clase explícita en lugar de 'dynamic' ---
+        List<OpcionTemporal> opciones = new List<OpcionTemporal>
+        {
+            new OpcionTemporal { Peli = peliCorrecta, Gen = noticiaActual.correctGenre },
+            new OpcionTemporal { Peli = peliNeutral, Gen = noticiaActual.neutralGenre },
+            new OpcionTemporal { Peli = peliIncorrecta, Gen = noticiaActual.incorrectGenre }
+        };
+
+        // Barajar (Shuffle) con Linq
+        opciones = opciones.OrderBy(x => UnityEngine.Random.value).ToList();
+
+        // Asignar a los 3 botones fijos
+        for (int i = 0; i < 3; i++)
+        {
+            if (i >= botonesEleccion.Length) break;
+
+            peliculasOpcion[i] = opciones[i].Peli;
+            generosOpcion[i] = opciones[i].Gen;
+
+            // Poner el poster en el botón
+            if (postersEleccion[i] != null)
+                postersEleccion[i].sprite = peliculasOpcion[i].posterImage;
+
+            // Limpiar y asignar evento click
+            botonesEleccion[i].onClick.RemoveAllListeners();
+            int index = i;
+            TextMeshProUGUI textoBoton = botonesEleccion[i].GetComponentInChildren<TextMeshProUGUI>();
+
+            if (textoBoton != null)
+            {
+                textoBoton.text = peliculasOpcion[i].title + "\n" + peliculasOpcion[i].genre;
+            }
+            botonesEleccion[i].onClick.AddListener(() => ElegirPelicula(index));
+        }
+    }
+
+    MovieAsset BuscarPeliPorGenero(CinemaGenre generoBuscado)
+    {
+        // Busca todas las pelis de ese género
+        var candidatas = peliculasDisponibles.Where(p => p.genre == generoBuscado).ToList();
+
+        if (candidatas.Count > 0)
+            return candidatas[UnityEngine.Random.Range(0, candidatas.Count)];
+
+        // Fallback: Si no tienes pelis de ese género, devuelve la primera que encuentre
+        Debug.LogWarning($"¡Falta peli de género {generoBuscado}! Usando fallback.");
+        return peliculasDisponibles[0];
+    }
+
+    public void ElegirPelicula(int indexBoton)
+    {
+        CinemaGenre generoElegido = generosOpcion[indexBoton];
+        MovieAsset peliElegida = peliculasOpcion[indexBoton];
+
+        string resultado = "";
+
+        // Lógica de puntuación
+        if (generoElegido == noticiaActual.correctGenre)
+        {
+            multiplicadorClientes = 1.5f; // +50% clientes
+            resultado = "<color=green>¡ÉXITO TOTAL!</color>";
+        }
+        else if (generoElegido == noticiaActual.neutralGenre)
+        {
+            multiplicadorClientes = 1.0f; // Normal
+            resultado = "<color=yellow>Recepción Normal.</color>";
+        }
+        else
+        {
+            multiplicadorClientes = 0.6f; // -40% clientes
+            resultado = "<color=red>Fracaso de taquilla...</color>";
+        }
+
+        // Feedback visual en la propia noticia
+        textoNoticiaDia.text = $"ESTRENO: {peliElegida.title}\n\n{resultado}\n(Afluencia esperada: {multiplicadorClientes}x)";
+
+        // Bloquear botones tras elegir
+        foreach (var btn in botonesEleccion) btn.interactable = false;
+    }
+
+    // ----------------------------------------------------------------------
+    // ANIMACIONES
+    // ----------------------------------------------------------------------
 
     System.Collections.IEnumerator AnimacionAvisoCarrito(string mensaje, Color colorAviso)
     {
@@ -323,23 +395,37 @@ public class TabletManager : MonoBehaviour
         textoTotalPrecio.text = mensaje;
         textoTotalPrecio.color = colorAviso;
 
-        yield return new WaitForSeconds(1f); // Esperamos 1 segundo
+        yield return new WaitForSeconds(1f);
 
-        textoTotalPrecio.text = textoOriginal; // Restauramos el precio real
-        textoTotalPrecio.color = colorOriginal; // Restauramos el color
-
-        // Forzamos actualización por si acaso cambió algo mientras
+        textoTotalPrecio.text = textoOriginal;
+        textoTotalPrecio.color = colorOriginal;
         ActualizarCarritoVisual();
     }
 
-    System.Collections.IEnumerator AnimacionAvisoBanco()
+    // He mejorado tu animación del banco para que acepte Texto personalizado también
+    System.Collections.IEnumerator AnimacionAvisoBanco(string mensaje = "", Color? colorFlash = null)
     {
+        Color colorRojo = colorFlash ?? Color.red; // Si es null, usa rojo
+        string textoOriginal = textoDineroDisponibleBanco.text;
+
+        if (mensaje != "") textoDineroDisponibleBanco.text = mensaje;
+
         for (int i = 0; i < 3; i++)
         {
-            textoDineroDisponibleBanco.color = Color.red;
-            yield return new WaitForSeconds(.2f); // Esperamos 1 segundo
+            textoDineroDisponibleBanco.color = colorRojo;
+            yield return new WaitForSeconds(.2f);
             textoDineroDisponibleBanco.color = Color.white;
             yield return new WaitForSeconds(.2f);
         }
+
+        textoDineroDisponibleBanco.text = textoOriginal; // Restauramos texto original
+        ActualizarUIBanco();
+    }
+
+    // Clase temporal auxiliar para evitar usar 'dynamic'
+    private class OpcionTemporal
+    {
+        public MovieAsset Peli;
+        public CinemaGenre Gen;
     }
 }
