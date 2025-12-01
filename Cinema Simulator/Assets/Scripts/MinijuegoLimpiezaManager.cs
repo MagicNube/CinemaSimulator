@@ -16,6 +16,17 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
     [Header("Referencias Generales")]
     public ControlAleatorioBasura generadorBasura;
 
+    [Header("Audio")]
+    [Tooltip("Arrastra aquí el componente AudioSource que usará la MÚSICA DE FONDO")]
+    public AudioSource audioSourceMusica;
+    [Tooltip("Arrastra aquí el componente AudioSource que usará los EFECTOS (Win/Lose)")]
+    public AudioSource audioSourceSFX;
+
+    [Header("Clips de Audio")]
+    public AudioClip musicaTension;
+    public AudioClip sonidoVictoria;
+    public AudioClip sonidoDerrota;
+
     [Header("Tus Paneles UI")]
     public GameObject panelPregunta;
     public GameObject panelTimer;
@@ -75,12 +86,19 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
         if (panelPregunta) panelPregunta.SetActive(false);
         if (panelTimer) panelTimer.SetActive(true);
 
-        // Reseteamos visuales: Aseguramos que ambos textos se ven y están en blanco
         if (textoTimer) textoTimer.gameObject.SetActive(true);
         if (textoContadorBasura)
         {
             textoContadorBasura.gameObject.SetActive(true);
-            textoContadorBasura.color = Color.white; // Reseteamos color por si acaso
+            textoContadorBasura.color = Color.white;
+        }
+
+        // --- AUDIO: INICIAR MÚSICA ---
+        if (audioSourceMusica != null && musicaTension != null)
+        {
+            audioSourceMusica.clip = musicaTension;
+            audioSourceMusica.loop = true; // Que se repita si el audio es corto
+            audioSourceMusica.Play();
         }
 
         ActualizarHUD();
@@ -101,27 +119,39 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
     {
         if (!juegoActivo) return;
 
-        if (basuraEnJuego.Contains(objetoRecogido))
+        // Buscar coincidencia exacta o padre/hijo
+        GameObject objetoEncontrado = null;
+        for (int i = 0; i < basuraEnJuego.Count; i++)
         {
-            basuraEnJuego.Remove(objetoRecogido);
+            if (basuraEnJuego[i] == null) continue;
+            if (basuraEnJuego[i] == objetoRecogido || objetoRecogido.transform.IsChildOf(basuraEnJuego[i].transform))
+            {
+                objetoEncontrado = basuraEnJuego[i];
+                break;
+            }
         }
 
-        int restantes = CalcularBasuraRestante();
+        if (objetoEncontrado != null) basuraEnJuego.Remove(objetoEncontrado);
+        basuraEnJuego.RemoveAll(item => item == null);
 
-        if (restantes <= 0)
-        {
-            Debug.Log("¡Toda la basura recogida!");
-            FinDelJuego(true);
-        }
-        else
-        {
-            ActualizarHUD();
-        }
+        if (basuraEnJuego.Count == 0) FinDelJuego(true);
+        else ActualizarHUD();
     }
 
     void FinDelJuego(bool victoria)
     {
         juegoActivo = false;
+
+        // --- AUDIO: PARAR MÚSICA Y LANZAR SFX ---
+        if (audioSourceMusica != null) audioSourceMusica.Stop();
+
+        if (audioSourceSFX != null)
+        {
+            if (victoria && sonidoVictoria != null)
+                audioSourceSFX.PlayOneShot(sonidoVictoria);
+            else if (!victoria && sonidoDerrota != null)
+                audioSourceSFX.PlayOneShot(sonidoDerrota);
+        }
 
         if (!victoria) BloquearBasuraRestante();
 
@@ -130,38 +160,30 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
 
     IEnumerator SecuenciaFinPartida(bool victoria)
     {
-        // 1. Ocultamos el Timer para que no estorbe (según tu petición)
         if (textoTimer) textoTimer.gameObject.SetActive(false);
 
-        // 2. Usamos el texto del CONTADOR para mostrar el mensaje final
         if (textoContadorBasura)
         {
             textoContadorBasura.gameObject.SetActive(true);
-
             if (victoria)
             {
-                // Mensaje de victoria
                 textoContadorBasura.text = "¡FELICIDADES!\nLIMPIEZA COMPLETADA";
                 textoContadorBasura.color = Color.green;
             }
             else
             {
-                // Mensaje de derrota
                 textoContadorBasura.text = "TIEMPO AGOTADO\nNO HAS RECOGIDO TODO";
                 textoContadorBasura.color = Color.red;
             }
         }
 
-        // 3. Esperamos 4 segundos para leerlo
         yield return new WaitForSeconds(4f);
 
-        // 4. Cerramos el panel completo
         if (panelTimer != null) panelTimer.SetActive(false);
     }
 
     void ActualizarHUD()
     {
-        // Solo actualizamos si el juego está activo para no machacar el mensaje de victoria
         if (!juegoActivo) return;
 
         if (textoTimer)
@@ -172,7 +194,7 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
 
         if (textoContadorBasura)
         {
-            textoContadorBasura.text = "Basura: " + CalcularBasuraRestante();
+            textoContadorBasura.text = "Basura: " + basuraEnJuego.Count;
         }
     }
 
@@ -191,11 +213,7 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
     int CalcularBasuraRestante()
     {
         int count = 0;
-        foreach (var item in basuraEnJuego)
-        {
-            // Verificamos null y activeInHierarchy por seguridad
-            if (item != null && item.activeInHierarchy) count++;
-        }
+        foreach (var item in basuraEnJuego) if (item != null && item.activeInHierarchy) count++;
         return count;
     }
 
