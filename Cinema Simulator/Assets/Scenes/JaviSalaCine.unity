@@ -8017,8 +8017,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tiempoLimite: 60
   generadorBasura: {fileID: 1789508656}
-  audioSourceMusica: {fileID: 0}
-  audioSourceSFX: {fileID: 0}
+  audioSourceMusica: {fileID: 617761832}
+  audioSourceSFX: {fileID: 617761831}
   musicaTension: {fileID: 8300000, guid: 777167bbdb526c34aa108d54b25fcb12, type: 3}
   sonidoVictoria: {fileID: 8300000, guid: a14b88fbe4efc5d4098e7944f8c58a8b, type: 3}
   sonidoDerrota: {fileID: 8300000, guid: 8f5a0e9dd5f84554aa4e1ba54af48696, type: 3}
