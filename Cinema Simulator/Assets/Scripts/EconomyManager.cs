@@ -7,9 +7,11 @@ public class EconomyManager : MonoBehaviour
 
     [Header("Configuraci�n UI")]
     public TextMeshProUGUI textoDineroTotal;
+    public TextMeshProUGUI textoDeuda;
 
     [Header("Datos de Juego")]
     public int dineroActual = 0;
+    public int deuda = 3000;
 
     void Awake()
     {
@@ -20,6 +22,7 @@ public class EconomyManager : MonoBehaviour
     void Start()
     {
         ActualizarTextoDinero();
+        ActualizarTextoDeuda();
     }
 
     public void SumarDinero(int cantidad)
@@ -33,7 +36,16 @@ public class EconomyManager : MonoBehaviour
         if (textoDineroTotal != null)
         {
             // Muestra el dinero, ej: "$ 150"
-            textoDineroTotal.text = "$ " + dineroActual.ToString();
+            textoDineroTotal.text = "Balance:" + "$ " + dineroActual.ToString();
+        }
+    }
+
+    private void ActualizarTextoDeuda()
+    {
+        if (textoDeuda != null)
+        {
+            // Muestra el dinero, ej: "$ 150"
+            textoDeuda.text = "Deuda:" + "$ " + deuda;
         }
     }
 
@@ -50,6 +62,23 @@ public class EconomyManager : MonoBehaviour
         {
             Debug.Log("No tienes suficiente dinero.");
             return false; // ¡Compra fallida!
+        }
+    }
+
+    public bool PagarDeuda(int cantidad)
+    {
+        if (dineroActual >= cantidad)
+        {
+            deuda -= cantidad;
+            dineroActual -= cantidad;
+            ActualizarTextoDinero();
+            ActualizarTextoDeuda();
+            return true;
+        }
+        else
+        {
+            Debug.Log("No tienes suficiente dinero.");
+            return false;
         }
     }
 }

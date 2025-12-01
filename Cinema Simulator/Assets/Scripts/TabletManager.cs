@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System;
 
 public class TabletManager : MonoBehaviour
 {
@@ -45,9 +46,10 @@ public class TabletManager : MonoBehaviour
     // SECCIÓN 2: BANCO (Nueva)
     // ==========================================
     [Header("APP BANCO")]
-    public int deudaTotal = 5000; // La deuda inicial
     public TextMeshProUGUI textoDeudaUI;
     public TextMeshProUGUI textoDineroDisponibleBanco; // Para ver cuánto tenemos al pagar
+
+    public TMP_InputField inputCantidadPago;
 
     // ==========================================
     // SECCIÓN 3: CINE (Nueva)
@@ -83,7 +85,6 @@ public class TabletManager : MonoBehaviour
         panelTabletGeneral.SetActive(true);
 
         // Al abrir, vamos siempre al HOME
-        Debug.Log("AbrirTablet");
         IrAlHome();
 
         Cursor.lockState = CursorLockMode.None;
@@ -104,7 +105,6 @@ public class TabletManager : MonoBehaviour
 
     public void IrAlHome()
     {
-        Debug.Log("Home");
         pantallaHome.SetActive(true);
         pantallaTienda.SetActive(false);
         pantallaBanco.SetActive(false);
@@ -157,7 +157,7 @@ public class TabletManager : MonoBehaviour
 
     void AgregarAlCarrito(int index)
     {
-        if (carrito.Count >= maxItemsCarrito) return;
+        if (carrito.Count >= maxItemsCarrito) { StartCoroutine(AnimacionAvisoCarrito("¡Carrito lleno!", Color.red)); return; }
 
         carrito.Add(catalogo[index]);
         precioTotalCarrito += catalogo[index].precio;
@@ -167,13 +167,19 @@ public class TabletManager : MonoBehaviour
     void ActualizarCarritoVisual()
     {
         foreach (Transform child in contenedorListaCarrito) Destroy(child.gameObject);
+
+        int numeroDeItem = 1;
+
         foreach (var item in carrito)
         {
             GameObject linea = Instantiate(lineaCarritoPrefab, contenedorListaCarrito);
             linea.transform.localScale = Vector3.one; // Bug fix escala
-            linea.GetComponent<TextMeshProUGUI>().text = item.nombre;
+            string text = $"{numeroDeItem}. {item.nombre} ({item.precio}$)";
+            linea.GetComponent<TextMeshProUGUI>().SetText(text);
+            numeroDeItem++;
         }
-        textoTotalPrecio.text = $"Total: ${precioTotalCarrito}";
+        textoTotalPrecio.text = $"Total: ${precioTotalCarrito} ({carrito.Count}/{maxItemsCarrito})";
+        textoTotalPrecio.color = Color.black;
     }
 
     public void ComprarCarrito()
@@ -191,6 +197,10 @@ public class TabletManager : MonoBehaviour
             CancelarCarrito();
             // Opcional: CerrarTablet();
         }
+        else
+        {
+            StartCoroutine(AnimacionAvisoCarrito("¡Sin fondos!", Color.red));
+        }
     }
 
     public void CancelarCarrito()
@@ -205,26 +215,68 @@ public class TabletManager : MonoBehaviour
     // ----------------------------------------------------------------------
     void ActualizarUIBanco()
     {
-        if (textoDeudaUI) textoDeudaUI.text = $"Deuda Restante:\n<color=red>${deudaTotal}</color>";
+        if (textoDeudaUI) textoDeudaUI.text = $"Deuda Restante:\n<color=red>${EconomyManager.Instance.deuda}</color>";
         if (textoDineroDisponibleBanco) textoDineroDisponibleBanco.text = $"Tu Dinero: ${EconomyManager.Instance.dineroActual}";
     }
 
     public void PagarDeuda(int cantidad)
     {
-        if (deudaTotal <= 0)
+        if (EconomyManager.Instance.deuda <= 0)
         {
             Debug.Log("¡Ya eres libre de deudas!");
             return;
         }
 
-        // Verificamos si tenemos dinero para pagar esa cantidad
-        if (EconomyManager.Instance.GastarDinero(cantidad))
+        if (EconomyManager.Instance.PagarDeuda(cantidad))
         {
-            deudaTotal -= cantidad;
-            if (deudaTotal < 0) deudaTotal = 0; // No tener deuda negativa
-
             ActualizarUIBanco();
-            Debug.Log($"Has pagado ${cantidad}. Deuda restante: {deudaTotal}");
+        }
+        else
+        {
+            StartCoroutine(AnimacionAvisoBanco());
+        }
+    }
+
+    public void PagarDeudaTodo()
+    {
+        if (EconomyManager.Instance.deuda <= 0)
+        {
+            Debug.Log("¡Ya eres libre de deudas!");
+            return;
+        }
+
+        if (EconomyManager.Instance.PagarDeuda(EconomyManager.Instance.dineroActual))
+        {
+            ActualizarUIBanco();
+        }
+        else
+        {
+            StartCoroutine(AnimacionAvisoBanco());
+        }
+    }
+
+    public void PagarCantidadPersonalizada()
+    {
+        // 1. Verificamos que no esté vacío
+        if (string.IsNullOrEmpty(inputCantidadPago.text)) return;
+
+        // 2. Intentamos convertir el texto a número (int)
+        // int.TryParse es la forma segura: si escriben letras, no explota, solo devuelve false
+        if (int.TryParse(inputCantidadPago.text, out int cantidadA_Pagar))
+        {
+            // 3. Verificamos que sea un número positivo
+            if (cantidadA_Pagar > 0)
+            {
+                // Llamamos a tu función original que ya gestiona la lógica
+                PagarDeuda(cantidadA_Pagar);
+
+                // 4. Limpiamos el campo de texto para que quede bonito
+                inputCantidadPago.text = "";
+            }
+        }
+        else
+        {
+            inputCantidadPago.text = "";
         }
     }
 
@@ -262,4 +314,32 @@ public class TabletManager : MonoBehaviour
     //         Debug.Log("Película cambiada a: " + peliculasDisponibles[index].name);
     //     }
     // }
+
+    System.Collections.IEnumerator AnimacionAvisoCarrito(string mensaje, Color colorAviso)
+    {
+        string textoOriginal = textoTotalPrecio.text;
+        Color colorOriginal = textoTotalPrecio.color;
+
+        textoTotalPrecio.text = mensaje;
+        textoTotalPrecio.color = colorAviso;
+
+        yield return new WaitForSeconds(1f); // Esperamos 1 segundo
+
+        textoTotalPrecio.text = textoOriginal; // Restauramos el precio real
+        textoTotalPrecio.color = colorOriginal; // Restauramos el color
+
+        // Forzamos actualización por si acaso cambió algo mientras
+        ActualizarCarritoVisual();
+    }
+
+    System.Collections.IEnumerator AnimacionAvisoBanco()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            textoDineroDisponibleBanco.color = Color.red;
+            yield return new WaitForSeconds(.2f); // Esperamos 1 segundo
+            textoDineroDisponibleBanco.color = Color.white;
+            yield return new WaitForSeconds(.2f);
+        }
+    }
 }
