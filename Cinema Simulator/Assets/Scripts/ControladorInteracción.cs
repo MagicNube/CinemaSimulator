@@ -42,7 +42,6 @@ public class ControladorInteraccion : MonoBehaviour
         Transform seleccionActual = null;
         Outline outlineActual = null;
 
-        // --- INICIO DE LA LÓGICA DE Detección (Raycast) ---
         MeshRenderer nextGhostRenderer = null;
 
         if (Physics.Raycast(ray, out hit, distanciaInteraccion))
@@ -52,7 +51,6 @@ public class ControladorInteraccion : MonoBehaviour
             // 1. Detección del Fantasma (GHOST_BOX)
             if (hit.collider.CompareTag("GHOST_BOX"))
             {
-                // Si golpeamos el Collider de un fantasma, obtenemos su MeshRenderer para controlarlo.
                 nextGhostRenderer = hit.collider.GetComponent<MeshRenderer>();
             }
 
@@ -121,12 +119,26 @@ public class ControladorInteraccion : MonoBehaviour
                 // Maquina De Items Genérica
                 if (objetoMirado.GetComponent<MaquinaDeItems>() != null) { objetoMirado.GetComponent<MaquinaDeItems>().Interactuar(this); return; }
 
-                // --- NUEVA PRIORIDAD: COLOCAR CAJA EN FANTASMA/ANCLAJE (SNAP) ---
-                // Solo si llevamos un item y apuntamos a un fantasma
+                // --- PRIORIDAD: COLOCAR CAJA EN FANTASMA/ANCLAJE (SNAP) ---
                 if (itemActual != null && objetoMirado.CompareTag("GHOST_BOX") && Input.GetMouseButtonDown(0))
                 {
-                    SnapItemToGhost(itemActual, objetoMirado.gameObject);
-                    return;
+                    ItemData carriedData = itemActual.GetComponent<ItemData>();
+
+                    // Verificación de Tipo: SÓLO si es uno de los tipos de caja de recarga
+                    if (carriedData != null)
+                    {
+                        ItemData.TipoDeItem itemType = carriedData.tipoDeItem;
+
+                        if (itemType == ItemData.TipoDeItem.CajaPalomitas ||
+                            itemType == ItemData.TipoDeItem.CajaBebidas ||
+                            itemType == ItemData.TipoDeItem.CajaEnvasesPalomitas ||
+                            itemType == ItemData.TipoDeItem.CajaEnvasesBebidas ||
+                            itemType == ItemData.TipoDeItem.CajaPerritos)
+                        {
+                            SnapItemToGhost(itemActual, objetoMirado.gameObject);
+                            return; // Consumir el click
+                        }
+                    }
                 }
                 // --------------------------------------------------------
 
@@ -143,13 +155,12 @@ public class ControladorInteraccion : MonoBehaviour
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // --- NUEVOS MÉTODOS AUXILIARES Y MODIFICACIONES ---
+    // --- MÉTODOS AUXILIARES Y MODIFICACIONES ---
     // -----------------------------------------------------------------------------------------------------
 
     public void SnapItemToGhost(GameObject carriedItem, GameObject ghostBox)
     {
         // El anclaje es el padre del fantasma, que es donde queremos que quede la caja real.
-        // Asumimos que el objeto padre tiene la rotación y posición final deseada (ANCHOR_POINT)
         Transform anchor = ghostBox.transform.parent;
 
         // 1. Desconectar el ítem del jugador
@@ -157,8 +168,8 @@ public class ControladorInteraccion : MonoBehaviour
 
         // 2. Mover, Rotar y Anclar el ítem al punto exacto
         carriedItem.transform.SetParent(anchor);
-        carriedItem.transform.localPosition = Vector3.zero; // Coincide con la posición del anchor
-        carriedItem.transform.localRotation = Quaternion.identity; // Coincide con la rotación del anchor
+        carriedItem.transform.localPosition = Vector3.zero;
+        carriedItem.transform.localRotation = Quaternion.identity;
 
         // 3. Deshabilitar la física
         Rigidbody rb = carriedItem.GetComponent<Rigidbody>();
@@ -167,7 +178,7 @@ public class ControladorInteraccion : MonoBehaviour
             rb.isKinematic = true;
         }
 
-        // 4. Destruir el objeto fantasma (para liberar la referencia y marcar el espacio como ocupado)
+        // 4. Destruir el objeto fantasma
         Destroy(ghostBox);
 
         // 5. Limpiar el estado del jugador
@@ -183,7 +194,6 @@ public class ControladorInteraccion : MonoBehaviour
     {
         if (itemActual != null) return;
 
-        // 1. GUARDAMOS EL PADRE (ANCLAJE) antes de que el objeto se mueva a la mano.
         Transform parentAnchor = itemObject.transform.parent;
 
         Rigidbody rb = itemObject.GetComponent<Rigidbody>();
@@ -203,11 +213,9 @@ public class ControladorInteraccion : MonoBehaviour
 
         // --- LÓGICA DE REGENERACIÓN DEL FANTASMA ---
 
-        // 3. Verificamos si la caja venía de un ANCLAJE válido.
         if (parentAnchor != null && parentAnchor.CompareTag("ANCHOR_POINT"))
         {
-            // 4. Instanciamos el fantasma de nuevo en la posición del anclaje.
-            // Es crucial hacerlo hijo del Anchor para que ocupe ese Transform.
+            // Instanciamos el fantasma de nuevo en el anclaje.
             Instantiate(ghostPrefab, parentAnchor.position, parentAnchor.rotation, parentAnchor);
 
             Debug.Log($"Espacio liberado. Fantasma recreado en {parentAnchor.name}.");
@@ -223,13 +231,12 @@ public class ControladorInteraccion : MonoBehaviour
         }
     }
 
-    // ... (El resto de métodos sin cambios: Puedes ignorar la lógica de abajo si ya la tienes en tu archivo) ...
+    // El resto de los métodos se mantienen igual
 
     bool PuedeInteractuar(Transform objeto)
     {
-        // Esta lógica define si el Outline (borde brillante) debe aparecer.
-        // Si quieres que el Outline aparezca en el fantasma cuando llevas una caja,
-        // añade: if (objeto.CompareTag("GHOST_BOX")) return (itemActual != null);
+        // El Outline aparece en el fantasma si llevamos una caja
+        if (objeto.CompareTag("GHOST_BOX")) return (itemActual != null && itemActual.GetComponent<ItemData>() != null);
 
         if (objeto.GetComponent<MaquinaDePalomitas>() != null)
         {
@@ -258,6 +265,7 @@ public class ControladorInteraccion : MonoBehaviour
             return false;
         }
         if (objeto.GetComponent<TabletManager>() != null) return true;
+
 
         //Boton cambiador de fase
         if (objeto.GetComponent<CambiadorFase>() != null) return true;
@@ -325,22 +333,18 @@ public class ControladorInteraccion : MonoBehaviour
         if (imagenAyudaSoltar != null) { imagenAyudaSoltar.enabled = false; }
     }
 
-    // --- AQUÍ ESTABA LA CLAVE ---
     public void DestruirItem()
     {
         if (itemActual == null) return;
 
-        // 1. ANTES de destruir el objeto, avisamos al Manager del Minijuego
-        // El Manager comprobará si este objeto era basura que había que limpiar
-        if (MinijuegoLimpiezaManager.Instance != null)
-        {
-            MinijuegoLimpiezaManager.Instance.ObjetoRecogido(itemActual);
-        }
+        // Limpieza de objetos de minijuego (si aplica)
+        // if (MinijuegoLimpiezaManager.Instance != null)
+        // {
+        //     MinijuegoLimpiezaManager.Instance.ObjetoRecogido(itemActual);
+        // }
 
-        // 2. Ahora sí, lo destruimos
         Destroy(itemActual);
         itemActual = null;
-
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
         Debug.Log("Has tirado el item.");
         if (imagenAyudaSoltar != null) { imagenAyudaSoltar.enabled = false; }
