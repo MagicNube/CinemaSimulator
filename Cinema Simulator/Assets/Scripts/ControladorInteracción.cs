@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ControladorInteraccion : MonoBehaviour
@@ -33,6 +34,8 @@ public class ControladorInteraccion : MonoBehaviour
         Transform seleccionActual = null;
         Outline outlineActual = null;
 
+        // ESTE BLOQUE CONTROLA SOLO EL "OUTLINE" (EL BORDE BRILLANTE)
+        // Lo dejamos fuera del bloqueo de UI para que sigas viendo qué miras aunque tengas un menú abierto (opcional)
         if (Physics.Raycast(ray, out hit, distanciaInteraccion))
         {
             seleccionActual = hit.transform;
@@ -49,12 +52,21 @@ public class ControladorInteraccion : MonoBehaviour
         }
         objetoMirado = seleccionActual;
 
-        // --- CAMBIO 1: Detectamos Click Izquierdo (0) O Derecho (1) ---
+        // --- DETECCIÓN DE CLICK ---
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
+            // <--- !!! 2. EL BLOQUEO MÁGICO !!! ---
+            // Preguntamos al EventSystem si el ratón está encima de algún botón o panel
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                // Si la respuesta es SÍ, paramos aquí. El click se lo queda la UI.
+                return;
+            }
+            // -------------------------------------
+
             if (objetoMirado != null)
             {
-                // Prioridad: Pedidos (solo click izquierdo normalmente, pero lo dejamos pasar)
+                // Prioridad: Pedidos
                 GestorPedidos cliente = objetoMirado.GetComponent<GestorPedidos>();
                 if (cliente != null && Input.GetMouseButtonDown(0))
                 {
@@ -62,17 +74,22 @@ public class ControladorInteraccion : MonoBehaviour
                     if (cliente.RecibirItem(itemDataEnMano)) DestruirItem();
                     return;
                 }
-                //Tablet pedidos
-                if (objetoMirado.GetComponent<TabletPedidos>() != null) { objetoMirado.GetComponent<TabletPedidos>().AbrirTablet(this); return; }
+
+                // Tablet
+                if (objetoMirado.GetComponent<TabletManager>() != null)
+                {
+                    objetoMirado.GetComponent<TabletManager>().AbrirTablet(this);
+                    return;
+                }
 
                 // Maquinas complejas
                 if (objetoMirado.GetComponent<MaquinaDePalomitas>() != null) { objetoMirado.GetComponent<MaquinaDePalomitas>().Interactuar(this); return; }
                 if (objetoMirado.GetComponent<MaquinaDeBebidas>() != null) { objetoMirado.GetComponent<MaquinaDeBebidas>().Interactuar(this); return; }
 
-                // --- CAMBIO 2: Usamos Interactuar en lugar de CogerItem ---
+                // Maquina De Items Genérica
                 if (objetoMirado.GetComponent<MaquinaDeItems>() != null) { objetoMirado.GetComponent<MaquinaDeItems>().Interactuar(this); return; }
 
-                // Interacciones simples (Solo click izquierdo)
+                // Interacciones simples
                 if (Input.GetMouseButtonDown(0))
                 {
                     if (objetoMirado.GetComponent<Papelera>() != null) { DestruirItem(); return; }
@@ -131,7 +148,7 @@ public class ControladorInteraccion : MonoBehaviour
             return false;
         }
         //Tablet
-        if (objeto.GetComponent<TabletPedidos>() != null) return true;
+        if (objeto.GetComponent<TabletManager>() != null) return true;
 
 
         // --- Resto de interacciones ---

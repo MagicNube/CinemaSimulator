@@ -182,8 +182,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 17.064386, y: 21.748821, z: 11.572123}
+  m_Center: {x: 0.015485696, y: 1.3875278, z: 4.000818}
 --- !u!114 &5639480440208500769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,7 +191,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2928511202631300896}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
@@ -214,11 +214,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15153139bd08b39468df030b17e68dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  catalogo: []
-  zonaDeEntrega: {fileID: 0}
-  panelTabletUI: {fileID: 0}
-  contenedorBotonesProductos: {fileID: 0}
+  panelTabletGeneral: {fileID: 0}
+  pantallaHome: {fileID: 0}
+  pantallaTienda: {fileID: 0}
+  pantallaBanco: {fileID: 0}
+  pantallaCine: {fileID: 0}
+  pantallaTablet: {fileID: 0}
+  catalogo:
+  - nombre: 
+    precio: 4
+    prefabCaja: {fileID: 6774994530737816925, guid: f4ea7374138f59d4dbbfd6cdf2d712bb, type: 3}
+    icono: {fileID: 21300000, guid: 383612ebea261624fb8f0bee5d4f8a53, type: 3}
+  - nombre: 
+    precio: 5
+    prefabCaja: {fileID: 1007055548052338298, guid: 6a3c5b38640f70545b604453fbb7182a, type: 3}
+    icono: {fileID: 21300000, guid: 72ed22913cf279a469432e74e33ef1bf, type: 3}
+  - nombre: 
+    precio: 15
+    prefabCaja: {fileID: 7144578027565347001, guid: 51526f1425e85764d8c56d3b23ce7e6e, type: 3}
+    icono: {fileID: 21300000, guid: 350e09784669afd4cb608b0e61c2a5a9, type: 3}
+  - nombre: 
+    precio: 20
+    prefabCaja: {fileID: 2777208362255569699, guid: f5fa0c21012f01443af0c3b7c3cf233f, type: 3}
+    icono: {fileID: 21300000, guid: 026725bb35f4cac4d9025d2c72d38ba0, type: 3}
+  - nombre: 
+    precio: 3
+    prefabCaja: {fileID: 4300574759388357421, guid: 7d7a908c03481ef46af84f747c6877e8, type: 3}
+    icono: {fileID: 21300000, guid: da71b766b5cf08049a00d51b0d9a39a6, type: 3}
+  contenedorBotonesTienda: {fileID: 0}
   contenedorListaCarrito: {fileID: 0}
   textoTotalPrecio: {fileID: 0}
-  botonProductoPrefab: {fileID: 0}
-  lineaCarritoPrefab: {fileID: 0}
+  zonaDeEntrega: {fileID: 0}
+  botonProductoPrefab: {fileID: 7792198404673912519, guid: 16ac10a017ca8fc48a70fe2a80d079bf, type: 3}
+  lineaCarritoPrefab: {fileID: 6134356367644292908, guid: c81423f918c36b44496474ebb79c197d, type: 3}
+  maxItemsCarrito: 10
+  deudaTotal: 5000
+  textoDeudaUI: {fileID: 0}
+  textoDineroDisponibleBanco: {fileID: 0}
+  peliculasDisponibles: []
+  contenedorBotonesPeliculas: {fileID: 0}
+  botonPeliculaPrefab: {fileID: 0}
