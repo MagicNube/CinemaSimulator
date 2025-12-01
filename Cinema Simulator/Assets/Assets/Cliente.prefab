@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 3952869281409925942}
   - component: {fileID: 2140421216196373828}
   - component: {fileID: 1757393954047116276}
+  - component: {fileID: 8319102642280540846}
   m_Layer: 0
   m_Name: Cliente
   m_TagString: NPC
@@ -104,7 +105,7 @@ Transform:
   m_GameObject: {fileID: 2442889395758981124}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.552, y: 2.43, z: -68.863}
+  m_LocalPosition: {x: -12.552, y: 2, z: -68.863}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -184,7 +185,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1.7
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1757393954047116276
@@ -210,6 +211,28 @@ MonoBehaviour:
     itemRequerido: 2
   - textoDelPedido: Un ticket por favor
     itemRequerido: 5
+--- !u!195 &8319102642280540846
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2442889395758981124}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &6358158493892884941
 GameObject:
   m_ObjectHideFlags: 0
