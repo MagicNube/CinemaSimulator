@@ -8976,7 +8976,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: tablaDeNoticias.Array.size
-      value: 1
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: textoDineroDisponibleBanco
@@ -9028,7 +9028,7 @@ PrefabInstance:
       objectReference: {fileID: 1516860806}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.size
-      value: 3
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: 'peliculasDisponibles.Array.data[0]'
@@ -9036,56 +9036,518 @@ PrefabInstance:
       objectReference: {fileID: -198948316819272851, guid: 5a73bd2d4f011d24a8da87a52e5e913a, type: 3}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: tablaDeNoticias.Array.data[0].headline
-      value: "Semana del amor: la ciudad celebra su festival rom\xE1ntico anual"
+      value: "Ola de calor azota la ciudad, se espera que las familias busquen refugio
+        del sol el d\xEDa de hoy."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[1].headline
+      value: "Tensi\xF3n pol\xEDtica en aumento tras los \xFAltimos debates."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[2].headline
+      value: "Semana del amor: la ciudad celebra su festival rom\xE1ntico anual."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[3].headline
+      value: "\xC9xito hist\xF3rico del equipo local en la final nacional de f\xFAtbol."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[4].headline
+      value: "Cient\xEDficos anuncian descubrimiento revolucionario."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[5].headline
+      value: El precio de la vivienda se dispara y causa malestar social.
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[6].headline
+      value: "Ni\xF1os de vacaciones: semana de descanso escolar."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[7].headline
+      value: Festival cultural celebra la diversidad.
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[8].headline
+      value: "Nueva tecnolog\xEDa promete cambiar la forma de vivir."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[9].headline
+      value: La ciudad amanece cubierta de una niebla densa
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[10].headline
+      value: "Gran concierto ben\xE9fico llena el estadio"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[11].headline
+      value: Encuentran un meteorito en las afueras
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[12].headline
+      value: "Una nueva serie rom\xE1ntica de \xE9poca causa furor en las plataformas
+        de streaming."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[13].headline
+      value: "Vecinos denuncian extra\xF1os ruidos en el barrio"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[14].headline
+      value: "El zool\xF3gico celebra el nacimiento de una cr\xEDa de panda"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[15].headline
+      value: Descubren un tesoro enterrado bajo un viejo edificio
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[16].headline
+      value: La ciudad entera se prepara para la noche de Halloween
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[0].genre
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[0].title
-      value: Romance en las Vegas
+      value: "El Perro que Salv\xF3 la Navidad"
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[1].genre
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[1].title
-      value: Risas en las Vegas
+      value: Vacaciones en la Granja
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[2].genre
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[2].title
-      value: Terror en las Vegas
+      value: "El Viaje de la Peque\xF1a Nube"
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
-      propertyPath: tablaDeNoticias.Array.data[0].correctGenre
+      propertyPath: peliculasDisponibles.Array.data[3].genre
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[3].title
+      value: Robots vs Dinosaurios
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[4].genre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[4].title
+      value: "Susurros en el S\xF3tano"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[5].genre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[5].title
+      value: "La \xDAltima Llamada"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[6].genre
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[6].title
+      value: "L\xE1grimas de Oto\xF1o"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[7].genre
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[7].title
+      value: El Precio de la Verdad
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[8].genre
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
-      propertyPath: tablaDeNoticias.Array.data[0].neutralGenre
+      propertyPath: peliculasDisponibles.Array.data[8].title
+      value: "Un Caf\xE9 en Par\xEDs"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[9].genre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[9].title
+      value: Cartas a un Desconocido
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[10].genre
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[10].title
+      value: "El \xDAltimo Penalti"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[11].genre
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[11].title
+      value: "La B\xFAsqueda del Templo Perdido"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[12].genre
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[12].title
+      value: Marte 2050
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[13].genre
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[13].title
+      value: "C\xF3digo Binario"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[14].genre
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[14].title
+      value: "Persecuci\xF3n a Alta Velocidad"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[15].genre
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[15].title
+      value: "Notas del Coraz\xF3n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[16].genre
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[16].title
+      value: "\xBFQui\xE9n Rob\xF3 el Diamante?"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[17].genre
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[17].title
+      value: El Reino de los Dragones
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[18].genre
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[18].title
+      value: El Hechicero Olvidado
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[19].genre
       value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[19].title
+      value: "\xA1Mi Suegra Viene a Cenar!"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[0].correctGenre
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[0].neutralGenre
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[1].correctGenre
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[1].neutralGenre
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[2].correctGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[2].neutralGenre
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[3].correctGenre
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[3].neutralGenre
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[4].correctGenre
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[4].neutralGenre
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[5].correctGenre
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[5].neutralGenre
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[6].correctGenre
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[6].neutralGenre
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[7].correctGenre
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[7].neutralGenre
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[8].correctGenre
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[8].neutralGenre
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[9].correctGenre
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[9].neutralGenre
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[10].correctGenre
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[10].neutralGenre
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[11].correctGenre
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[11].neutralGenre
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[12].correctGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[12].neutralGenre
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[13].correctGenre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[13].neutralGenre
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[14].correctGenre
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[14].neutralGenre
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[15].correctGenre
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[15].neutralGenre
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[16].correctGenre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[16].neutralGenre
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: tablaDeNoticias.Array.data[0].incorrectGenre
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[1].incorrectGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[2].incorrectGenre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[3].incorrectGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[4].incorrectGenre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[5].incorrectGenre
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[6].incorrectGenre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[7].incorrectGenre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[8].incorrectGenre
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[9].incorrectGenre
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[10].incorrectGenre
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[11].incorrectGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[12].incorrectGenre
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[13].incorrectGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[14].incorrectGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[15].incorrectGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: tablaDeNoticias.Array.data[16].incorrectGenre
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[0].posterImage
       value: 
-      objectReference: {fileID: 21300000, guid: 80ba4608a33bf324187aaf80b48fc690, type: 3}
+      objectReference: {fileID: 21300000, guid: 8f25358a038971e428ba27ff44ceb8b7, type: 3}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[1].posterImage
       value: 
-      objectReference: {fileID: 21300000, guid: 8102cc9015dd1cf41b516ab1a528a8e7, type: 3}
+      objectReference: {fileID: 21300000, guid: 7b7110c6d3c49be4aa8862a896c819f3, type: 3}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: peliculasDisponibles.Array.data[2].posterImage
       value: 
-      objectReference: {fileID: 21300000, guid: a9dfcb434edec7446af0c5e15b4a5377, type: 3}
+      objectReference: {fileID: 21300000, guid: f79da54662177ed48a581fd541b3ca85, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[3].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 3d25ae59d9208694aa4daad75f5ac973, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[4].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 0eebf48f87e1e5e4b9fea8541b0b479e, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[5].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: ecc3a9fdb04f7bd47a1d1bcd1d40f88f, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[6].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: ec5e36a5e07ea1547858d031408da251, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[7].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 0f26d8b546d426645b2a461917e36c16, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[8].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 759927c994068344aae5dcd9a83e3212, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[9].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 0ab0cb5af574c55449433ce8c486ab4b, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[10].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: e578af96ef05dfb47bea93b5e677d4e5, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[11].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 396c8f052454f2c42a1a82409408695e, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[12].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 837a7e7613665e44cb65658ac20be7a8, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[13].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 862954ef4a9fb2846be2137aca3f0d8c, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[14].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 53025d1f10e99af4db2b83fe51024375, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[15].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 1aff882f63b538842bdfb760908b69ca, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[16].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 6aa45697cd37f70428bc24deb7114208, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[17].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 90313860db16ff34e966f260eb51ae72, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[18].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: 39241d00dc524d5439c9ff68f2ec399e, type: 3}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: peliculasDisponibles.Array.data[19].posterImage
+      value: 
+      objectReference: {fileID: 21300000, guid: e36368069f7f100419f2080260226f98, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

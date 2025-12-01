@@ -275,6 +275,7 @@ public class TabletManager : MonoBehaviour
     // ----------------------------------------------------------------------
 
     // Llamar a esto al iniciar el juego o dormir
+    [ContextMenu("Forzar Nuevo Día")]
     public void NuevoDiaCine()
     {
         if (tablaDeNoticias.Count == 0 || peliculasDisponibles.Count == 0) return;
