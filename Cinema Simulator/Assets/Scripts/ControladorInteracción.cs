@@ -142,12 +142,21 @@ public class ControladorInteraccion : MonoBehaviour
                 }
                 // --------------------------------------------------------
 
+                LightSwitch lightSwitch = objetoMirado.GetComponent<LightSwitch>();
+
+                if (lightSwitch != null && Input.GetMouseButtonDown(0))
+                {
+                    lightSwitch.Interact(); // Llama al método Interact del script LightSwitch
+                    return; // Consume el click
+                }
+
                 // Interacciones simples
                 if (Input.GetMouseButtonDown(0))
                 {
                     if (objetoMirado.GetComponent<Papelera>() != null) { DestruirItem(); return; }
                     if (objetoMirado.GetComponent<CampanaInteractiva>() != null) { objetoMirado.GetComponent<CampanaInteractiva>().Interactuar(); return; }
                     if (objetoMirado.GetComponent<ItemData>() != null) { CogerItemDelSuelo(objetoMirado.gameObject); return; }
+
                 }
             }
         }
