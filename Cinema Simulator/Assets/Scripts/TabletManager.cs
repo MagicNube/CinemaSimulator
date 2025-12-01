@@ -63,6 +63,8 @@ public class TabletManager : MonoBehaviour
     public Button[] botonesEleccion; // Tienen que ser 3 botones fijos en la UI
     public Image[] postersEleccion; // Las 3 imagenes (Image) dentro de esos botones
 
+    public Image posterCine;
+
     // Estado del Cine
     [HideInInspector] public float multiplicadorClientes = 1.0f; // 1.5 = Bueno, 0.6 = Malo
     private NewsScenario noticiaActual;
@@ -379,6 +381,8 @@ public class TabletManager : MonoBehaviour
 
         // Feedback visual en la propia noticia
         textoNoticiaDia.text = $"ESTRENO: {peliElegida.title}\n\n{resultado}\n(Afluencia esperada: {multiplicadorClientes}x)";
+        posterCine.sprite = peliElegida.posterImage;
+        posterCine.gameObject.SetActive(true);
 
         // Bloquear botones tras elegir
         foreach (var btn in botonesEleccion) btn.interactable = false;

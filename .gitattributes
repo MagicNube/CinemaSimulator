@@ -1,0 +1,23 @@
+# Forzar a Git a usar LF (formato Unix) para todo
+* text=auto eol=lf
+
+# Archivos específicos de Unity
+*.cs text eol=lf
+*.shader text eol=lf
+*.mat text eol=lf
+*.unity text eol=lf
+*.prefab text eol=lf
+*.asset text eol=lf
+*.meta text eol=lf
+
+# Archivos binarios (que no debe tocar los saltos de linea)
+*.dll binary
+*.exe binary
+*.so binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.fbx binary
+*.blend binary
