@@ -71,6 +71,9 @@ public class TabletManager : MonoBehaviour
     private MovieAsset[] peliculasOpcion = new MovieAsset[3];
     private CinemaGenre[] generosOpcion = new CinemaGenre[3];
 
+    [Header("UI HOME")]
+    public TextMeshProUGUI textoAvisoHome;
+
     // ----------------------------------------------------------------------
     // FUNCIONES PRINCIPALES
     // ----------------------------------------------------------------------
@@ -79,6 +82,7 @@ public class TabletManager : MonoBehaviour
     {
         // Inicializar todo
         panelTabletGeneral.SetActive(false);
+        posterCine.gameObject.SetActive(false);
         GenerarTienda();
         ActualizarUIBanco();
 
@@ -122,8 +126,23 @@ public class TabletManager : MonoBehaviour
         pantallaTienda.SetActive(false);
         pantallaBanco.SetActive(false);
         pantallaCine.SetActive(false);
+
+        if (textoAvisoHome != null) textoAvisoHome.text = "";
     }
-    public void AbrirAppTienda() { pantallaHome.SetActive(false); pantallaTienda.SetActive(true); }
+    public void AbrirAppTienda()
+    {
+        if (GameManager.Instance.faseActual != FaseJuego.Fase3_Cierre)
+        {
+            StartCoroutine(AnimacionAvisoHome("¡Solo disponible al CIERRE!"));
+            return;
+        }
+
+        pantallaHome.SetActive(false);
+        pantallaTienda.SetActive(true);
+
+        pantallaHome.SetActive(false);
+        pantallaTienda.SetActive(true);
+    }
     public void AbrirAppBanco() { pantallaHome.SetActive(false); pantallaBanco.SetActive(true); ActualizarUIBanco(); }
     public void AbrirAppCine() { pantallaHome.SetActive(false); pantallaCine.SetActive(true); }
 
@@ -281,6 +300,7 @@ public class TabletManager : MonoBehaviour
     public void NuevoDiaCine()
     {
         if (tablaDeNoticias.Count == 0 || peliculasDisponibles.Count == 0) return;
+        if (posterCine != null) posterCine.gameObject.SetActive(false);
 
         // 1. Elegir noticia al azar
         noticiaActual = tablaDeNoticias[UnityEngine.Random.Range(0, tablaDeNoticias.Count)];
@@ -381,8 +401,9 @@ public class TabletManager : MonoBehaviour
 
         // Feedback visual en la propia noticia
         textoNoticiaDia.text = $"ESTRENO: {peliElegida.title}\n\n{resultado}\n(Afluencia esperada: {multiplicadorClientes}x)";
-        posterCine.sprite = peliElegida.posterImage;
         posterCine.gameObject.SetActive(true);
+        Debug.Log("Poster activado");
+        posterCine.sprite = peliElegida.posterImage;
 
         // Bloquear botones tras elegir
         foreach (var btn in botonesEleccion) btn.interactable = false;
@@ -425,6 +446,17 @@ public class TabletManager : MonoBehaviour
 
         textoDineroDisponibleBanco.text = textoOriginal; // Restauramos texto original
         ActualizarUIBanco();
+    }
+
+    System.Collections.IEnumerator AnimacionAvisoHome(string mensaje)
+    {
+        if (textoAvisoHome != null)
+        {
+            textoAvisoHome.text = mensaje;
+            textoAvisoHome.color = Color.red;
+            yield return new WaitForSeconds(1.5f);
+            textoAvisoHome.text = ""; // Borramos el mensaje
+        }
     }
 
     // Clase temporal auxiliar para evitar usar 'dynamic'

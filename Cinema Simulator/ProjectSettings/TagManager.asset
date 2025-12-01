@@ -7,6 +7,7 @@ TagManager:
   - Bell
   - NPC
   - MaquinaBebidas
+  - BotonFases
   layers:
   - Default
   - TransparentFX

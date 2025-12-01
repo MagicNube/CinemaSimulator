@@ -1,0 +1,159 @@
+using UnityEngine;
+using System;
+using TMPro; // Para usar Eventos (Action)
+
+// Definimos las fases fuera de la clase para que sean accesibles globalmente
+public enum FaseJuego
+{
+    Fase1_Preparacion, // Tiempo congelado. Stock, Tablet, Elegir Peli.
+    Fase2_Servicio,    // Tiempo corre. Clientes entran. Estrés.
+    Fase3_Cierre,      // Tiempo congelado. Gestión, Mejoras.
+    Fase4_Limpieza     // Minijuego opcional.
+}
+
+public class GameManager : MonoBehaviour
+{
+    public static GameManager Instance;
+
+    [Header("Estado del Juego")]
+    public FaseJuego faseActual;
+    public int diaActual = 1;
+
+    [Header("Configuración Fase Servicio")]
+    public float duracionDiaMinutos = 20f; // 20 minutos reales
+    private float tiempoRestanteServicio;
+
+    // Evento al que otros scripts se pueden suscribir para saber cuándo cambia la fase
+    // Ejemplo: Los clientes escuchan esto para dejar de venir.
+    public event Action<FaseJuego> AlCambiarFase;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
+    void Start()
+    {
+        // Empezamos en Fase 1
+        CambiarFase(FaseJuego.Fase1_Preparacion);
+    }
+
+    void Update()
+    {
+        // Lógica exclusiva de la FASE 2 (Servicio)
+        if (faseActual == FaseJuego.Fase2_Servicio)
+        {
+            if (tiempoRestanteServicio > 0)
+            {
+                tiempoRestanteServicio -= Time.deltaTime;
+            }
+            else
+            {
+                // Se acabó el tiempo -> Pasamos a Cierre automáticamente
+                Debug.Log("¡Fin del servicio! Cerrando puertas...");
+                CambiarFase(FaseJuego.Fase3_Cierre);
+            }
+        }
+    }
+
+    // Función central para movernos entre estados
+    public void CambiarFase(FaseJuego nuevaFase)
+    {
+        faseActual = nuevaFase;
+
+        // Avisamos a todo el juego de que la fase ha cambiado
+        AlCambiarFase?.Invoke(nuevaFase);
+
+        Debug.Log($"--- CAMBIO DE FASE: {nuevaFase} ---");
+
+        switch (nuevaFase)
+        {
+            case FaseJuego.Fase1_Preparacion:
+                // Lógica de inicio de día
+                // Aquí podrías llamar a TabletManager para generar nueva noticia
+                break;
+
+            case FaseJuego.Fase2_Servicio:
+                // Configurar temporizador (minutos * 60 segundos)
+                tiempoRestanteServicio = duracionDiaMinutos * 60f;
+                // Aquí activarías el "Spawner de Clientes"
+                break;
+
+            case FaseJuego.Fase3_Cierre:
+                // Detener Spawner de Clientes
+                // Mostrar resumen de ganancias del día
+                break;
+
+            case FaseJuego.Fase4_Limpieza:
+                // Activar minijuego de basura
+                break;
+        }
+    }
+
+    public void AvanzarSiguienteFase()
+    {
+        switch (faseActual)
+        {
+            case FaseJuego.Fase1_Preparacion:
+                Debug.Log("Abrimos el cine -> Pasando a SERVICIO");
+                CambiarFase(FaseJuego.Fase2_Servicio);
+                break;
+
+            case FaseJuego.Fase2_Servicio:
+                Debug.Log("Fin del turno -> Pasando a CIERRE");
+                CambiarFase(FaseJuego.Fase3_Cierre);
+                break;
+
+            case FaseJuego.Fase3_Cierre:
+                Debug.Log("Gestión terminada -> Pasando a LIMPIEZA");
+                CambiarFase(FaseJuego.Fase4_Limpieza);
+                break;
+
+            case FaseJuego.Fase4_Limpieza:
+                Debug.Log("Todo limpio -> Pasando a DÍA SIGUIENTE (PREPARACIÓN)");
+                FinalizarDia(); // Esto suma el día y vuelve a Fase 1
+                break;
+        }
+    }
+
+    // Llamado desde la Puerta Principal en Fase 1
+    public void AbrirCine()
+    {
+        if (faseActual == FaseJuego.Fase1_Preparacion)
+        {
+            CambiarFase(FaseJuego.Fase2_Servicio);
+        }
+    }
+
+    // Llamado desde la Sala en Fase 3
+    public void EmpezarLimpieza()
+    {
+        if (faseActual == FaseJuego.Fase3_Cierre)
+        {
+            CambiarFase(FaseJuego.Fase4_Limpieza);
+        }
+    }
+
+    // Llamado al terminar limpieza o saltarla en Fase 3
+    public void FinalizarDia()
+    {
+        // 1. Sumamos el día
+        diaActual++;
+
+        Debug.Log($"--- DÍA FINALIZADO ---");
+
+        // 2. Avisamos a la Tablet (para las noticias)
+        FindObjectOfType<TabletManager>().NuevoDiaCine();
+
+        // 3. AVISAMOS AL HUD (NUEVO)
+        // Esto actualiza el texto de la pantalla principal inmediatamente
+        if (HUDManager.Instance != null)
+        {
+            HUDManager.Instance.ActualizarFecha();
+        }
+
+        // 4. Reiniciamos ciclo
+        CambiarFase(FaseJuego.Fase1_Preparacion);
+    }
+}

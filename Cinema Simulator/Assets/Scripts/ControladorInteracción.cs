@@ -78,6 +78,13 @@ public class ControladorInteraccion : MonoBehaviour
                     return;
                 }
 
+                //Boton cambiador de fase
+                if (objetoMirado.GetComponent<CambiadorFase>() != null)
+                {
+                    objetoMirado.GetComponent<CambiadorFase>().Interactuar();
+                    return;
+                }
+
                 // Maquinas complejas
                 if (objetoMirado.GetComponent<MaquinaDePalomitas>() != null) { objetoMirado.GetComponent<MaquinaDePalomitas>().Interactuar(this); return; }
                 if (objetoMirado.GetComponent<MaquinaDeBebidas>() != null) { objetoMirado.GetComponent<MaquinaDeBebidas>().Interactuar(this); return; }
@@ -130,6 +137,9 @@ public class ControladorInteraccion : MonoBehaviour
         }
         //Tablet
         if (objeto.GetComponent<TabletManager>() != null) return true;
+
+        //Boton cambiador de fase
+        if (objeto.GetComponent<CambiadorFase>() != null) return true;
 
         // --- Resto de interacciones ---
         if (objeto.GetComponent<Papelera>() != null) { return (itemActual != null); }
