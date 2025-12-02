@@ -12,12 +12,7 @@ public class GestorPedidos : MonoBehaviour
     {
         public ItemData.TipoDeItem tipo;
         public int nivel;
-
-        public ItemRequerido(ItemData.TipoDeItem t, int n)
-        {
-            tipo = t;
-            nivel = n;
-        }
+        public ItemRequerido(ItemData.TipoDeItem t, int n) { tipo = t; nivel = n; }
     }
 
     [System.Serializable]
@@ -27,17 +22,14 @@ public class GestorPedidos : MonoBehaviour
         public string textoDescripcion;
     }
 
-    [Header("--- Referencias UI ---")]
+    [Header("UI Referencias")]
     public GameObject contenedorBocadillo;
     public TextMeshProUGUI textoBocadillo;
-
-    [Header("--- Referencias Monitor (Solo Lista) ---")]
     public GameObject panelMonitor;
     public Transform contenedorItemsMonitor;
     public GameObject prefabItemLista;
 
     private PedidoRuntime pedidoActual;
-
     private Coroutine rutinaNPC;
     private Coroutine rutinaFlujoPrincipal;
 
@@ -49,33 +41,34 @@ public class GestorPedidos : MonoBehaviour
 
     public void GenerarNuevoPedido()
     {
+        // Doble verificación: solo pido si el QueueManager dice que es mi turno
+        QueueManager qm = FindObjectOfType<QueueManager>();
+        if (qm != null && qm.GetCustomerAtOrderPoint() != this.gameObject) return;
+
         DetenerTodo();
         pedidoActual = new PedidoRuntime();
 
+        // Lógica del pedido
         pedidoActual.itemsPendientes.Add(new ItemRequerido(ItemData.TipoDeItem.Ticket, 1));
 
-        int opcionAleatoria = Random.Range(0, 5);
+        int r = Random.Range(0, 5);
         ItemRequerido extra = null;
-
-        switch (opcionAleatoria)
-        {
+        switch (r) {
             case 0: extra = new ItemRequerido(ItemData.TipoDeItem.Bebida, 1); break;
             case 1: extra = new ItemRequerido(ItemData.TipoDeItem.Perrito, 1); break;
             case 2: extra = new ItemRequerido(ItemData.TipoDeItem.Palomitas, 1); break;
             case 3: extra = new ItemRequerido(ItemData.TipoDeItem.Palomitas, 2); break;
             case 4: extra = new ItemRequerido(ItemData.TipoDeItem.Palomitas, 3); break;
         }
-
         pedidoActual.itemsPendientes.Add(extra);
 
         string nombreExtra = FormatearNombre(extra);
         pedidoActual.textoDescripcion = "Hola, quiero una entrada y " + nombreExtra + ".";
 
-        contenedorBocadillo.SetActive(true);
-        panelMonitor.SetActive(true);
+        if (contenedorBocadillo) contenedorBocadillo.SetActive(true);
+        if (panelMonitor) panelMonitor.SetActive(true);
 
         ActualizarListaMonitorVisual();
-
         rutinaNPC = StartCoroutine(EscribirEnTexto(textoBocadillo, pedidoActual.textoDescripcion, 0.02f));
     }
 
@@ -87,141 +80,128 @@ public class GestorPedidos : MonoBehaviour
 
         if (itemDelJugador == null)
         {
-            rutinaFlujoPrincipal = StartCoroutine(GestionarMensajes("�Eh! No traes nada.", 1.5f, false));
+            rutinaFlujoPrincipal = StartCoroutine(GestionarMensajes("¡Eh! No traes nada.", 1.5f, false));
             return false;
         }
 
-        ItemRequerido coincidencia = pedidoActual.itemsPendientes
+        var coincidencia = pedidoActual.itemsPendientes
             .FirstOrDefault(x => x.tipo == itemDelJugador.tipoDeItem && x.nivel == itemDelJugador.nivel);
 
         if (coincidencia != null)
         {
-            // Primero marcamos visualmente
             MarcarItemComoEntregado(coincidencia);
 
+            // ASUMO QUE TIENES ECONOMYMANAGER
             if (EconomyManager.Instance != null)
             {
                 EconomyManager.Instance.SumarDinero(itemDelJugador.precio);
-            }         
+            }
 
             pedidoActual.itemsPendientes.Remove(coincidencia);
 
             if (pedidoActual.itemsPendientes.Count == 0)
             {
-                rutinaFlujoPrincipal = StartCoroutine(GestionarMensajes("�Perfecto, gracias!", 2f, true));
+                // PEDIDO COMPLETADO -> ÉXITO
+                rutinaFlujoPrincipal = StartCoroutine(GestionarMensajes("¡Perfecto, gracias!", 2f, true));
                 return true;
             }
             else
             {
                 string faltan = "";
-                foreach (var item in pedidoActual.itemsPendientes) faltan += FormatearNombre(item) + " ";
-
-                rutinaFlujoPrincipal = StartCoroutine(GestionarMensajes("Gracias. A�n me falta: " + faltan, 2f, false));
+                foreach (var it in pedidoActual.itemsPendientes) faltan += FormatearNombre(it) + " ";
+                rutinaFlujoPrincipal = StartCoroutine(GestionarMensajes("Gracias. Me falta: " + faltan, 2f, false));
                 return true;
             }
         }
         else
         {
-            string errorMsg = "Eso no es lo que ped�... " + pedidoActual.textoDescripcion;
-            rutinaFlujoPrincipal = StartCoroutine(GestionarMensajes(errorMsg, 2.5f, false));
+            rutinaFlujoPrincipal = StartCoroutine(GestionarMensajes("Eso no es lo que pedí...", 2.5f, false));
             return false;
         }
     }
 
-    private void ActualizarListaMonitorVisual()
+    public void DetenerTodo()
     {
-        for (int i = contenedorItemsMonitor.childCount - 1; i >= 0; i--)
-            Destroy(contenedorItemsMonitor.GetChild(i).gameObject);
+        if (rutinaNPC != null) StopCoroutine(rutinaNPC);
+        if (rutinaFlujoPrincipal != null) StopCoroutine(rutinaFlujoPrincipal);
+    }
 
-        foreach (ItemRequerido item in pedidoActual.itemsPendientes)
+    IEnumerator GestionarMensajes(string msg, float duracion, bool pedidoFinalizado)
+    {
+        if (textoBocadillo != null) textoBocadillo.text = msg;
+        yield return new WaitForSeconds(duracion);
+
+        if (pedidoFinalizado)
         {
-            GameObject nuevoObj = Instantiate(prefabItemLista, contenedorItemsMonitor);
-            nuevoObj.name = "Row_" + item.tipo.ToString() + "_" + item.nivel;
-
-            TextMeshProUGUI txt = nuevoObj.GetComponentInChildren<TextMeshProUGUI>();
-            if (txt)
-            {
-                txt.text = "<size=150%><color=red>X</color></size> " + FormatearNombre(item);
+            // Limpieza visual
+            if (contenedorBocadillo) contenedorBocadillo.SetActive(false);
+            if (panelMonitor) panelMonitor.SetActive(false);
+            pedidoActual = null;
+            if (contenedorItemsMonitor) {
+                foreach (Transform child in contenedorItemsMonitor) Destroy(child.gameObject);
             }
 
-            Toggle tgl = nuevoObj.GetComponentInChildren<Toggle>();
+            // COMUNICAR AL CLIENTE QUE SE VAYA (EXITO)
+            PedidoCliente pc = GetComponent<PedidoCliente>();
+            if (pc != null) pc.OrderFinished(true);
+        }
+        else
+        {
+            // Recordatorio de lo que falta
+            if (pedidoActual != null) {
+                string recordatorio = "Me falta: ";
+                foreach (var it in pedidoActual.itemsPendientes) recordatorio += FormatearNombre(it) + " ";
+                rutinaNPC = StartCoroutine(EscribirEnTexto(textoBocadillo, recordatorio, 0.02f));
+            }
+        }
+    }
+
+    // --- MÉTODOS VISUALES AUXILIARES ---
+
+    private void ActualizarListaMonitorVisual()
+    {
+        if (!contenedorItemsMonitor || !prefabItemLista) return;
+        foreach (Transform child in contenedorItemsMonitor) Destroy(child.gameObject);
+
+        foreach (var item in pedidoActual.itemsPendientes)
+        {
+            GameObject obj = Instantiate(prefabItemLista, contenedorItemsMonitor);
+            obj.name = "Row_" + item.tipo + "_" + item.nivel;
+            TextMeshProUGUI txt = obj.GetComponentInChildren<TextMeshProUGUI>();
+            if (txt) txt.text = "<color=red>X</color> " + FormatearNombre(item);
+            Toggle tgl = obj.GetComponentInChildren<Toggle>();
             if (tgl) tgl.isOn = false;
         }
     }
 
     private void MarcarItemComoEntregado(ItemRequerido item)
     {
-        string nombreBuscado = "Row_" + item.tipo.ToString() + "_" + item.nivel;
-        Transform fila = contenedorItemsMonitor.Find(nombreBuscado);
-
-        if (fila != null)
+        if (!contenedorItemsMonitor) return;
+        Transform fila = contenedorItemsMonitor.Find("Row_" + item.tipo + "_" + item.nivel);
+        if (fila)
         {
             Toggle tgl = fila.GetComponentInChildren<Toggle>();
             if (tgl) tgl.isOn = true;
-
             TextMeshProUGUI txt = fila.GetComponentInChildren<TextMeshProUGUI>();
-            if (txt)
-            {
-                txt.text = "<size=150%><color=green><b>V</b></color></size> " + FormatearNombre(item);
-            }
+            if (txt) txt.text = "<color=green>V</color> " + FormatearNombre(item);
         }
     }
 
     private string FormatearNombre(ItemRequerido item)
     {
-        if (item.tipo == ItemData.TipoDeItem.Ticket) return "Entrada";
-        if (item.tipo == ItemData.TipoDeItem.Bebida) return "Bebida";
-        if (item.tipo == ItemData.TipoDeItem.Perrito) return "Perrito";
-
-        if (item.tipo == ItemData.TipoDeItem.Palomitas)
-        {
-            if (item.nivel == 1) return "Palomitas (S)";
-            if (item.nivel == 2) return "Palomitas (M)";
-            if (item.nivel == 3) return "Palomitas (L)";
-        }
-
+        // Ajusta los nombres según tus necesidades
+        if (item.tipo.ToString().Contains("Caja")) return item.tipo.ToString().Replace("Caja", "Caja ");
         return item.tipo.ToString();
     }
 
-    IEnumerator EscribirEnTexto(TextMeshProUGUI targetText, string frase, float velocidad)
+    IEnumerator EscribirEnTexto(TextMeshProUGUI target, string frase, float vel)
     {
-        if (targetText == null) yield break;
-        targetText.text = "";
-        foreach (char letra in frase.ToCharArray())
+        if (!target) yield break;
+        target.text = "";
+        foreach (char c in frase)
         {
-            targetText.text += letra;
-            yield return new WaitForSeconds(velocidad);
+            target.text += c;
+            yield return new WaitForSeconds(vel);
         }
-    }
-
-    IEnumerator GestionarMensajes(string msgNPC, float duracion, bool pedidoFinalizado)
-    {
-        if (textoBocadillo != null) textoBocadillo.text = msgNPC;
-
-        yield return new WaitForSeconds(duracion);
-
-        if (pedidoFinalizado)
-        {
-            contenedorBocadillo.SetActive(false);
-            panelMonitor.SetActive(false);
-            pedidoActual = null;
-            for (int i = contenedorItemsMonitor.childCount - 1; i >= 0; i--)
-                Destroy(contenedorItemsMonitor.GetChild(i).gameObject);
-        }
-        else
-        {
-            if (pedidoActual != null)
-            {
-                string recordatorio = "Me falta: ";
-                foreach (var item in pedidoActual.itemsPendientes) recordatorio += FormatearNombre(item) + " ";
-                rutinaNPC = StartCoroutine(EscribirEnTexto(textoBocadillo, recordatorio, 0.02f));
-            }
-        }
-    }
-
-    private void DetenerTodo()
-    {
-        if (rutinaNPC != null) StopCoroutine(rutinaNPC);
-        if (rutinaFlujoPrincipal != null) StopCoroutine(rutinaFlujoPrincipal);
     }
 }

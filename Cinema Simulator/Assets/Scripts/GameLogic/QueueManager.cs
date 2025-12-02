@@ -5,27 +5,38 @@ using UnityEngine.AI;
 
 public class QueueManager : MonoBehaviour
 {
+    // --- VARIABLES DE CONFIGURACIÓN DE LA COLA ---
+
     [Header("Configuración de la Cola")]
+    [Tooltip("Asigna aquí los GameObjects vacíos que marcan las posiciones. ¡El índice 0 es el punto de pedido!")]
     public Transform[] queuePositions;
+
+    // --- VARIABLES DE GENERACIÓN (SPAWN) ---
 
     [Header("Configuración de Generación")]
     public GameObject customerPrefab;
     public Transform spawnPoint;
 
     [Header("Ritmo y Cantidad")]
-    [Tooltip("Cada cuántos segundos llega un cliente nuevo (Fijo).")]
-    public float spawnInterval = 5f; // <--- RITMO FIJO
+    [Tooltip("Cada cuántos segundos llega un cliente nuevo.")]
+    public float spawnInterval = 10f;
 
     [Tooltip("Clientes base en un día normal.")]
     public int baseMaxCustomers = 30;
 
-    // --- VARIABLES INTERNAS ---
+    [Header("Configuración de Salida")]
+    [Tooltip("Punto donde van los clientes que se van por mal servicio.")]
+    public Transform despawnPoint;
+
+    // --- VARIABLES INTERNAS Y ESTRUCTURA ---
+
     private Queue<GameObject> customerQueue = new Queue<GameObject>();
     private int customersSpawnedCount = 0;
     private int totalCustomersForToday = 0;
     private bool isSpawningActive = false;
 
-    // --- INICIO ---
+    // --- INICIO Y EVENTOS ---
+
     void Start()
     {
         if (GameManager.Instance != null) GameManager.Instance.AlCambiarFase += HandleCambioFase;
@@ -33,10 +44,11 @@ public class QueueManager : MonoBehaviour
 
     void OnDestroy()
     {
-        if (GameManager.Instance != null) GameManager.Instance.AlCambiarFase -= HandleCambioFase;
+         if (GameManager.Instance != null) GameManager.Instance.AlCambiarFase -= HandleCambioFase;
     }
 
-    void HandleCambioFase(FaseJuego nuevaFase)
+    // Método ejemplo para iniciar la generación (debería llamarse desde tu GameManager)
+     public void HandleCambioFase(FaseJuego nuevaFase)
     {
         if (nuevaFase == FaseJuego.Fase2_Servicio) StartSpawningDay();
         else if (nuevaFase == FaseJuego.Fase3_Cierre) StopSpawning();
@@ -47,16 +59,9 @@ public class QueueManager : MonoBehaviour
         customersSpawnedCount = 0;
         isSpawningActive = true;
 
-        // 1. Calculamos CANTIDAD TOTAL según la película
-        float multiplicador = 1.0f;
-        TabletManager tablet = FindObjectOfType<TabletManager>();
-        if (tablet != null) multiplicador = tablet.multiplicadorClientes;
+        totalCustomersForToday = baseMaxCustomers;
 
-        totalCustomersForToday = Mathf.RoundToInt(baseMaxCustomers * multiplicador);
-
-        Debug.Log($"Apertura: Vendrán {totalCustomersForToday} clientes. Intervalo: {spawnInterval}s");
-
-        if (customerPrefab != null && spawnPoint != null)
+        if (customerPrefab != null && spawnPoint != null && queuePositions.Length > 0)
         {
             StartCoroutine(CustomerSpawner());
         }
@@ -67,15 +72,13 @@ public class QueueManager : MonoBehaviour
     {
         while (isSpawningActive)
         {
-            // Esperamos el tiempo FIJO definido en el inspector
             yield return new WaitForSeconds(spawnInterval);
 
             // 1. ¿Ya hemos generado todos los de hoy?
             if (customersSpawnedCount >= totalCustomersForToday)
             {
-                Debug.Log("Ya no vienen más clientes nuevos.");
                 isSpawningActive = false;
-                ComprobarFinDelDia(); // Chequeamos si también se ha vaciado la cola
+                ComprobarFinDelDia();
                 yield break;
             }
 
@@ -89,7 +92,8 @@ public class QueueManager : MonoBehaviour
         }
     }
 
-    // --- GESTIÓN COLA ---
+    // --- GESTIÓN DE LA COLA Y SALIDA ---
+
     public void AddCustomerToQueue(GameObject newCustomer)
     {
         if (customerQueue.Count < queuePositions.Length)
@@ -97,40 +101,64 @@ public class QueueManager : MonoBehaviour
             customerQueue.Enqueue(newCustomer);
             int targetPosIndex = customerQueue.Count - 1;
             MoveCustomer(newCustomer, queuePositions[targetPosIndex].position);
+
+            // Si el cliente es el primero, debe hacer su pedido (solo si el puesto está vacío)
+            if (customerQueue.Count == 1)
+            {
+                PedidoCliente clienteScript = newCustomer.GetComponent<PedidoCliente>();
+                if (clienteScript != null) clienteScript.StartWaitingProcess();
+            }
         }
         else { Destroy(newCustomer); }
     }
 
-    public void CompleteOrder()
+    // Método llamado por el PedidoCliente cuando el pedido termina (correcto/incorrecto/tiempo)
+    public void ClientLeavesQueue(GameObject leavingCustomer, bool success)
     {
+        // A. Quitar al cliente de la cola (Asumimos que es el primero)
+        customerQueue.Dequeue();
+
+        // B. Mover el cliente a su destino final (NavMeshAgent)
+        if (success)
+        {
+            // Éxito: Va a la posición final (última posición de la cola, e.g., Posición 4)
+            Transform finalPos = queuePositions[queuePositions.Length - 1];
+            MoveCustomer(leavingCustomer, finalPos.position);
+        }
+        else
+        {
+            // Fracaso/Tiempo Agotado: Va al despawn point
+            MoveCustomer(leavingCustomer, despawnPoint.position);
+        }
+
+        Destroy(leavingCustomer, 3f); // Destruye tras el movimiento
+
+        // C. Mover el resto de la cola hacia adelante
+        MoveQueueForward();
+
+        // D. El nuevo cliente de pedido (si existe) debe pedir
         if (customerQueue.Count > 0)
         {
-            GameObject completedCustomer = customerQueue.Dequeue();
-            Destroy(completedCustomer, 0.5f);
-            MoveQueueForward();
-
-            // IMPORTANTE: Cada vez que atendemos a uno, miramos si era el último
-            ComprobarFinDelDia();
+            GameObject newFirstCustomer = customerQueue.Peek();
+            PedidoCliente clienteScript = newFirstCustomer.GetComponent<PedidoCliente>();
+            if (clienteScript != null) clienteScript.StartWaitingProcess();
         }
+
+        ComprobarFinDelDia();
     }
 
-    // --- COMPROBACIÓN DE FIN DE FASE AUTOMÁTICO ---
+
+    // --- LÓGICA AUXILIAR ---
+
     void ComprobarFinDelDia()
     {
-        // Si ya no vamos a generar más clientes (isSpawningActive == false o cupo lleno)
-        // Y la cola está vacía (customerQueue.Count == 0)
-        // SIGNIFICA QUE HEMOS TERMINADO POR HOY
-
         bool yaNoVienenMas = (customersSpawnedCount >= totalCustomersForToday);
         bool colaVacia = (customerQueue.Count == 0);
 
         if (yaNoVienenMas && colaVacia)
         {
             Debug.Log("¡Todo vendido! Avisando al GameManager para cerrar.");
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.FinalizarServicioPorFaltaDeClientes();
-            }
+            // if (GameManager.Instance != null) { GameManager.Instance.FinalizarServicioPorFaltaDeClientes(); }
         }
     }
 
@@ -147,6 +175,15 @@ public class QueueManager : MonoBehaviour
     {
         NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
         if (agent != null) agent.SetDestination(targetPosition);
+    }
+
+    public GameObject GetCustomerAtOrderPoint()
+    {
+        if (customerQueue.Count > 0)
+        {
+            return customerQueue.Peek();
+        }
+        return null;
     }
 
     public void StopSpawning()
