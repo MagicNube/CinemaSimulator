@@ -13015,6 +13015,7 @@ GameObject:
   - component: {fileID: 1630949214}
   - component: {fileID: 1630949215}
   - component: {fileID: 1630949216}
+  - component: {fileID: 1630949217}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -13095,6 +13096,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textoListaTareas: {fileID: 482423563}
   haElegidoPelicula: 0
+--- !u!114 &1630949217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630949211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cb38e25106e41c4f83d9b8acc1a18e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sol: {fileID: 1006260828}
+  velocidadTransicion: 2
+  ambienteFase1:
+    nombreFase: "Preparaci\xF3n - Ma\xF1ana"
+    rotacionSol: {x: 25, y: -30, z: 0}
+    colorLuz: {r: 1, g: 0.95686275, b: 0.8392157, a: 0}
+    intensidad: 1
+  ambienteFase2:
+    nombreFase: "Servicio - Mediod\xEDa/Tarde"
+    rotacionSol: {x: 50, y: 0, z: 0}
+    colorLuz: {r: 1, g: 1, b: 1, a: 0}
+    intensidad: 1.2
+  ambienteFase3:
+    nombreFase: Cierre - Atardecer
+    rotacionSol: {x: 15, y: 60, z: 0}
+    colorLuz: {r: 1, g: 0.5764706, b: 0.16078432, a: 0}
+    intensidad: 0.8
+  ambienteFase4:
+    nombreFase: Limpieza - Noche
+    rotacionSol: {x: -30, y: 100, z: 0}
+    colorLuz: {r: 0.09803922, g: 0.09803922, b: 0.27450982, a: 0}
+    intensidad: 0.2
 --- !u!4 &1643637161 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6885863440733261156, guid: 2ecd3ca4ae5b6e242a2d1499155999c2, type: 3}
