@@ -62,7 +62,7 @@ public class TabletManager : MonoBehaviour
     public Button[] botonesEleccion; // Tienen que ser 3 botones fijos en la UI
     public Image[] postersEleccion; // Las 3 imagenes (Image) dentro de esos botones
 
-    public Image posterCine;
+    public Image[] postersDecoracion;
 
     // Estado del Cine
     [HideInInspector] public float multiplicadorClientes = 1.0f; // 1.5 = Bueno, 0.6 = Malo
@@ -81,7 +81,10 @@ public class TabletManager : MonoBehaviour
     {
         // Inicializar todo
         panelTabletGeneral.SetActive(false);
-        posterCine.gameObject.SetActive(false);
+        if (postersDecoracion != null)
+        {
+            foreach (Image poster in postersDecoracion) poster.gameObject.SetActive(false);
+        }
         GenerarTienda();
         ActualizarUIBanco();
 
@@ -299,7 +302,10 @@ public class TabletManager : MonoBehaviour
     public void NuevoDiaCine()
     {
         if (tablaDeNoticias.Count == 0 || peliculasDisponibles.Count == 0) return;
-        if (posterCine != null) posterCine.gameObject.SetActive(false);
+        if (postersDecoracion != null)
+        {
+            foreach (Image poster in postersDecoracion) poster.gameObject.SetActive(false);
+        }
 
         // 1. Elegir noticia al azar
         noticiaActual = tablaDeNoticias[UnityEngine.Random.Range(0, tablaDeNoticias.Count)];
@@ -400,9 +406,19 @@ public class TabletManager : MonoBehaviour
 
         // Feedback visual en la propia noticia
         textoNoticiaDia.text = $"ESTRENO: {peliElegida.title}\n\n{resultado}\n(Afluencia esperada: {multiplicadorClientes}x)";
-        posterCine.gameObject.SetActive(true);
-        Debug.Log("Poster activado");
-        posterCine.sprite = peliElegida.posterImage;
+        if (postersDecoracion != null)
+        {
+            foreach (Image poster in postersDecoracion)
+            {
+                poster.gameObject.SetActive(true);
+                poster.sprite = peliElegida.posterImage;
+            }
+        }
+
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.MarcarPeliculaCompletada();
+        }
 
         // Bloquear botones tras elegir
         foreach (var btn in botonesEleccion) btn.interactable = false;

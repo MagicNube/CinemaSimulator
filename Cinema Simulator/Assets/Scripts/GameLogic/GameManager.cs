@@ -96,6 +96,13 @@ public class GameManager : MonoBehaviour
         switch (faseActual)
         {
             case FaseJuego.Fase1_Preparacion:
+                if (TaskManager.Instance != null && !TaskManager.Instance.haElegidoPelicula)
+                {
+                    Debug.Log("⛔ ¡No puedes abrir sin elegir película!");
+                    return;
+                }
+                // -----------------------------
+
                 Debug.Log("Abrimos el cine -> Pasando a SERVICIO");
                 CambiarFase(FaseJuego.Fase2_Servicio);
                 break;
@@ -151,6 +158,11 @@ public class GameManager : MonoBehaviour
         if (HUDManager.Instance != null)
         {
             HUDManager.Instance.ActualizarFecha();
+        }
+
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.ResetearTareasDiarias();
         }
 
         // 4. Reiniciamos ciclo
