@@ -47,6 +47,7 @@ public class ControladorInteraccion : MonoBehaviour
         }
     }
 
+    [System.Obsolete]
     void Update()
     {
         Ray ray = new Ray(camaraJugador.transform.position, camaraJugador.transform.forward);
@@ -139,6 +140,25 @@ public class ControladorInteraccion : MonoBehaviour
                 }
                 if (objetoMirado.GetComponent<TabletManager>() != null) { objetoMirado.GetComponent<TabletManager>().AbrirTablet(this); return; }
                 if (objetoMirado.GetComponent<CambiadorFase>() != null) { objetoMirado.GetComponent<CambiadorFase>().Interactuar(); return; }
+
+                // Tablet
+                if (objetoMirado.GetComponent<TabletManager>() != null)
+                {
+                    objetoMirado.GetComponent<TabletManager>().AbrirTablet(this);
+                    return;
+                }
+
+                //Boton cambiador de fase
+                if (objetoMirado.GetComponent<CambiadorFase>() != null)
+                {
+                    if (!TransitionManager.Instance.transicionando)
+                    {
+                        objetoMirado.GetComponent<CambiadorFase>().Interactuar();
+                    }
+                    return;
+                }
+
+                // Maquinas complejas
                 if (objetoMirado.GetComponent<MaquinaDePalomitas>() != null) { objetoMirado.GetComponent<MaquinaDePalomitas>().Interactuar(this); return; }
                 if (objetoMirado.GetComponent<MaquinaDeBebidas>() != null) { objetoMirado.GetComponent<MaquinaDeBebidas>().Interactuar(this); return; }
                 if (objetoMirado.GetComponent<MaquinaDeItems>() != null) { objetoMirado.GetComponent<MaquinaDeItems>().Interactuar(this); return; }

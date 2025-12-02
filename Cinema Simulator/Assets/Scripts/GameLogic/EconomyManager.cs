@@ -13,6 +13,10 @@ public class EconomyManager : MonoBehaviour
     public int dineroActual = 0;
     public int deuda = 3000;
 
+    [Header("Datos del Día (Reporte)")]
+    public int ingresosHoy = 0;
+    public int gastosHoy = 0;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -25,9 +29,16 @@ public class EconomyManager : MonoBehaviour
         ActualizarTextoDeuda();
     }
 
+    public void ResetearDatosDiarios()
+    {
+        ingresosHoy = 0;
+        gastosHoy = 0;
+    }
+
     public void SumarDinero(int cantidad)
     {
         dineroActual += cantidad;
+        ingresosHoy += cantidad;
         ActualizarTextoDinero();
     }
 
@@ -55,6 +66,7 @@ public class EconomyManager : MonoBehaviour
         if (dineroActual >= cantidad)
         {
             dineroActual -= cantidad;
+            gastosHoy += cantidad;
             ActualizarTextoDinero();
             return true; // ¡Compra exitosa!
         }
@@ -71,6 +83,7 @@ public class EconomyManager : MonoBehaviour
         {
             deuda -= cantidad;
             dineroActual -= cantidad;
+            gastosHoy += cantidad;
             ActualizarTextoDinero();
             ActualizarTextoDeuda();
             return true;

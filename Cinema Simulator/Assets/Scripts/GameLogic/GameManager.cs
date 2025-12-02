@@ -62,6 +62,16 @@ public class GameManager : MonoBehaviour
     {
         faseActual = nuevaFase;
 
+        if (TransitionManager.Instance != null)
+        {
+            Debug.Log("Llamando transición");
+            TransitionManager.Instance.IniciarTransicion(nuevaFase);
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ GameManager: No encuentro el TransitionManager para poner la pantalla negra.");
+        }
+
         // Avisamos a todo el juego de que la fase ha cambiado
         AlCambiarFase?.Invoke(nuevaFase);
 
@@ -91,6 +101,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    [Obsolete]
     public void AvanzarSiguienteFase()
     {
         switch (faseActual)
@@ -98,28 +109,21 @@ public class GameManager : MonoBehaviour
             case FaseJuego.Fase1_Preparacion:
                 if (TaskManager.Instance != null && !TaskManager.Instance.haElegidoPelicula)
                 {
-                    Debug.Log("⛔ ¡No puedes abrir sin elegir película!");
                     return;
                 }
-                // -----------------------------
-
-                Debug.Log("Abrimos el cine -> Pasando a SERVICIO");
                 CambiarFase(FaseJuego.Fase2_Servicio);
                 break;
 
             case FaseJuego.Fase2_Servicio:
-                Debug.Log("Fin del turno -> Pasando a CIERRE");
                 CambiarFase(FaseJuego.Fase3_Cierre);
                 break;
 
             case FaseJuego.Fase3_Cierre:
-                Debug.Log("Gestión terminada -> Pasando a LIMPIEZA");
                 CambiarFase(FaseJuego.Fase4_Limpieza);
                 break;
 
             case FaseJuego.Fase4_Limpieza:
-                Debug.Log("Todo limpio -> Pasando a DÍA SIGUIENTE (PREPARACIÓN)");
-                FinalizarDia(); // Esto suma el día y vuelve a Fase 1
+                FinalizarDia();
                 break;
         }
     }
@@ -143,18 +147,14 @@ public class GameManager : MonoBehaviour
     }
 
     // Llamado al terminar limpieza o saltarla en Fase 3
+    [Obsolete]
+
     public void FinalizarDia()
     {
-        // 1. Sumamos el día
         diaActual++;
 
-        Debug.Log($"--- DÍA FINALIZADO ---");
-
-        // 2. Avisamos a la Tablet (para las noticias)
         FindObjectOfType<TabletManager>().NuevoDiaCine();
 
-        // 3. AVISAMOS AL HUD (NUEVO)
-        // Esto actualiza el texto de la pantalla principal inmediatamente
         if (HUDManager.Instance != null)
         {
             HUDManager.Instance.ActualizarFecha();
@@ -165,13 +165,11 @@ public class GameManager : MonoBehaviour
             TaskManager.Instance.ResetearTareasDiarias();
         }
 
-        // 4. Reiniciamos ciclo
         CambiarFase(FaseJuego.Fase1_Preparacion);
     }
 
     public void FinalizarServicioPorFaltaDeClientes()
     {
-        // Solo si estamos en servicio, forzamos el cierre
         if (faseActual == FaseJuego.Fase2_Servicio)
         {
             Debug.Log("¡Se han acabado los clientes! Cerrando antes de tiempo.");
