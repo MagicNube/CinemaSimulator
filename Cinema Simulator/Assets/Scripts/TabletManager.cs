@@ -2,14 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using System;
-using System.Linq; // <--- IMPRESCINDIBLE PARA EL CINE
+using System.Linq;
 
 
 public class TabletManager : MonoBehaviour
 {
     [Header("Control General")]
-    public GameObject panelTabletGeneral; // El padre de todo
+    public GameObject panelTabletGeneral;
     public GameObject pantallaHome;
     public GameObject pantallaTienda;
     public GameObject pantallaBanco;

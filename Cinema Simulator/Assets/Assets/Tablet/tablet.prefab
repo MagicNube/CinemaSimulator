@@ -26,19 +26,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1283991497472033598, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1283991497472033598, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.22794884
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1283991497472033598, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.9736731
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1283991497472033598, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -26.353
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1283991497472033598, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -46,7 +46,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.0045736283
+      value: 0.017955713
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalScale.y
@@ -58,35 +58,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.295
+      value: -0.884
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.64
+      value: 0.67113996
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.258
+      value: 1.4819031
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -94,7 +94,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 0b1ef3eb5ae59b140ad7ad63dfe6fd45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -219,25 +219,24 @@ MonoBehaviour:
   pantallaTienda: {fileID: 0}
   pantallaBanco: {fileID: 0}
   pantallaCine: {fileID: 0}
-  pantallaTablet: {fileID: 0}
   catalogo:
-  - nombre: 
+  - nombre: Liquido Bebidas
     precio: 4
     prefabCaja: {fileID: 6774994530737816925, guid: f4ea7374138f59d4dbbfd6cdf2d712bb, type: 3}
     icono: {fileID: 21300000, guid: 383612ebea261624fb8f0bee5d4f8a53, type: 3}
-  - nombre: 
+  - nombre: Maiz Palomitas
     precio: 5
     prefabCaja: {fileID: 1007055548052338298, guid: 6a3c5b38640f70545b604453fbb7182a, type: 3}
     icono: {fileID: 21300000, guid: 72ed22913cf279a469432e74e33ef1bf, type: 3}
-  - nombre: 
+  - nombre: Vasos
     precio: 15
     prefabCaja: {fileID: 7144578027565347001, guid: 51526f1425e85764d8c56d3b23ce7e6e, type: 3}
     icono: {fileID: 21300000, guid: 350e09784669afd4cb608b0e61c2a5a9, type: 3}
-  - nombre: 
+  - nombre: Cubos
     precio: 20
     prefabCaja: {fileID: 2777208362255569699, guid: f5fa0c21012f01443af0c3b7c3cf233f, type: 3}
     icono: {fileID: 21300000, guid: 026725bb35f4cac4d9025d2c72d38ba0, type: 3}
-  - nombre: 
+  - nombre: Perritos
     precio: 3
     prefabCaja: {fileID: 4300574759388357421, guid: 7d7a908c03481ef46af84f747c6877e8, type: 3}
     icono: {fileID: 21300000, guid: da71b766b5cf08049a00d51b0d9a39a6, type: 3}
@@ -248,9 +247,150 @@ MonoBehaviour:
   botonProductoPrefab: {fileID: 7792198404673912519, guid: 16ac10a017ca8fc48a70fe2a80d079bf, type: 3}
   lineaCarritoPrefab: {fileID: 6134356367644292908, guid: c81423f918c36b44496474ebb79c197d, type: 3}
   maxItemsCarrito: 10
-  deudaTotal: 5000
   textoDeudaUI: {fileID: 0}
   textoDineroDisponibleBanco: {fileID: 0}
-  peliculasDisponibles: []
-  contenedorBotonesPeliculas: {fileID: 0}
-  botonPeliculaPrefab: {fileID: 0}
+  inputCantidadPago: {fileID: 0}
+  tablaDeNoticias:
+  - headline: "Ola de calor azota la ciudad, se espera que las familias busquen refugio
+      del sol el d\xEDa de hoy."
+    correctGenre: 0
+    neutralGenre: 1
+    incorrectGenre: 2
+  - headline: "Tensi\xF3n pol\xEDtica en aumento tras los \xFAltimos debates."
+    correctGenre: 3
+    neutralGenre: 0
+    incorrectGenre: 4
+  - headline: "Semana del amor: la ciudad celebra su festival rom\xE1ntico anual."
+    correctGenre: 4
+    neutralGenre: 12
+    incorrectGenre: 2
+  - headline: "\xC9xito hist\xF3rico del equipo local en la final nacional de f\xFAtbol."
+    correctGenre: 5
+    neutralGenre: 6
+    incorrectGenre: 4
+  - headline: "Cient\xEDficos anuncian descubrimiento revolucionario."
+    correctGenre: 7
+    neutralGenre: 6
+    incorrectGenre: 2
+  - headline: El precio de la vivienda se dispara y causa malestar social.
+    correctGenre: 3
+    neutralGenre: 6
+    incorrectGenre: 12
+  - headline: "Ni\xF1os de vacaciones: semana de descanso escolar."
+    correctGenre: 0
+    neutralGenre: 3
+    incorrectGenre: 2
+  - headline: Festival cultural celebra la diversidad.
+    correctGenre: 9
+    neutralGenre: 1
+    incorrectGenre: 2
+  - headline: "Nueva tecnolog\xEDa promete cambiar la forma de vivir."
+    correctGenre: 7
+    neutralGenre: 8
+    incorrectGenre: 3
+  - headline: La ciudad amanece cubierta de una niebla densa
+    correctGenre: 10
+    neutralGenre: 12
+    incorrectGenre: 5
+  - headline: "Gran concierto ben\xE9fico llena el estadio"
+    correctGenre: 9
+    neutralGenre: 12
+    incorrectGenre: 2
+  - headline: Encuentran un meteorito en las afueras
+    correctGenre: 7
+    neutralGenre: 6
+    incorrectGenre: 4
+  - headline: "Una nueva serie rom\xE1ntica de \xE9poca causa furor en las plataformas
+      de streaming."
+    correctGenre: 4
+    neutralGenre: 11
+    incorrectGenre: 1
+  - headline: "Vecinos denuncian extra\xF1os ruidos en el barrio"
+    correctGenre: 2
+    neutralGenre: 6
+    incorrectGenre: 4
+  - headline: "El zool\xF3gico celebra el nacimiento de una cr\xEDa de panda"
+    correctGenre: 0
+    neutralGenre: 6
+    incorrectGenre: 4
+  - headline: Descubren un tesoro enterrado bajo un viejo edificio
+    correctGenre: 6
+    neutralGenre: 11
+    incorrectGenre: 4
+  - headline: La ciudad entera se prepara para la noche de Halloween
+    correctGenre: 2
+    neutralGenre: 6
+    incorrectGenre: 4
+  peliculasDisponibles:
+  - title: "El Perro que Salv\xF3 la Navidad"
+    posterImage: {fileID: 21300000, guid: 8f25358a038971e428ba27ff44ceb8b7, type: 3}
+    genre: 0
+  - title: Vacaciones en la Granja
+    posterImage: {fileID: 21300000, guid: 7b7110c6d3c49be4aa8862a896c819f3, type: 3}
+    genre: 0
+  - title: "El Viaje de la Peque\xF1a Nube"
+    posterImage: {fileID: 21300000, guid: f79da54662177ed48a581fd541b3ca85, type: 3}
+    genre: 1
+  - title: Robots vs Dinosaurios
+    posterImage: {fileID: 21300000, guid: 3d25ae59d9208694aa4daad75f5ac973, type: 3}
+    genre: 1
+  - title: "Susurros en el S\xF3tano"
+    posterImage: {fileID: 21300000, guid: 0eebf48f87e1e5e4b9fea8541b0b479e, type: 3}
+    genre: 2
+  - title: "La \xDAltima Llamada"
+    posterImage: {fileID: 21300000, guid: ecc3a9fdb04f7bd47a1d1bcd1d40f88f, type: 3}
+    genre: 2
+  - title: "L\xE1grimas de Oto\xF1o"
+    posterImage: {fileID: 21300000, guid: ec5e36a5e07ea1547858d031408da251, type: 3}
+    genre: 3
+  - title: El Precio de la Verdad
+    posterImage: {fileID: 21300000, guid: 0f26d8b546d426645b2a461917e36c16, type: 3}
+    genre: 3
+  - title: "Un Caf\xE9 en Par\xEDs"
+    posterImage: {fileID: 21300000, guid: 759927c994068344aae5dcd9a83e3212, type: 3}
+    genre: 4
+  - title: Cartas a un Desconocido
+    posterImage: {fileID: 21300000, guid: 0ab0cb5af574c55449433ce8c486ab4b, type: 3}
+    genre: 4
+  - title: "El \xDAltimo Penalti"
+    posterImage: {fileID: 21300000, guid: e578af96ef05dfb47bea93b5e677d4e5, type: 3}
+    genre: 5
+  - title: "La B\xFAsqueda del Templo Perdido"
+    posterImage: {fileID: 21300000, guid: 396c8f052454f2c42a1a82409408695e, type: 3}
+    genre: 6
+  - title: Marte 2050
+    posterImage: {fileID: 21300000, guid: 837a7e7613665e44cb65658ac20be7a8, type: 3}
+    genre: 7
+  - title: "C\xF3digo Binario"
+    posterImage: {fileID: 21300000, guid: 862954ef4a9fb2846be2137aca3f0d8c, type: 3}
+    genre: 7
+  - title: "Persecuci\xF3n a Alta Velocidad"
+    posterImage: {fileID: 21300000, guid: 53025d1f10e99af4db2b83fe51024375, type: 3}
+    genre: 8
+  - title: "Notas del Coraz\xF3n"
+    posterImage: {fileID: 21300000, guid: 1aff882f63b538842bdfb760908b69ca, type: 3}
+    genre: 9
+  - title: "\xBFQui\xE9n Rob\xF3 el Diamante?"
+    posterImage: {fileID: 21300000, guid: 6aa45697cd37f70428bc24deb7114208, type: 3}
+    genre: 10
+  - title: El Reino de los Dragones
+    posterImage: {fileID: 21300000, guid: 90313860db16ff34e966f260eb51ae72, type: 3}
+    genre: 11
+  - title: El Hechicero Olvidado
+    posterImage: {fileID: 21300000, guid: 39241d00dc524d5439c9ff68f2ec399e, type: 3}
+    genre: 11
+  - title: "\xA1Mi Suegra Viene a Cenar!"
+    posterImage: {fileID: 21300000, guid: e36368069f7f100419f2080260226f98, type: 3}
+    genre: 12
+  textoNoticiaDia: {fileID: 0}
+  botonesEleccion:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  postersEleccion:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  posterCine: {fileID: 0}
+  multiplicadorClientes: 1
+  textoAvisoHome: {fileID: 0}
