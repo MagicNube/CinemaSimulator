@@ -172,25 +172,32 @@ public class ControladorInteraccion : MonoBehaviour
         // El anclaje es el padre del fantasma, que es donde queremos que quede la caja real.
         Transform anchor = ghostBox.transform.parent;
 
-        // 1. Desconectar el ítem del jugador
+        // 1. OBTENER POSICIÓN Y ROTACIÓN ABSOLUTA DEL FANTASMA
+        // Esto captura la colocación exacta que tú definiste visualmente en el editor.
+        Vector3 finalWorldPosition = ghostBox.transform.position;
+        Quaternion finalWorldRotation = ghostBox.transform.rotation;
+
+        // 2. Destruir el objeto fantasma
+        Destroy(ghostBox);
+
+        // 3. Desconectar el ítem del jugador
         carriedItem.transform.parent = null;
 
-        // 2. Mover, Rotar y Anclar el ítem al punto exacto
-        carriedItem.transform.SetParent(anchor);
-        carriedItem.transform.localPosition = Vector3.zero;
-        carriedItem.transform.localRotation = Quaternion.identity;
+        // 4. Mover la caja real a la posición/rotación absoluta del fantasma
+        carriedItem.transform.position = finalWorldPosition;
+        carriedItem.transform.rotation = finalWorldRotation;
 
-        // 3. Deshabilitar la física
+        // 5. Vincular al Anchor para la lógica de recolección (SIN cambiar posición/rotación)
+        carriedItem.transform.SetParent(anchor);
+
+        // 6. Deshabilitar la física
         Rigidbody rb = carriedItem.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.isKinematic = true;
         }
 
-        // 4. Destruir el objeto fantasma
-        Destroy(ghostBox);
-
-        // 5. Limpiar el estado del jugador
+        // 7. Limpiar el estado del jugador
         currentGhostRenderer = null;
         itemActual = null;
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
