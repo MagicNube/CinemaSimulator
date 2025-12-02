@@ -3072,6 +3072,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2404053812621583888, guid: e94056b660339cf4287e5507c2a0f55b, type: 3}
   m_PrefabInstance: {fileID: 404957343}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &405353061 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2774220344278030320, guid: 6b4a4fea08d56be4e8bc89b1f230aba2, type: 3}
+  m_PrefabInstance: {fileID: 878611397}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &411754824
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7731,13 +7736,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6885863440733261156, guid: 2ecd3ca4ae5b6e242a2d1499155999c2, type: 3}
   m_PrefabInstance: {fileID: 666218842}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &850286088
-GameObject:
-  m_ObjectHideFlags: 0
-@@ -7752,6 +7764,77 @@ Transform:
-  - {fileID: 1514168433}
-  m_Father: {fileID: 559719526}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &878611397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8969,7 +8967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Version: 3
-  m_UsePipelineSettings: 1
+  m_UsePipelineSettings: 0
   m_AdditionalLightsShadowResolutionTier: 2
   m_LightLayerMask: 1
   m_RenderingLayers: 1
@@ -9001,8 +8999,8 @@ Light:
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NormalBias: 0
+    m_NearPlane: 10
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -9052,13 +9050,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1006260826}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24970742, y: -0.9343426, z: 0.25419408, w: -0.0059512467}
+  m_LocalRotation: {x: 0.26890594, y: -0.93192136, z: 0.23379709, w: 0.06746216}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 28.167, y: -189.011, z: -32.191}
+  m_LocalEulerAnglesHint: {x: 28.167, y: -180, z: -32.191}
 --- !u!1 &1041580023
 GameObject:
   m_ObjectHideFlags: 0
@@ -10927,6 +10925,7 @@ Transform:
   - {fileID: 1615982849}
   - {fileID: 33916178}
   - {fileID: 1646936477}
+  - {fileID: 405353061}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1286211099
@@ -13332,22 +13331,22 @@ MonoBehaviour:
   velocidadTransicion: 2
   ambienteFase1:
     nombreFase: "Preparaci\xF3n - Ma\xF1ana"
-    rotacionSol: {x: 25, y: -30, z: 0}
+    rotacionSol: {x: 15, y: -120, z: 0}
     colorLuz: {r: 1, g: 0.95686275, b: 0.8392157, a: 0}
     intensidad: 1
   ambienteFase2:
     nombreFase: "Servicio - Mediod\xEDa/Tarde"
-    rotacionSol: {x: 50, y: 0, z: 0}
+    rotacionSol: {x: 60, y: -180, z: 0}
     colorLuz: {r: 1, g: 1, b: 1, a: 0}
     intensidad: 1.2
   ambienteFase3:
     nombreFase: Cierre - Atardecer
-    rotacionSol: {x: 15, y: 60, z: 0}
+    rotacionSol: {x: 15, y: -240, z: 0}
     colorLuz: {r: 1, g: 0.5764706, b: 0.16078432, a: 0}
     intensidad: 0.8
   ambienteFase4:
     nombreFase: Limpieza - Noche
-    rotacionSol: {x: -30, y: 100, z: 0}
+    rotacionSol: {x: -40, y: -180, z: 0}
     colorLuz: {r: 0.09803922, g: 0.09803922, b: 0.27450982, a: 0}
     intensidad: 0.2
 --- !u!4 &1643637161 stripped
@@ -14369,8 +14368,7 @@ MonoBehaviour:
   customerPrefab: {fileID: 2442889395758981124, guid: 319e1484652ebb04b81a3a748321c6ed, type: 3}
   spawnPoint: {fileID: 1183575931}
   spawnInterval: 3
-  maxCustomersAllowed: 50
-  timeLimitForSpawning: 180
+  baseMaxCustomers: 30
 --- !u!4 &1798530716 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2774220344278030320, guid: 24ed542a2e719524dacd5c88689cb009, type: 3}

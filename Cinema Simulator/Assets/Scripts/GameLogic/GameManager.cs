@@ -168,4 +168,14 @@ public class GameManager : MonoBehaviour
         // 4. Reiniciamos ciclo
         CambiarFase(FaseJuego.Fase1_Preparacion);
     }
+
+    public void FinalizarServicioPorFaltaDeClientes()
+    {
+        // Solo si estamos en servicio, forzamos el cierre
+        if (faseActual == FaseJuego.Fase2_Servicio)
+        {
+            Debug.Log("¡Se han acabado los clientes! Cerrando antes de tiempo.");
+            CambiarFase(FaseJuego.Fase3_Cierre);
+        }
+    }
 }
