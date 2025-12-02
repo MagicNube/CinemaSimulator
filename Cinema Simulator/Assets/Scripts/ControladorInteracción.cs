@@ -21,6 +21,12 @@ public class ControladorInteraccion : MonoBehaviour
     private bool _estaReparando = false;
     // -------------------------------
 
+    [Header("Audio Reparación")] // <--- NUEVO
+    public AudioSource sourceReparacion;         // Arrastra aquí el componente AudioSource del Jugador
+    public AudioClip clipReparandoLoop;          // Arrastra el sonido de martillazos
+    public AudioClip clipReparacionCompletada;
+
+
     // --- [VARIABLES DEL FANTASMA Y SNAP] ---
     [Header("Feedback Visual Fantasma")]
     [Tooltip("Asigna aquí el Prefab de la Caja Fantasma (transparente)")]
@@ -206,36 +212,70 @@ public class ControladorInteraccion : MonoBehaviour
 
     private void ProcesarReparacion(IMaquinaReparable maquina)
     {
-        // El usuario debe mantener pulsado Click Izquierdo (0)
         if (Input.GetMouseButton(0))
         {
-            _estaReparando = true;
+            // INICIO: Si acabamos de empezar a pulsar
+            if (!_estaReparando)
+            {
+                _estaReparando = true;
+
+                // --- [AUDIO LOOP] ---
+                if (sourceReparacion != null && clipReparandoLoop != null)
+                {
+                    sourceReparacion.clip = clipReparandoLoop;
+                    sourceReparacion.loop = true; // Importante para que no pare
+                    sourceReparacion.Play();
+                }
+            }
+
             _temporizadorReparacion += Time.deltaTime;
 
-            // Actualizar UI
             if (barraProgresoReparacion != null)
             {
                 barraProgresoReparacion.gameObject.SetActive(true);
                 barraProgresoReparacion.value = _temporizadorReparacion / tiempoParaReparar;
             }
 
-            // Chequeo de finalización
+            // ÉXITO: Se ha completado el tiempo
             if (_temporizadorReparacion >= tiempoParaReparar)
             {
+                // --- [AUDIO COMPLETADO] ---
+                if (sourceReparacion != null)
+                {
+                    sourceReparacion.Stop(); // Paramos el martilleo
+                    if (clipReparacionCompletada != null)
+                        sourceReparacion.PlayOneShot(clipReparacionCompletada); // Sonido "DING"
+                }
+
                 maquina.Reparar();
-                ResetearReparacion();
+
+                // Reseteo manual de variables (sin llamar a ResetearReparacion para no cortar el OneShot)
+                _estaReparando = false;
+                _temporizadorReparacion = 0f;
+                if (barraProgresoReparacion != null) barraProgresoReparacion.gameObject.SetActive(false);
+
                 Debug.Log("¡Reparación completada!");
             }
         }
         else
         {
-            // Si suelta el click, se resetea el progreso
+            // Si soltamos el botón antes de tiempo
             ResetearReparacion();
         }
     }
 
     private void ResetearReparacion()
     {
+        // Si estábamos reparando (escuchando el loop) y cancelamos...
+        if (_estaReparando)
+        {
+            // Paramos el sonido
+            if (sourceReparacion != null && sourceReparacion.isPlaying)
+            {
+                sourceReparacion.Stop();
+            }
+        }
+
         _estaReparando = false;
         _temporizadorReparacion = 0f;
         if (barraProgresoReparacion != null)

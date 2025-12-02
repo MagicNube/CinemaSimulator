@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(Outline))]
 [RequireComponent(typeof(Collider))]
-public class MaquinaDeBebidas : MonoBehaviour
+public class MaquinaDeBebidas : MonoBehaviour, IMaquinaReparable
 {
     public ItemData.TipoDeItem tipoDeCajaRequerida;
 
@@ -16,9 +16,6 @@ public class MaquinaDeBebidas : MonoBehaviour
     public bool estaRota = false;
     [SerializeField] private Color colorBarraNormal = Color.white;
     [SerializeField] private Color colorBarraRota = Color.red;
-
-    [Range(0, 100)] public float probabilidadDeRotura = 10f;
-    public bool estaRota = false; // Tu variable existente
 
     // 2. AÑADE ESTA PROPIEDAD para cumplir con la interfaz
     public bool EstaRota => estaRota;

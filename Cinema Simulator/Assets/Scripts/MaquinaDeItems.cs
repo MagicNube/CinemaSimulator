@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MaquinaDeItems : MonoBehaviour
+public class MaquinaDeItems : MonoBehaviour, IMaquinaReparable
 {
     public GameObject itemPrefab;
     public ItemData.TipoDeItem tipoDeCajaRequerida;
@@ -18,9 +18,6 @@ public class MaquinaDeItems : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private Image barraRellenoImage;
-
-    [Range(0, 100)] public float probabilidadDeRotura = 10f;
-    public bool estaRota = false; // Tu variable existente
 
     // 2. AÑADE ESTA PROPIEDAD para cumplir con la interfaz
     public bool EstaRota => estaRota;

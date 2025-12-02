@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MaquinaDePalomitas : MonoBehaviour
+public class MaquinaDePalomitas : MonoBehaviour, IMaquinaReparable
 {
     public ItemData.TipoDeItem tipoDeCajaRequerida;
 
@@ -16,9 +16,6 @@ public class MaquinaDePalomitas : MonoBehaviour
     [SerializeField] private Color colorBarraRota = Color.red;
 
     [SerializeField] private Image barraRellenoImage;
-
-    [Range(0, 100)] public float probabilidadDeRotura = 10f;
-    public bool estaRota = false; // Tu variable existente
 
     // 2. AÑADE ESTA PROPIEDAD para cumplir con la interfaz
     public bool EstaRota => estaRota;
