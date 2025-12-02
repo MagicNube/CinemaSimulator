@@ -35,6 +35,7 @@ public class ControladorInteraccion : MonoBehaviour
         }
     }
 
+    [System.Obsolete]
     void Update()
     {
         Ray ray = new Ray(camaraJugador.transform.position, camaraJugador.transform.forward);
@@ -108,7 +109,10 @@ public class ControladorInteraccion : MonoBehaviour
                 //Boton cambiador de fase
                 if (objetoMirado.GetComponent<CambiadorFase>() != null)
                 {
-                    objetoMirado.GetComponent<CambiadorFase>().Interactuar();
+                    if (!TransitionManager.Instance.transicionando)
+                    {
+                        objetoMirado.GetComponent<CambiadorFase>().Interactuar();
+                    }
                     return;
                 }
 
@@ -356,7 +360,7 @@ public class ControladorInteraccion : MonoBehaviour
         // Limpieza de objetos de minijuego (si aplica)
         if (MinijuegoLimpiezaManager.Instance != null)
         {
-             MinijuegoLimpiezaManager.Instance.ObjetoRecogido(itemActual);
+            MinijuegoLimpiezaManager.Instance.ObjetoRecogido(itemActual);
         }
 
         Destroy(itemActual);

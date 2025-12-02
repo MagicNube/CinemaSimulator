@@ -7,7 +7,7 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
 {
     public static MinijuegoLimpiezaManager Instance;
 
-    [Header("Configuración")]
+    [Header("Configuraciï¿½n")]
     public float tiempoLimite = 60f;
     private float tiempoRestante;
     private bool juegoActivo = false;
@@ -17,9 +17,9 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
     public ControlAleatorioBasura generadorBasura;
 
     [Header("Audio")]
-    [Tooltip("Arrastra aquí el componente AudioSource que usará la MÚSICA DE FONDO")]
+    [Tooltip("Arrastra aquï¿½ el componente AudioSource que usarï¿½ la Mï¿½SICA DE FONDO")]
     public AudioSource audioSourceMusica;
-    [Tooltip("Arrastra aquí el componente AudioSource que usará los EFECTOS (Win/Lose)")]
+    [Tooltip("Arrastra aquï¿½ el componente AudioSource que usarï¿½ los EFECTOS (Win/Lose)")]
     public AudioSource audioSourceSFX;
 
     [Header("Clips de Audio")]
@@ -35,16 +35,20 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
     public TextMeshProUGUI textoTimer;
     public TextMeshProUGUI textoContadorBasura;
 
+    private ControladorInteraccion jugador;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
 
+    [System.Obsolete]
     void Start()
     {
         if (panelPregunta != null) panelPregunta.SetActive(false);
         if (panelTimer != null) panelTimer.SetActive(false);
+        jugador = FindObjectOfType<ControladorInteraccion>();
     }
 
     void Update()
@@ -55,16 +59,14 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
     public void MostrarPregunta()
     {
         if (juegoActivo) return;
-        if (generadorBasura == null || generadorBasura.objetosBasura == null || generadorBasura.objetosBasura.Count == 0) return;
+        if (generadorBasura == null) return;
 
-        ActualizarListaBasura();
-        if (CalcularBasuraRestante() > 0)
-        {
-            if (panelPregunta != null) panelPregunta.SetActive(true);
-            if (panelTimer != null) panelTimer.SetActive(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+
+        jugador.AlternarControlJugador(false);
+        if (panelPregunta != null) panelPregunta.SetActive(true);
+        if (panelTimer != null) panelTimer.SetActive(false);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void RechazarMinijuego()
@@ -72,10 +74,15 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
         if (panelPregunta) panelPregunta.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        jugador.AlternarControlJugador(true);
     }
 
     public void IniciarMinijuego()
     {
+        generadorBasura.GenerarBasura();
+        ActualizarListaBasura();
+
+        jugador.AlternarControlJugador(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -93,7 +100,7 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
             textoContadorBasura.color = Color.white;
         }
 
-        // --- AUDIO: INICIAR MÚSICA ---
+        // --- AUDIO: INICIAR Mï¿½SICA ---
         if (audioSourceMusica != null && musicaTension != null)
         {
             audioSourceMusica.clip = musicaTension;
@@ -117,7 +124,7 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
 
     public void ObjetoRecogido(GameObject objetoRecogido)
     {
-        Debug.Log("¡He recibido un aviso de recogida!: " + objetoRecogido.name); // <--- AÑADE ESTO
+        Debug.Log("He recibido un aviso de recogida!: " + objetoRecogido.name); // <--- Aï¿½ADE ESTO
         if (!juegoActivo) return;
 
         GameObject objetoEncontrado = null;
@@ -142,7 +149,7 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
     {
         juegoActivo = false;
 
-        // --- AUDIO: PARAR MÚSICA Y LANZAR SFX ---
+        // --- AUDIO: PARAR Mï¿½SICA Y LANZAR SFX ---
         if (audioSourceMusica != null) audioSourceMusica.Stop();
 
         if (audioSourceSFX != null)
@@ -167,7 +174,7 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
             textoContadorBasura.gameObject.SetActive(true);
             if (victoria)
             {
-                textoContadorBasura.text = "¡FELICIDADES!\nLIMPIEZA COMPLETADA";
+                textoContadorBasura.text = "Â¡FELICIDADES!\nLIMPIEZA COMPLETADA";
                 textoContadorBasura.color = Color.green;
             }
             else
