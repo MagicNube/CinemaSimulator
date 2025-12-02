@@ -1,17 +1,30 @@
 using UnityEngine;
-using UnityEngine.UI; // Necesario para la barra
+using UnityEngine.UI;
 
 public class MaquinaDeItems : MonoBehaviour
 {
-    public GameObject itemPrefab; // El objeto que el jugador recoge (ej. Vaso Vacio)
-
-    // Qu� tipo de caja se necesita para rellenar esta m�quina espec�fica
+    public GameObject itemPrefab;
     public ItemData.TipoDeItem tipoDeCajaRequerida;
 
+    [Header("Configuración de Máquina")]
     [SerializeField] private int capacidadMaxima = 10;
     [SerializeField] private int _capacidadActual = 0;
 
+    [Header("Configuración de Rotura")]
+    [Range(0, 100)] public float probabilidadDeRotura = 10f; // 10% de probabilidad
+    public bool estaRota = false;
+    [SerializeField] private Color colorBarraNormal = Color.white;
+    [SerializeField] private Color colorBarraRota = Color.red;
+
+    [Header("UI")]
     [SerializeField] private Image barraRellenoImage;
+
+    [Range(0, 100)] public float probabilidadDeRotura = 10f;
+    public bool estaRota = false; // Tu variable existente
+
+    // 2. AÑADE ESTA PROPIEDAD para cumplir con la interfaz
+    public bool EstaRota => estaRota;
+
 
     public int CapacidadActual
     {
@@ -30,9 +43,16 @@ public class MaquinaDeItems : MonoBehaviour
 
     public void Interactuar(ControladorInteraccion jugador)
     {
+        // 1. Si está rota, no hacemos nada
+        if (estaRota)
+        {
+            Debug.Log("¡La máquina está rota! Necesitas repararla.");
+            return;
+        }
+
         GameObject itemSujetado = jugador.itemActual;
 
-        // --- CASO 1: MANO VAC�A (El jugador quiere coger un item) ---
+        // --- CASO 1: MANO VACÍA (Coger Item) ---
         if (itemSujetado == null)
         {
             if (CapacidadActual > 0)
@@ -40,24 +60,25 @@ public class MaquinaDeItems : MonoBehaviour
                 jugador.AsignarItem(itemPrefab);
                 CapacidadActual--;
                 Debug.Log("Has cogido un item.");
+
+                // Intentamos romper la máquina después de usarla
+                VerificarRotura();
             }
             else
             {
-                Debug.Log("�La m�quina est� vac�a! Necesitas rellenarla.");
+                Debug.Log("La máquina está vacía. Necesitas rellenarla.");
             }
             return;
         }
 
-        // --- CASO 2: EL JUGADOR TIENE ALGO EN LA MANO (�Es una caja?) ---
+        // --- CASO 2: RELLENAR MÁQUINA ---
         ItemData data = itemSujetado.GetComponent<ItemData>();
         if (data == null) return;
 
         if (data.tipoDeItem == tipoDeCajaRequerida)
         {
-            // Obtenemos el script de la caja para gestionar cantidades
             CajaDeSuministros cajaScript = itemSujetado.GetComponent<CajaDeSuministros>();
 
-            // Si la caja no tiene el script, usamos la lógica antigua (rellenar todo y destruir)
             if (cajaScript == null)
             {
                 Debug.LogWarning("Esta caja no tiene script de suministros. Se consumirá entera.");
@@ -66,46 +87,55 @@ public class MaquinaDeItems : MonoBehaviour
                 return;
             }
 
-            // Calculamos cuánto espacio libre tiene la máquina
             int espacioLibre = capacidadMaxima - CapacidadActual;
-
             if (espacioLibre <= 0)
             {
                 Debug.Log("¡La máquina ya está llena!");
                 return;
             }
 
-            // Click Derecho: Intentar llenar al MÁXIMO
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButton(1)) // Click Derecho (Llenar todo)
             {
                 int cantidadRecibida = cajaScript.SacarSuministros(espacioLibre);
                 CapacidadActual += cantidadRecibida;
-
-                if (cantidadRecibida > 0)
-                    Debug.Log($"Máquina rellenada. ({CapacidadActual}/{capacidadMaxima})");
-                else
-                    Debug.Log("¡La caja está vacía! Tírala a la papelera.");
+                if (cantidadRecibida > 0) Debug.Log($"Máquina rellenada. ({CapacidadActual}/{capacidadMaxima})");
+                else Debug.Log("¡La caja está vacía!");
             }
-            // Click Izquierdo: Rellenar solo 1 unidad
-            else
+            else // Click Izquierdo (Llenar 1)
             {
                 int cantidadRecibida = cajaScript.SacarSuministros(1);
-
                 if (cantidadRecibida > 0)
                 {
                     CapacidadActual++;
                     Debug.Log("Has añadido 1 unidad.");
                 }
-                else
-                {
-                    Debug.Log("No queda nada en la caja.");
-                }
+                else Debug.Log("No queda nada en la caja.");
             }
         }
         else
         {
-            Debug.Log("Ese objeto no sirve para esta m�quina.");
+            Debug.Log("Ese objeto no sirve para esta máquina.");
         }
+    }
+
+    // Lógica para calcular si se rompe
+    private void VerificarRotura()
+    {
+        float randomVal = Random.Range(0f, 100f);
+        if (randomVal < probabilidadDeRotura)
+        {
+            estaRota = true;
+            Debug.LogWarning("¡CRACK! La máquina se ha roto.");
+            ActualizarBarraVisual(); // Para que se ponga roja inmediatamente
+        }
+    }
+
+    // Método público para llamar desde una herramienta (ej. Llave Inglesa)
+    public void Reparar()
+    {
+        estaRota = false;
+        ActualizarBarraVisual();
+        Debug.Log("Máquina reparada.");
     }
 
     private void ActualizarBarraVisual()
@@ -114,6 +144,9 @@ public class MaquinaDeItems : MonoBehaviour
         {
             float porcentaje = (float)CapacidadActual / (float)capacidadMaxima;
             barraRellenoImage.fillAmount = porcentaje;
+
+            // Cambiar color según estado
+            barraRellenoImage.color = estaRota ? colorBarraRota : colorBarraNormal;
         }
     }
 }

@@ -12,7 +12,7 @@ public class ItemData : MonoBehaviour
     public enum TipoDeItem
     {
         Bebida, Palomitas, Perrito, CuboVacio, VasoVacio, Ticket,
-        CajaPalomitas, CajaBebidas, CajaEnvasesPalomitas, CajaEnvasesBebidas, CajaPerritos
+        CajaPalomitas, CajaBebidas, CajaEnvasesPalomitas, CajaEnvasesBebidas, CajaPerritos, Martillo
     }
 
     [Header("Configuración del Item")]

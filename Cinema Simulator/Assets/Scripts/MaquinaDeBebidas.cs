@@ -1,17 +1,27 @@
-// MaquinaDeBebidas.cs
 using UnityEngine;
-
 using UnityEngine.UI;
 
-// Asegúrate de que tiene los componentes necesarios
-[RequireComponent(typeof(Outline))] // O como se llame tu script de outline
+[RequireComponent(typeof(Outline))]
 [RequireComponent(typeof(Collider))]
 public class MaquinaDeBebidas : MonoBehaviour
 {
     public ItemData.TipoDeItem tipoDeCajaRequerida;
 
+    [Header("Configuración de Máquina")]
     [SerializeField] private int capacidadMaxima = 10;
     [SerializeField] private int _capacidadActual = 0;
+
+    [Header("Configuración de Rotura")]
+    [Range(0, 100)] public float probabilidadDeRotura = 10f;
+    public bool estaRota = false;
+    [SerializeField] private Color colorBarraNormal = Color.white;
+    [SerializeField] private Color colorBarraRota = Color.red;
+
+    [Range(0, 100)] public float probabilidadDeRotura = 10f;
+    public bool estaRota = false; // Tu variable existente
+
+    // 2. AÑADE ESTA PROPIEDAD para cumplir con la interfaz
+    public bool EstaRota => estaRota;
 
     [SerializeField] private Image barraRellenoImage;
 
@@ -32,6 +42,13 @@ public class MaquinaDeBebidas : MonoBehaviour
 
     public void Interactuar(ControladorInteraccion jugador)
     {
+        // 1. Chequeo de rotura
+        if (estaRota)
+        {
+            Debug.Log("Grifo roto. Llama a mantenimiento.");
+            return;
+        }
+
         GameObject itemSujetado = jugador.itemActual;
 
         if (itemSujetado == null)
@@ -41,60 +58,41 @@ public class MaquinaDeBebidas : MonoBehaviour
         }
 
         ItemData data = itemSujetado.GetComponent<ItemData>();
-
         if (data == null) return;
 
+        // --- RELLENAR ---
         if (data.tipoDeItem == tipoDeCajaRequerida)
         {
-            // Obtenemos el script de la caja para gestionar cantidades
             CajaDeSuministros cajaScript = itemSujetado.GetComponent<CajaDeSuministros>();
-
-            // Si la caja no tiene el script, usamos la lógica antigua (rellenar todo y destruir)
             if (cajaScript == null)
             {
-                Debug.LogWarning("Esta caja no tiene script de suministros. Se consumirá entera.");
+                Debug.LogWarning("Caja sin script. Se consume entera.");
                 CapacidadActual = capacidadMaxima;
                 jugador.AsignarItem(null);
                 return;
             }
 
-            // Calculamos cuánto espacio libre tiene la máquina
             int espacioLibre = capacidadMaxima - CapacidadActual;
-
             if (espacioLibre <= 0)
             {
                 Debug.Log("¡La máquina ya está llena!");
                 return;
             }
 
-            // Click Derecho: Intentar llenar al MÁXIMO
             if (Input.GetMouseButton(1))
             {
                 int cantidadRecibida = cajaScript.SacarSuministros(espacioLibre);
                 CapacidadActual += cantidadRecibida;
-
-                if (cantidadRecibida > 0)
-                    Debug.Log($"Máquina rellenada. ({CapacidadActual}/{capacidadMaxima})");
-                else
-                    Debug.Log("¡La caja está vacía! Tírala a la papelera.");
+                if (cantidadRecibida > 0) Debug.Log($"Máquina rellenada. ({CapacidadActual}/{capacidadMaxima})");
             }
-            // Click Izquierdo: Rellenar solo 1 unidad
             else
             {
                 int cantidadRecibida = cajaScript.SacarSuministros(1);
-
-                if (cantidadRecibida > 0)
-                {
-                    CapacidadActual++;
-                    Debug.Log("Has añadido 1 unidad.");
-                }
-                else
-                {
-                    Debug.Log("No queda nada en la caja.");
-                }
+                if (cantidadRecibida > 0) CapacidadActual++;
             }
         }
 
+        // --- SERVIR BEBIDA ---
         if (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio)
         {
             if (CapacidadActual > 0)
@@ -103,10 +101,34 @@ public class MaquinaDeBebidas : MonoBehaviour
                 {
                     jugador.AsignarItem(data.prefabItemLleno);
                     CapacidadActual--;
+
+                    // Comprobamos si se rompe al servir
+                    VerificarRotura();
                 }
+            }
+            else
+            {
+                Debug.Log("La máquina de bebidas está vacía.");
             }
             return;
         }
+    }
+
+    private void VerificarRotura()
+    {
+        if (Random.Range(0f, 100f) < probabilidadDeRotura)
+        {
+            estaRota = true;
+            Debug.LogWarning("¡El dispensador de bebidas ha fallado!");
+            ActualizarBarraVisual();
+        }
+    }
+
+    public void Reparar()
+    {
+        estaRota = false;
+        ActualizarBarraVisual();
+        Debug.Log("Máquina reparada.");
     }
 
     private void ActualizarBarraVisual()
@@ -115,6 +137,9 @@ public class MaquinaDeBebidas : MonoBehaviour
         {
             float porcentaje = (float)CapacidadActual / (float)capacidadMaxima;
             barraRellenoImage.fillAmount = porcentaje;
+
+            // Lógica de color
+            barraRellenoImage.color = estaRota ? colorBarraRota : colorBarraNormal;
         }
     }
 }
