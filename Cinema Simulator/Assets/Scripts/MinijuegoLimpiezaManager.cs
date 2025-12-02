@@ -117,9 +117,9 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
 
     public void ObjetoRecogido(GameObject objetoRecogido)
     {
+        Debug.Log("¡He recibido un aviso de recogida!: " + objetoRecogido.name); // <--- AÑADE ESTO
         if (!juegoActivo) return;
 
-        // Buscar coincidencia exacta o padre/hijo
         GameObject objetoEncontrado = null;
         for (int i = 0; i < basuraEnJuego.Count; i++)
         {

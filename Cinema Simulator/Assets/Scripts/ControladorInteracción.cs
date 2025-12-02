@@ -290,7 +290,7 @@ public class ControladorInteraccion : MonoBehaviour
         if (objeto.GetComponent<Papelera>() != null) { return (itemActual != null); }
         if (objeto.GetComponent<CampanaInteractiva>() != null) { return true; }
         if (objeto.GetComponent<ItemData>() != null) { return (itemActual == null); }
-        if (objeto.GetComponent<PedidoCliente>() != null) { return true; }
+        if (objeto.GetComponent<GestorPedidos>() != null) { return true; }
 
         return false;
     }
@@ -354,10 +354,10 @@ public class ControladorInteraccion : MonoBehaviour
         if (itemActual == null) return;
 
         // Limpieza de objetos de minijuego (si aplica)
-        // if (MinijuegoLimpiezaManager.Instance != null)
-        // {
-        //     MinijuegoLimpiezaManager.Instance.ObjetoRecogido(itemActual);
-        // }
+        if (MinijuegoLimpiezaManager.Instance != null)
+        {
+             MinijuegoLimpiezaManager.Instance.ObjetoRecogido(itemActual);
+        }
 
         Destroy(itemActual);
         itemActual = null;
