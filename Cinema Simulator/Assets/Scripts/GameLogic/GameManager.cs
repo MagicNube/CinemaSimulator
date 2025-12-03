@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
     // Ejemplo: Los clientes escuchan esto para dejar de venir.
     public event Action<FaseJuego> AlCambiarFase;
 
+    [Header("Configuración Inicio")]
+    public bool hayIntroAlInicio = true;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -35,7 +38,21 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Empezamos en Fase 1
+        if (hayIntroAlInicio)
+        {
+            Debug.Log("GameManager: Esperando a que termine la Intro...");
+            // No hacemos nada. El IntroManager nos llamará luego.
+        }
+        else
+        {
+            // Si no hay intro (modo pruebas), empezamos directo
+            IniciarPartida();
+        }
+    }
+
+    public void IniciarPartida()
+    {
+        Debug.Log("GameManager: ¡Intro terminada! Arrancando el día.");
         CambiarFase(FaseJuego.Fase1_Preparacion);
     }
 
