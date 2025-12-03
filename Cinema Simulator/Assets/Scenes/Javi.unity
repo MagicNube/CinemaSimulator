@@ -12156,11 +12156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 5668f2498fdc19849bc3f31f1de95f73, type: 3}
       propertyPath: m_LocalPosition.y
-<<<<<<< HEAD
-      value: -1.004
-=======
       value: 2.606
->>>>>>> 5f7b158 (casii casi las colas)
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 5668f2498fdc19849bc3f31f1de95f73, type: 3}
       propertyPath: m_LocalPosition.z
