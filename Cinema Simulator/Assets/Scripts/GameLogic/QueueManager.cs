@@ -5,13 +5,9 @@ using UnityEngine.AI;
 
 public class QueueManager : MonoBehaviour
 {
-    // --- VARIABLES DE CONFIGURACIÓN DE LA COLA ---
-
     [Header("Configuración de la Cola")]
     [Tooltip("Asigna aquí los GameObjects vacíos que marcan las posiciones. ¡El índice 0 es el punto de pedido!")]
     public Transform[] queuePositions;
-
-    // --- VARIABLES DE GENERACIÓN (SPAWN) ---
 
     [Header("Configuración de Generación")]
     public GameObject customerPrefab;
@@ -25,21 +21,19 @@ public class QueueManager : MonoBehaviour
     public int baseMaxCustomers = 30;
 
     [Header("Configuración de Salida")]
-    [Tooltip("Punto donde van los clientes que se van por mal servicio.")]
-    public Transform despawnPoint;
+    [Tooltip("Punto de salida para pedidos CORRECTOS.")]
+    public Transform exitPointSuccess;
+    [Tooltip("Punto de salida para pedidos INCORRECTOS o TIEMPO AGOTADO.")]
+    public Transform exitPointFail;
 
     [Header("Referencias UI (Arrastra aquí los objetos)")]
-    public GameObject REF_PanelMonitor;      // Para el PanelComanda
-    public Transform REF_ContenedorItems;    // Para el ItemsComanda
-
-    // --- VARIABLES INTERNAS Y ESTRUCTURA ---
+    public GameObject REF_PanelMonitor;
+    public Transform REF_ContenedorItems;
 
     private Queue<GameObject> customerQueue = new Queue<GameObject>();
     private int customersSpawnedCount = 0;
     private int totalCustomersForToday = 0;
     private bool isSpawningActive = false;
-
-    // --- INICIO Y EVENTOS ---
 
     void Start()
     {
@@ -51,8 +45,7 @@ public class QueueManager : MonoBehaviour
          if (GameManager.Instance != null) GameManager.Instance.AlCambiarFase -= HandleCambioFase;
     }
 
-    // Método ejemplo para iniciar la generación (debería llamarse desde tu GameManager)
-     public void HandleCambioFase(FaseJuego nuevaFase)
+    public void HandleCambioFase(FaseJuego nuevaFase)
     {
         if (nuevaFase == FaseJuego.Fase2_Servicio) StartSpawningDay();
         else if (nuevaFase == FaseJuego.Fase3_Cierre) StopSpawning();
@@ -71,14 +64,12 @@ public class QueueManager : MonoBehaviour
         }
     }
 
-    // --- GENERADOR ---
     private IEnumerator CustomerSpawner()
     {
         while (isSpawningActive)
         {
             yield return new WaitForSeconds(spawnInterval);
 
-            // 1. ¿Ya hemos generado todos los de hoy?
             if (customersSpawnedCount >= totalCustomersForToday)
             {
                 isSpawningActive = false;
@@ -86,7 +77,6 @@ public class QueueManager : MonoBehaviour
                 yield break;
             }
 
-            // 2. ¿Hay sitio en la cola?
             if (customerQueue.Count < queuePositions.Length)
             {
                 GameObject newCustomer = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
@@ -96,8 +86,6 @@ public class QueueManager : MonoBehaviour
         }
     }
 
-    // --- GESTIÓN DE LA COLA Y SALIDA ---
-
     public void AddCustomerToQueue(GameObject newCustomer)
     {
         if (customerQueue.Count < queuePositions.Length)
@@ -106,7 +94,6 @@ public class QueueManager : MonoBehaviour
             int targetPosIndex = customerQueue.Count - 1;
             MoveCustomer(newCustomer, queuePositions[targetPosIndex].position);
 
-            // Si el cliente es el primero, debe hacer su pedido (solo si el puesto está vacío)
             if (customerQueue.Count == 1)
             {
                 PedidoCliente clienteScript = newCustomer.GetComponent<PedidoCliente>();
@@ -116,31 +103,16 @@ public class QueueManager : MonoBehaviour
         else { Destroy(newCustomer); }
     }
 
-    // Método llamado por el PedidoCliente cuando el pedido termina (correcto/incorrecto/tiempo)
     public void ClientLeavesQueue(GameObject leavingCustomer, bool success)
     {
-        // A. Quitar al cliente de la cola (Asumimos que es el primero)
         customerQueue.Dequeue();
 
-        // B. Mover el cliente a su destino final (NavMeshAgent)
-        if (success)
-        {
-            // Éxito: Va a la posición final (última posición de la cola, e.g., Posición 4)
-            Transform finalPos = queuePositions[queuePositions.Length - 1];
-            MoveCustomer(leavingCustomer, finalPos.position);
-        }
-        else
-        {
-            // Fracaso/Tiempo Agotado: Va al despawn point
-            MoveCustomer(leavingCustomer, despawnPoint.position);
-        }
+        Transform targetExit = success ? exitPointSuccess : exitPointFail;
 
-        Destroy(leavingCustomer, 3f); // Destruye tras el movimiento
+        StartCoroutine(CustomerExitRoutine(leavingCustomer, targetExit.position));
 
-        // C. Mover el resto de la cola hacia adelante
         MoveQueueForward();
 
-        // D. El nuevo cliente de pedido (si existe) debe pedir
         if (customerQueue.Count > 0)
         {
             GameObject newFirstCustomer = customerQueue.Peek();
@@ -151,8 +123,25 @@ public class QueueManager : MonoBehaviour
         ComprobarFinDelDia();
     }
 
+    private IEnumerator CustomerExitRoutine(GameObject customer, Vector3 exitPosition)
+    {
+        NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.SetDestination(exitPosition);
+            agent.isStopped = false;
+        }
 
-    // --- LÓGICA AUXILIAR ---
+        while (customer != null && Vector3.Distance(customer.transform.position, exitPosition) > 1.5f)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        if (customer != null)
+        {
+            Destroy(customer);
+        }
+    }
 
     void ComprobarFinDelDia()
     {
@@ -178,7 +167,7 @@ public class QueueManager : MonoBehaviour
     private void MoveCustomer(GameObject customer, Vector3 targetPosition)
     {
         NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
-        if (agent != null) agent.SetDestination(targetPosition);
+        if (agent != null && agent.isOnNavMesh) agent.SetDestination(targetPosition);
     }
 
     public GameObject GetCustomerAtOrderPoint()

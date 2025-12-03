@@ -14500,6 +14500,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 726321732}
   m_CullTransparentMesh: 1
+--- !u!1 &732517841
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 732517842}
+  m_Layer: 0
+  m_Name: Despawn Exit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &732517842
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 732517841}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -20.73492, y: -54.496464, z: 109.13182}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1798444016}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &740053492
 GameObject:
   m_ObjectHideFlags: 0
@@ -20081,7 +20112,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1013290129}
   m_Layer: 0
-  m_Name: Despawn
+  m_Name: ' Despawn Failed'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20716,7 +20747,7 @@ Transform:
   m_GameObject: {fileID: 1041580023}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.07, y: 0, z: -16.72}
+  m_LocalPosition: {x: 3.07, y: 0, z: -14.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31891,7 +31922,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1629854722}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
   m_Name: 
@@ -35149,6 +35180,7 @@ Transform:
   m_Children:
   - {fileID: 501196643}
   - {fileID: 1183575931}
+  - {fileID: 732517842}
   - {fileID: 1013290129}
   m_Father: {fileID: 170128342}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -35170,9 +35202,10 @@ MonoBehaviour:
   - {fileID: 1573000646}
   customerPrefab: {fileID: 2442889395758981124, guid: 319e1484652ebb04b81a3a748321c6ed, type: 3}
   spawnPoint: {fileID: 1183575931}
-  spawnInterval: 3
+  spawnInterval: 5
   baseMaxCustomers: 30
-  despawnPoint: {fileID: 1013290129}
+  exitPointSuccess: {fileID: 732517842}
+  exitPointFail: {fileID: 1013290129}
   REF_PanelMonitor: {fileID: 537276466}
   REF_ContenedorItems: {fileID: 1623802741}
 --- !u!4 &1798530716 stripped
@@ -44112,5 +44145,10 @@ SceneRoots:
   - {fileID: 1351983458}
   - {fileID: 2063854448}
   - {fileID: 1232466746}
+<<<<<<< HEAD
   - {fileID: 1784381849}
   - {fileID: 1023108237}
+=======
+  - {fileID: 1023108237}
+  - {fileID: 1784381849}
+>>>>>>> 8be4e1d (Commit prprprpr)
