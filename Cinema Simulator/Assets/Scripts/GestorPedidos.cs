@@ -65,6 +65,8 @@ public class GestorPedidos : MonoBehaviour
         string nombreExtra = FormatearNombre(extra);
         pedidoActual.textoDescripcion = "Hola, quiero una entrada y " + nombreExtra + ".";
 
+        Debug.Log($"[PEDIDO GENERADO] Cliente: {gameObject.name} | Descripción: {pedidoActual.textoDescripcion} | Items: {pedidoActual.itemsPendientes.Count}");
+
         if (contenedorBocadillo) contenedorBocadillo.SetActive(true);
         if (panelMonitor) panelMonitor.SetActive(true);
 
@@ -92,10 +94,7 @@ public class GestorPedidos : MonoBehaviour
             MarcarItemComoEntregado(coincidencia);
 
             // ASUMO QUE TIENES ECONOMYMANAGER
-            if (EconomyManager.Instance != null)
-            {
-                EconomyManager.Instance.SumarDinero(itemDelJugador.precio);
-            }
+             if (EconomyManager.Instance != null) { EconomyManager.Instance.SumarDinero(itemDelJugador.precio); }
 
             pedidoActual.itemsPendientes.Remove(coincidencia);
 
@@ -126,6 +125,10 @@ public class GestorPedidos : MonoBehaviour
         if (rutinaFlujoPrincipal != null) StopCoroutine(rutinaFlujoPrincipal);
     }
 
+    // ----------------------------------------------------------------------
+    // --- MÉTODOS DE FLUJO Y COMUNICACIÓN ---
+    // ----------------------------------------------------------------------
+
     IEnumerator GestionarMensajes(string msg, float duracion, bool pedidoFinalizado)
     {
         if (textoBocadillo != null) textoBocadillo.text = msg;
@@ -143,7 +146,7 @@ public class GestorPedidos : MonoBehaviour
 
             // COMUNICAR AL CLIENTE QUE SE VAYA (EXITO)
             PedidoCliente pc = GetComponent<PedidoCliente>();
-            if (pc != null) pc.OrderFinished(true);
+            if (pc != null) pc.OrderFinished(true); // <--- Llama al método correcto
         }
         else
         {
@@ -156,44 +159,6 @@ public class GestorPedidos : MonoBehaviour
         }
     }
 
-    // --- MÉTODOS VISUALES AUXILIARES ---
-
-    private void ActualizarListaMonitorVisual()
-    {
-        if (!contenedorItemsMonitor || !prefabItemLista) return;
-        foreach (Transform child in contenedorItemsMonitor) Destroy(child.gameObject);
-
-        foreach (var item in pedidoActual.itemsPendientes)
-        {
-            GameObject obj = Instantiate(prefabItemLista, contenedorItemsMonitor);
-            obj.name = "Row_" + item.tipo + "_" + item.nivel;
-            TextMeshProUGUI txt = obj.GetComponentInChildren<TextMeshProUGUI>();
-            if (txt) txt.text = "<color=red>X</color> " + FormatearNombre(item);
-            Toggle tgl = obj.GetComponentInChildren<Toggle>();
-            if (tgl) tgl.isOn = false;
-        }
-    }
-
-    private void MarcarItemComoEntregado(ItemRequerido item)
-    {
-        if (!contenedorItemsMonitor) return;
-        Transform fila = contenedorItemsMonitor.Find("Row_" + item.tipo + "_" + item.nivel);
-        if (fila)
-        {
-            Toggle tgl = fila.GetComponentInChildren<Toggle>();
-            if (tgl) tgl.isOn = true;
-            TextMeshProUGUI txt = fila.GetComponentInChildren<TextMeshProUGUI>();
-            if (txt) txt.text = "<color=green>V</color> " + FormatearNombre(item);
-        }
-    }
-
-    private string FormatearNombre(ItemRequerido item)
-    {
-        // Ajusta los nombres según tus necesidades
-        if (item.tipo.ToString().Contains("Caja")) return item.tipo.ToString().Replace("Caja", "Caja ");
-        return item.tipo.ToString();
-    }
-
     IEnumerator EscribirEnTexto(TextMeshProUGUI target, string frase, float vel)
     {
         if (!target) yield break;
@@ -203,5 +168,75 @@ public class GestorPedidos : MonoBehaviour
             target.text += c;
             yield return new WaitForSeconds(vel);
         }
+    }
+
+    // ----------------------------------------------------------------------
+    // --- MÉTODOS VISUALES Y DE DATOS ---
+    // ----------------------------------------------------------------------
+
+    private void ActualizarListaMonitorVisual()
+    {
+        if (contenedorItemsMonitor == null) return;
+
+        for (int i = contenedorItemsMonitor.childCount - 1; i >= 0; i--)
+            Destroy(contenedorItemsMonitor.GetChild(i).gameObject);
+
+        foreach (ItemRequerido item in pedidoActual.itemsPendientes)
+        {
+            GameObject nuevoObj = Instantiate(prefabItemLista, contenedorItemsMonitor);
+
+            // 1. Buscamos el componente ItemComandaUI
+            ItemComandaUI uiItem = nuevoObj.GetComponent<ItemComandaUI>();
+
+            if (uiItem != null)
+            {
+                // 2. Usamos el método Configurar
+                uiItem.Configurar(FormatearNombre(item));
+
+                // Asignamos el nombre para poder buscarlo después
+                nuevoObj.name = "Row_" + item.tipo.ToString() + "_" + item.nivel;
+            }
+            else
+            {
+                Debug.LogError("El prefabItemLista no tiene el script ItemComandaUI.");
+            }
+        }
+    }
+
+    private void MarcarItemComoEntregado(ItemRequerido item)
+    {
+        if (contenedorItemsMonitor == null) return;
+
+        string nombreBuscado = "Row_" + item.tipo.ToString() + "_" + item.nivel;
+        Transform fila = contenedorItemsMonitor.Find(nombreBuscado);
+
+        if (fila != null)
+        {
+            // Buscamos el componente ItemComandaUI y cambiamos el estado
+            ItemComandaUI uiItem = fila.GetComponent<ItemComandaUI>();
+            if (uiItem != null)
+            {
+                uiItem.SetEstado(true); // Mostrar el tick (V)
+            }
+        }
+    }
+
+    private string FormatearNombre(ItemRequerido item)
+    {
+        if (item.tipo == ItemData.TipoDeItem.Ticket) return "Entrada";
+        if (item.tipo == ItemData.TipoDeItem.Bebida) return "Bebida";
+        if (item.tipo == ItemData.TipoDeItem.Perrito) return "Perrito";
+
+        if (item.tipo == ItemData.TipoDeItem.Palomitas)
+        {
+            if (item.nivel == 1) return "Palomitas (S)";
+            if (item.nivel == 2) return "Palomitas (M)";
+            if (item.nivel == 3) return "Palomitas (L)";
+        }
+
+        if (item.tipo.ToString().Contains("Caja")) return item.tipo.ToString().Replace("Caja", "Caja ");
+
+
+        return item.tipo.ToString();
     }
 }
