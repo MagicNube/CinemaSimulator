@@ -7018,7 +7018,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44455096, g: 0.7735849, b: 0.39044145, a: 0.27058825}
+  m_Color: {r: 0.49446365, g: 0.8301887, b: 0.44250622, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -32733,9 +32733,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddfb0b22dfb8f5c429113c0b7db8b88f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faseActual: 1
+  faseActual: 0
   diaActual: 1
   duracionDiaMinutos: 5
+  hayIntroAlInicio: 1
 --- !u!114 &1630949215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32816,8 +32817,8 @@ MonoBehaviour:
   panelNegroIntro: {fileID: 596333395}
   panelCartaAbuelo: {fileID: 1902592667}
   panelInterfaz: {fileID: 86639515}
-  velocidadFade: 0.5
-  esperaAntesDeCarta: 1
+  velocidadFade: 1.5
+  esperaAntesDeCarta: 0.5
 --- !u!4 &1643637161 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6885863440733261156, guid: 2ecd3ca4ae5b6e242a2d1499155999c2, type: 3}
