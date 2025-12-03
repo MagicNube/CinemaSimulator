@@ -8,7 +8,9 @@ public class LightSwitch : MonoBehaviour
     public Light targetLight;
 
     // Estado actual de la luz.
-    private bool isLightOn = true;
+    private bool isLightOn = false;
+
+    private Animator animator;
 
     void Start()
     {
@@ -23,6 +25,7 @@ public class LightSwitch : MonoBehaviour
         {
             isLightOn = targetLight.enabled;
         }
+        animator = GetComponent<Animator>();
     }
 
     // Este método público se llamará desde tu script ControladorInteraccion
@@ -30,6 +33,7 @@ public class LightSwitch : MonoBehaviour
     {
         // 1. Alternar el estado
         isLightOn = !isLightOn;
+        animator.SetBool("isOn", isLightOn);
 
         // 2. Aplicar el nuevo estado a la luz.
         if (targetLight != null)

@@ -1,3 +1,4 @@
+using UnityEditorInternal;
 using UnityEngine;
 
 public class CambiadorFase : MonoBehaviour
@@ -9,7 +10,10 @@ public class CambiadorFase : MonoBehaviour
 
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.AvanzarSiguienteFase();
+            if (!TransitionManager.Instance.transicionando)
+            {
+                GameManager.Instance.AvanzarSiguienteFase();
+            }
         }
     }
 }

@@ -3,52 +3,49 @@ using UnityEngine;
 public class LightingManager : MonoBehaviour
 {
     [Header("Referencias")]
-    public Light sol; // Arrastra tu Directional Light aquí
+    public Light sol;
 
     [Header("Configuración de Transición")]
-    public float velocidadTransicion = 2.0f; // Qué tan rápido cambia la luz
+    public float velocidadTransicion = 0.5f; // Un poco más lento para que sea suave
 
-    // Definimos cómo se ve el sol en cada fase
     [System.Serializable]
     public struct AmbienteFase
     {
-        public string nombreFase; // Solo para que te aclares en el inspector
-        public Vector3 rotacionSol; // El ángulo del sol (Eje X es la altura)
-        public Color colorLuz;      // El color de la luz
-        public float intensidad;    // Brillo (1 para día, 0.2 para noche)
+        public string nombreFase;
+        public Vector3 rotacionSol;
+        public Color colorLuzSol;
+        public float intensidadSol;
+
+        [Header("Nueva Variable de Oscuridad")]
+        public Color colorAmbiente; // <--- ESTO CONTROLA LA OSCURIDAD GENERAL
     }
 
     [Header("Configuración por Fases")]
     public AmbienteFase ambienteFase1; // Mañana
     public AmbienteFase ambienteFase2; // Mediodía
-    public AmbienteFase ambienteFase3; // Atardecer/Cierre
-    public AmbienteFase ambienteFase4; // Noche/Limpieza
+    public AmbienteFase ambienteFase3; // Atardecer
+    public AmbienteFase ambienteFase4; // Noche
 
-    // Variables internas para la interpolación
+    // Variables internas
     private Quaternion rotacionObjetivo;
-    private Color colorObjetivo;
-    private float intensidadObjetivo;
+    private Color colorSolObjetivo;
+    private float intensidadSolObjetivo;
+    private Color colorAmbienteObjetivo;
 
     void Start()
     {
-        if (sol == null)
-        {
-            Debug.LogError("¡Falta asignar la Luz (Sol) en el LightingManager!");
-            return;
-        }
+        if (sol == null) return;
 
-        // Nos suscribimos al evento de cambio de fase del GameManager
         if (GameManager.Instance != null)
         {
             GameManager.Instance.AlCambiarFase += ActualizarIluminacion;
-
-            // Inicializamos con la fase actual
             ActualizarIluminacion(GameManager.Instance.faseActual);
 
-            // Aplicamos instantáneamente al inicio para que no haga transición rara
+            // Aplicar instantáneo al inicio
             sol.transform.rotation = rotacionObjetivo;
-            sol.color = colorObjetivo;
-            sol.intensity = intensidadObjetivo;
+            sol.color = colorSolObjetivo;
+            sol.intensity = intensidadSolObjetivo;
+            RenderSettings.ambientLight = colorAmbienteObjetivo; // Aplicar ambiente
         }
     }
 
@@ -62,41 +59,31 @@ public class LightingManager : MonoBehaviour
     {
         if (sol == null) return;
 
-        // --- MAGIA: INTERPOLACIÓN SUAVE (Lerp) ---
-        // Movemos la rotación actual hacia la objetivo poco a poco
+        // 1. SOL
         sol.transform.rotation = Quaternion.Slerp(sol.transform.rotation, rotacionObjetivo, Time.deltaTime * velocidadTransicion);
+        sol.color = Color.Lerp(sol.color, colorSolObjetivo, Time.deltaTime * velocidadTransicion);
+        sol.intensity = Mathf.Lerp(sol.intensity, intensidadSolObjetivo, Time.deltaTime * velocidadTransicion);
 
-        // Cambiamos el color suavemente
-        sol.color = Color.Lerp(sol.color, colorObjetivo, Time.deltaTime * velocidadTransicion);
-
-        // Cambiamos la intensidad suavemente
-        sol.intensity = Mathf.Lerp(sol.intensity, intensidadObjetivo, Time.deltaTime * velocidadTransicion);
+        // 2. AMBIENTE (El truco de la oscuridad)
+        // Interpolamos el color general del mundo
+        RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, colorAmbienteObjetivo, Time.deltaTime * velocidadTransicion);
     }
 
-    // Esta función se llama sola cuando el GameManager cambia de fase
     void ActualizarIluminacion(FaseJuego nuevaFase)
     {
         AmbienteFase perfil = new AmbienteFase();
 
         switch (nuevaFase)
         {
-            case FaseJuego.Fase1_Preparacion: // MAÑANA
-                perfil = ambienteFase1;
-                break;
-            case FaseJuego.Fase2_Servicio:    // MEDIODÍA
-                perfil = ambienteFase2;
-                break;
-            case FaseJuego.Fase3_Cierre:      // ATARDECER
-                perfil = ambienteFase3;
-                break;
-            case FaseJuego.Fase4_Limpieza:    // NOCHE
-                perfil = ambienteFase4;
-                break;
+            case FaseJuego.Fase1_Preparacion: perfil = ambienteFase1; break;
+            case FaseJuego.Fase2_Servicio: perfil = ambienteFase2; break;
+            case FaseJuego.Fase3_Cierre: perfil = ambienteFase3; break;
+            case FaseJuego.Fase4_Limpieza: perfil = ambienteFase4; break;
         }
 
-        // Guardamos los objetivos para que el Update haga el trabajo sucio
         rotacionObjetivo = Quaternion.Euler(perfil.rotacionSol);
-        colorObjetivo = perfil.colorLuz;
-        intensidadObjetivo = perfil.intensidad;
+        colorSolObjetivo = perfil.colorLuzSol;
+        intensidadSolObjetivo = perfil.intensidadSol;
+        colorAmbienteObjetivo = perfil.colorAmbiente;
     }
 }
