@@ -10,6 +10,8 @@ TagManager:
   - NPC
   - MaquinaBebidas
   - ANCHOR_POINT
+  - PanelMonitor
+  - ItemsContenedor
   layers:
   - Default
   - TransparentFX

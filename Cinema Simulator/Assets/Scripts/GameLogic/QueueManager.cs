@@ -28,6 +28,10 @@ public class QueueManager : MonoBehaviour
     [Tooltip("Punto donde van los clientes que se van por mal servicio.")]
     public Transform despawnPoint;
 
+    [Header("Referencias UI (Arrastra aquí los objetos)")]
+    public GameObject REF_PanelMonitor;      // Para el PanelComanda
+    public Transform REF_ContenedorItems;    // Para el ItemsComanda
+
     // --- VARIABLES INTERNAS Y ESTRUCTURA ---
 
     private Queue<GameObject> customerQueue = new Queue<GameObject>();

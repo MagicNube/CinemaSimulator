@@ -187,10 +187,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.7
+  m_Radius: 0.5538211
+  m_Height: 1.8045139
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: -0.00543109, y: 0.052256927, z: -0.059252042}
 --- !u!114 &1757393954047116276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,17 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef832bc34a418064bbb77e96e4415667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contenedorBocadillo: {fileID: 6358158493892884941}
-  textoDelPedido: {fileID: 8807084133920054524}
-  posiblesPedidos:
-  - textoDelPedido: Quiero una bebida
-    itemRequerido: 0
-  - textoDelPedido: Dame unas palomitas
-    itemRequerido: 1
-  - textoDelPedido: "\xBFMe das un perrito?"
-    itemRequerido: 2
-  - textoDelPedido: Un ticket por favor
-    itemRequerido: 5
+  maxWaitTime: 45
 --- !u!195 &8319102642280540846
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -249,7 +239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   icono: {fileID: 0}
-  texto: {fileID: 0}
+  texto: {fileID: 8807084133920054524}
   cruzSprite: {fileID: 0}
   tickSprite: {fileID: 0}
 --- !u!114 &2436418800098394630
@@ -264,8 +254,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb218a6deca31c1428b97fec6f7ec48a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contenedorBocadillo: {fileID: 0}
-  textoBocadillo: {fileID: 0}
+  contenedorBocadillo: {fileID: 6358158493892884941}
+  textoBocadillo: {fileID: 8807084133920054524}
   panelMonitor: {fileID: 0}
   contenedorItemsMonitor: {fileID: 0}
   prefabItemLista: {fileID: 3526382846094992485, guid: 33b9a1cec22b4c441b7683fa8d56f9f4, type: 3}
@@ -466,8 +456,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
