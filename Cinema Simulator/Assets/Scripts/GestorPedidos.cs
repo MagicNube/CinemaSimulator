@@ -181,6 +181,7 @@ public class GestorPedidos : MonoBehaviour
 
             if (EconomyManager.Instance != null)
             {
+                Debug.Log("Sumando dinero por item entregado: " + itemDelJugador.precio);
                 EconomyManager.Instance.SumarDinero(itemDelJugador.precio);
             }
 

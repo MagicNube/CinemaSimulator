@@ -37,6 +37,7 @@ public class EconomyManager : MonoBehaviour
 
     public void SumarDinero(int cantidad)
     {
+        Debug.Log("Se han sumado " + cantidad + " al dinero actual.");
         dineroActual += cantidad;
         ingresosHoy += cantidad;
         ActualizarTextoDinero();
