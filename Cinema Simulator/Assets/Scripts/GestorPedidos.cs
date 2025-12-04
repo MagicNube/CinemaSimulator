@@ -43,7 +43,7 @@ public class GestorPedidos : MonoBehaviour
 
     void Awake()
     {
-        // 1. UI INTERNA (Bocadillo) - Se busca dentro del prefab
+        // 1. UI INTERNA (Bocadillo)
         if (contenedorBocadillo == null)
         {
             Transform bocadilloTrans = transform.Find("BocadilloCanvas");
@@ -55,12 +55,11 @@ public class GestorPedidos : MonoBehaviour
         }
         if (contenedorBocadillo != null) contenedorBocadillo.SetActive(false);
 
-        // 2. UI EXTERNA (Monitor) - SE LA PEDIMOS AL QUEUE MANAGER
+        // 2. UI EXTERNA (Monitor)
         QueueManager qm = FindObjectOfType<QueueManager>();
 
         if (qm != null)
         {
-            // ¡AQUÍ ESTÁ LA MAGIA! Cogemos lo que arrastraste en el Paso 2
             panelMonitor = qm.REF_PanelMonitor;
             contenedorItemsMonitor = qm.REF_ContenedorItems;
         }
@@ -72,40 +71,69 @@ public class GestorPedidos : MonoBehaviour
 
     public void GenerarNuevoPedido()
     {
-        // Doble verificación: solo pido si el QueueManager dice que es mi turno
+        // Verificar turno
         QueueManager qm = FindObjectOfType<QueueManager>();
         if (qm != null && qm.GetCustomerAtOrderPoint() != this.gameObject) return;
 
         DetenerTodo();
         pedidoActual = new PedidoRuntime();
 
+        // ---------------------------------------------------------
+        // 1. SIEMPRE AÑADIR LA ENTRADA (OBLIGATORIO)
+        // ---------------------------------------------------------
         pedidoActual.itemsPendientes.Add(new ItemRequerido(ItemData.TipoDeItem.Ticket, 1));
 
-        int opcionAleatoria = Random.Range(0, 5);
-        ItemRequerido extra = null;
+        // ---------------------------------------------------------
+        // 2. AÑADIR EXTRAS ALEATORIOS (ENTRE 1 Y 3 COSAS MÁS)
+        // ---------------------------------------------------------
+        int cantidadExtras = Random.Range(1, 4); // Generará 1, 2 o 3 items extra
 
-        switch (opcionAleatoria)
+        for (int i = 0; i < cantidadExtras; i++)
         {
-            case 0: extra = new ItemRequerido(ItemData.TipoDeItem.Bebida, 1); break;
-            case 1: extra = new ItemRequerido(ItemData.TipoDeItem.Perrito, 1); break;
-            case 2: extra = new ItemRequerido(ItemData.TipoDeItem.Palomitas, 1); break;
-            case 3: extra = new ItemRequerido(ItemData.TipoDeItem.Palomitas, 2); break;
-            case 4: extra = new ItemRequerido(ItemData.TipoDeItem.Palomitas, 3); break;
+            ItemRequerido extra = GenerarItemAleatorio();
+            pedidoActual.itemsPendientes.Add(extra);
         }
 
-        pedidoActual.itemsPendientes.Add(extra);
+        // ---------------------------------------------------------
+        // 3. CONSTRUIR TEXTO DE DESCRIPCIÓN
+        // ---------------------------------------------------------
+        string descripcion = "Hola, ponme: ";
+        for (int i = 0; i < pedidoActual.itemsPendientes.Count; i++)
+        {
+            descripcion += FormatearNombre(pedidoActual.itemsPendientes[i]);
 
-        string nombreExtra = FormatearNombre(extra);
-        pedidoActual.textoDescripcion = "Hola, quiero una entrada y " + nombreExtra + ".";
+            // Si no es el último, añade coma, si es el último pone punto.
+            if (i < pedidoActual.itemsPendientes.Count - 1) descripcion += ", ";
+            else descripcion += ".";
+        }
+        pedidoActual.textoDescripcion = descripcion;
 
-        Debug.Log($"[PEDIDO GENERADO] Cliente: {gameObject.name} | Descripción: {pedidoActual.textoDescripcion} | Items: {pedidoActual.itemsPendientes.Count}");
+        Debug.Log($"[PEDIDO GENERADO] Cliente: {gameObject.name} | Items: {pedidoActual.itemsPendientes.Count}");
 
+        // ---------------------------------------------------------
+        // 4. MOSTRAR UI
+        // ---------------------------------------------------------
         contenedorBocadillo.SetActive(true);
         panelMonitor.SetActive(true);
 
         ActualizarListaMonitorVisual();
 
         rutinaNPC = StartCoroutine(EscribirEnTexto(textoBocadillo, pedidoActual.textoDescripcion, 0.02f));
+    }
+
+    // Método auxiliar para elegir un item al azar
+    private ItemRequerido GenerarItemAleatorio()
+    {
+        int opcion = Random.Range(0, 5);
+        switch (opcion)
+        {
+            case 0: return new ItemRequerido(ItemData.TipoDeItem.Bebida, 1);
+            case 1: return new ItemRequerido(ItemData.TipoDeItem.Perrito, 1);
+            case 2: return new ItemRequerido(ItemData.TipoDeItem.Palomitas, 1); // Pequeñas
+            case 3: return new ItemRequerido(ItemData.TipoDeItem.Palomitas, 2); // Medianas
+            case 4: return new ItemRequerido(ItemData.TipoDeItem.Palomitas, 3); // Grandes
+            default: return new ItemRequerido(ItemData.TipoDeItem.Bebida, 1);
+        }
     }
 
     public bool RecibirItem(ItemData itemDelJugador)
@@ -181,18 +209,29 @@ public class GestorPedidos : MonoBehaviour
 
     private void MarcarItemComoEntregado(ItemRequerido item)
     {
+        // NOTA: Como ahora puede haber items repetidos (ej: 2 palomitas),
+        // buscamos el PRIMERO que encontremos que no esté marcado (toggle off)
+        // para no tachar los dos a la vez si tienen el mismo nombre.
+
         string nombreBuscado = "Row_" + item.tipo.ToString() + "_" + item.nivel;
-        Transform fila = contenedorItemsMonitor.Find(nombreBuscado);
 
-        if (fila != null)
+        // Buscamos todos los que coincidan con el nombre
+        foreach(Transform child in contenedorItemsMonitor)
         {
-            Toggle tgl = fila.GetComponentInChildren<Toggle>();
-            if (tgl) tgl.isOn = true;
-
-            TextMeshProUGUI txt = fila.GetComponentInChildren<TextMeshProUGUI>();
-            if (txt)
+            if(child.name == nombreBuscado)
             {
-                txt.text = "<size=150%><color=green><b>V</b></color></size> " + FormatearNombre(item);
+                Toggle tgl = child.GetComponentInChildren<Toggle>();
+                // Si encontramos uno que NO esté marcado todavía, marcamos ese y salimos
+                if (tgl && !tgl.isOn)
+                {
+                    tgl.isOn = true;
+                    TextMeshProUGUI txt = child.GetComponentInChildren<TextMeshProUGUI>();
+                    if (txt)
+                    {
+                        txt.text = "<size=150%><color=green><b>V</b></color></size> " + FormatearNombre(item);
+                    }
+                    return; // Importante: salir tras marcar UNO solo
+                }
             }
         }
     }
@@ -237,9 +276,8 @@ public class GestorPedidos : MonoBehaviour
             pedidoActual = null;
             for (int i = contenedorItemsMonitor.childCount - 1; i >= 0; i--) { Destroy(contenedorItemsMonitor.GetChild(i).gameObject); }
 
-            // COMUNICAR AL CLIENTE QUE SE VAYA (EXITO)
             PedidoCliente pc = GetComponent<PedidoCliente>();
-            if (pc != null) pc.OrderFinished(true); // <--- Llama al método correcto
+            if (pc != null) pc.OrderFinished(true);
         }
         else
         {
@@ -258,4 +296,3 @@ public class GestorPedidos : MonoBehaviour
         if (rutinaFlujoPrincipal != null) StopCoroutine(rutinaFlujoPrincipal);
     }
 }
-

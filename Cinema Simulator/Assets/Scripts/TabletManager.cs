@@ -415,9 +415,17 @@ public class TabletManager : MonoBehaviour
             }
         }
 
+        // 1. Primero comprobamos si es nulo para evitar errores
         if (TaskManager.Instance != null)
         {
+            // Debug útil: Mostramos que existe y llamamos al método
+            Debug.Log("TaskManager encontrado. Marcando película como completada...");
             TaskManager.Instance.MarcarPeliculaCompletada();
+        }
+        else
+        {
+            // 2. Si es nulo, lanzamos un error para que te enteres
+            Debug.LogError("¡ERROR CRÍTICO! TaskManager.Instance es NULL. ¿Has puesto el prefab del TaskManager en la escena?");
         }
 
         // Bloquear botones tras elegir

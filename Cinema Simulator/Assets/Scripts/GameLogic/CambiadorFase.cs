@@ -9,6 +9,7 @@ public class CambiadorFase : MonoBehaviour
     {
 
         if (GameManager.Instance != null)
+        Debug.Log(GameManager.Instance.ToString());
         {
             if (!TransitionManager.Instance.transicionando)
             {
