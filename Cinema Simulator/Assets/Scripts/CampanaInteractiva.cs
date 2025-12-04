@@ -5,9 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class CampanaInteractiva : MonoBehaviour
 {
-    // NO NECESITAS ASIGNAR ESTO EN EL INSPECTOR
-    // public GestorPedidos clienteAsociado;
-
     private AudioSource audioSource;
     private Animator animator;
     private bool puedeSonar = true;

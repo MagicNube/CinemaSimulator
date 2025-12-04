@@ -38147,7 +38147,7 @@ MonoBehaviour:
   - {fileID: 1573000646}
   - {fileID: 1684184262}
   - {fileID: 758438205}
-  customerPrefab: {fileID: 2442889395758981124, guid: 319e1484652ebb04b81a3a748321c6ed, type: 3}
+  customerPrefab: {fileID: 1389916321450148745, guid: 92cdd1b166177be45878ae1b51b532de, type: 3}
   spawnPoint: {fileID: 1183575931}
   spawnInterval: 5
   baseMaxCustomers: 30

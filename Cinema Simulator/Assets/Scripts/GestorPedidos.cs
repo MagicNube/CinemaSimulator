@@ -40,9 +40,12 @@ public class GestorPedidos : MonoBehaviour
 
     private Coroutine rutinaNPC;
     private Coroutine rutinaFlujoPrincipal;
+    private Outline customerOutline;
 
     void Awake()
     {
+        customerOutline = GetComponent<Outline>();
+        if (customerOutline != null) customerOutline.enabled = false;
         // 1. UI INTERNA (Bocadillo)
         if (contenedorBocadillo == null)
         {
@@ -73,10 +76,16 @@ public class GestorPedidos : MonoBehaviour
     {
         // Verificar turno
         QueueManager qm = FindObjectOfType<QueueManager>();
-        if (qm != null && qm.GetCustomerAtOrderPoint() != this.gameObject) return;
+
+        // COMENTA ESTA LÍNEA SI TE DABA PROBLEMAS CON LA CAMPANA
+        // if (qm != null && qm.GetCustomerAtOrderPoint() != this.gameObject) return;
 
         DetenerTodo();
         pedidoActual = new PedidoRuntime();
+
+        if (contenedorBocadillo != null) contenedorBocadillo.SetActive(true);
+        if (panelMonitor != null) panelMonitor.SetActive(true);
+        if (customerOutline != null) customerOutline.enabled = true;
 
         // ---------------------------------------------------------
         // 1. SIEMPRE AÑADIR LA ENTRADA (OBLIGATORIO)
@@ -84,14 +93,27 @@ public class GestorPedidos : MonoBehaviour
         pedidoActual.itemsPendientes.Add(new ItemRequerido(ItemData.TipoDeItem.Ticket, 1));
 
         // ---------------------------------------------------------
-        // 2. AÑADIR EXTRAS ALEATORIOS (ENTRE 1 Y 3 COSAS MÁS)
+        // 2. AÑADIR EXTRAS ALEATORIOS (SIN REPETIDOS)
         // ---------------------------------------------------------
         int cantidadExtras = Random.Range(1, 4); // Generará 1, 2 o 3 items extra
+        int extrasAnadidos = 0;
+        int intentosSeguridad = 0; // Para evitar bucles infinitos (por si acaso)
 
-        for (int i = 0; i < cantidadExtras; i++)
+        while (extrasAnadidos < cantidadExtras && intentosSeguridad < 50)
         {
-            ItemRequerido extra = GenerarItemAleatorio();
-            pedidoActual.itemsPendientes.Add(extra);
+            intentosSeguridad++;
+            ItemRequerido candidato = GenerarItemAleatorio();
+
+            // LÓGICA DE UNICIDAD:
+            // Buscamos en la lista si ya existe algún item con el MISMO tipo y el MISMO nivel
+            bool yaExiste = pedidoActual.itemsPendientes.Any(x => x.tipo == candidato.tipo && x.nivel == candidato.nivel);
+
+            if (!yaExiste)
+            {
+                pedidoActual.itemsPendientes.Add(candidato);
+                extrasAnadidos++;
+            }
+            // Si ya existe, no hacemos nada y el bucle while vuelve a intentarlo
         }
 
         // ---------------------------------------------------------
@@ -114,7 +136,7 @@ public class GestorPedidos : MonoBehaviour
         // 4. MOSTRAR UI
         // ---------------------------------------------------------
         contenedorBocadillo.SetActive(true);
-        panelMonitor.SetActive(true);
+        if (panelMonitor != null) panelMonitor.SetActive(true);
 
         ActualizarListaMonitorVisual();
 
@@ -138,7 +160,6 @@ public class GestorPedidos : MonoBehaviour
 
     public bool RecibirItem(ItemData itemDelJugador)
     {
-        Debug.Log("ME ESTAN DANDO UN ITEM");
         if (pedidoActual == null || pedidoActual.itemsPendientes.Count == 0) return false;
 
         DetenerTodo();
@@ -154,6 +175,7 @@ public class GestorPedidos : MonoBehaviour
 
         if (coincidencia != null)
         {
+            Debug.Log("ME ESTAN DANDO UN ITEM");
             // Primero marcamos visualmente
             MarcarItemComoEntregado(coincidencia);
 
@@ -209,32 +231,21 @@ public class GestorPedidos : MonoBehaviour
 
     private void MarcarItemComoEntregado(ItemRequerido item)
     {
-        // NOTA: Como ahora puede haber items repetidos (ej: 2 palomitas),
-        // buscamos el PRIMERO que encontremos que no esté marcado (toggle off)
-        // para no tachar los dos a la vez si tienen el mismo nombre.
-
         string nombreBuscado = "Row_" + item.tipo.ToString() + "_" + item.nivel;
+        Transform fila = contenedorItemsMonitor.Find(nombreBuscado);
 
-        // Buscamos todos los que coincidan con el nombre
-        foreach(Transform child in contenedorItemsMonitor)
+        if (fila != null)
         {
-            if(child.name == nombreBuscado)
+            Toggle tgl = fila.GetComponentInChildren<Toggle>();
+            if (tgl) tgl.isOn = true;
+
+            TextMeshProUGUI txt = fila.GetComponentInChildren<TextMeshProUGUI>();
+            if (txt)
             {
-                Toggle tgl = child.GetComponentInChildren<Toggle>();
-                // Si encontramos uno que NO esté marcado todavía, marcamos ese y salimos
-                if (tgl && !tgl.isOn)
-                {
-                    tgl.isOn = true;
-                    TextMeshProUGUI txt = child.GetComponentInChildren<TextMeshProUGUI>();
-                    if (txt)
-                    {
-                        txt.text = "<size=150%><color=green><b>V</b></color></size> " + FormatearNombre(item);
-                    }
-                    return; // Importante: salir tras marcar UNO solo
-                }
+                txt.text = "<size=150%><color=green><b>V</b></color></size> " + FormatearNombre(item);
             }
-        }
-    }
+        }
+    }
 
     private string FormatearNombre(ItemRequerido item)
     {
@@ -250,6 +261,31 @@ public class GestorPedidos : MonoBehaviour
         }
 
         return item.tipo.ToString();
+    }
+
+    // Función pública para llamar desde fuera cuando se acaba el tiempo
+    public void ForzarCierrePedido()
+    {
+        DetenerTodo(); // Parar de escribir texto
+
+        // 1. APAGAR UI Y EFECTOS
+        if (contenedorBocadillo != null) contenedorBocadillo.SetActive(false);
+        if (panelMonitor != null) panelMonitor.SetActive(false);
+        if (customerOutline != null) customerOutline.enabled = false;
+
+        // 2. LIMPIAR DATOS
+        pedidoActual = null;
+
+        // 3. LIMPIAR MONITOR
+        if (contenedorItemsMonitor != null)
+        {
+            for (int i = contenedorItemsMonitor.childCount - 1; i >= 0; i--)
+            {
+                Destroy(contenedorItemsMonitor.GetChild(i).gameObject);
+            }
+        }
+
+        Debug.Log("Pedido cancelado por tiempo o error. UI limpiada.");
     }
 
     IEnumerator EscribirEnTexto(TextMeshProUGUI targetText, string frase, float velocidad)
@@ -273,6 +309,7 @@ public class GestorPedidos : MonoBehaviour
         {
             contenedorBocadillo.SetActive(false);
             panelMonitor.SetActive(false);
+            if (customerOutline != null) customerOutline.enabled = false;
             pedidoActual = null;
             for (int i = contenedorItemsMonitor.childCount - 1; i >= 0; i--) { Destroy(contenedorItemsMonitor.GetChild(i).gameObject); }
 

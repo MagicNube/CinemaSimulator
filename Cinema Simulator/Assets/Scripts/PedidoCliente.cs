@@ -30,9 +30,9 @@ public class PedidoCliente : MonoBehaviour
         isWaitingForOrder = true;
 
         // --- CORRECCIÓN AQUÍ ---
-        // Borramos o comentamos esta línea. 
+        // Borramos o comentamos esta línea.
         // Ya no generamos el pedido automáticamente al llegar.
-        // gestorPedidos.GenerarNuevoPedido(); 
+        // gestorPedidos.GenerarNuevoPedido();
         // -----------------------
 
         Debug.Log($"Cliente {gameObject.name}: He llegado al mostrador. Espero a que me toquen la campana...");
@@ -45,7 +45,7 @@ public class PedidoCliente : MonoBehaviour
         {
             Debug.Log($"El cliente {gameObject.name} se cansó de esperar (tiempo agotado).");
 
-            gestorPedidos.DetenerTodo();
+            gestorPedidos.ForzarCierrePedido();
             OrderFinished(false);
         }
     }

@@ -174,8 +174,8 @@ public class QueueManager : MonoBehaviour
         NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
         if (agent != null && agent.isOnNavMesh)
         {
-            agent.SetDestination(exitPosition);
             agent.isStopped = false;
+            agent.SetDestination(exitPosition);
         }
 
         while (customer != null && Vector3.Distance(customer.transform.position, exitPosition) > 1.5f)
@@ -196,7 +196,7 @@ public class QueueManager : MonoBehaviour
 
         if (yaNoVienenMas && colaVacia)
         {
-            // if (GameManager.Instance != null) { GameManager.Instance.FinalizarServicioPorFaltaDeClientes(); }
+            if (GameManager.Instance != null) { GameManager.Instance.FinalizarServicioPorFaltaDeClientes(); }
         }
     }
 
@@ -235,7 +235,7 @@ public class QueueManager : MonoBehaviour
         {
             return customerQueue.Peek();
         }
-        return null;
+        return null;    
     }
 
     public void StopSpawning()
