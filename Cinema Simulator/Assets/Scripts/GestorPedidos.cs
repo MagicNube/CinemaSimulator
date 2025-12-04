@@ -314,7 +314,10 @@ public class GestorPedidos : MonoBehaviour
             for (int i = contenedorItemsMonitor.childCount - 1; i >= 0; i--) { Destroy(contenedorItemsMonitor.GetChild(i).gameObject); }
 
             PedidoCliente pc = GetComponent<PedidoCliente>();
-            if (pc != null) pc.OrderFinished(true);
+            if (pc != null) {
+                pc.OrderFinished(true);
+                Debug.Log("Order Finished");
+            }
         }
         else
         {

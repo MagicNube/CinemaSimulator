@@ -53,6 +53,7 @@ public class PedidoCliente : MonoBehaviour
     // Llamado por el GestorPedidos cuando el pedido termina (correcto o incorrecto)
     public void OrderFinished(bool success)
     {
+        Debug.Log("PEDIDO ACABADO ME MUEVO?");
         if (!isWaitingForOrder) return; // Ya se había ido
 
         isWaitingForOrder = false;

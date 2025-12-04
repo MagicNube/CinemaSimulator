@@ -23700,7 +23700,7 @@ PrefabInstance:
       objectReference: {fileID: 119344730}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: postersDecoracion.Array.size
-      value: 4
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: 'botonesEleccion.Array.data[0]'
@@ -23729,19 +23729,35 @@ PrefabInstance:
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: 'postersDecoracion.Array.data[0]'
       value: 
-      objectReference: {fileID: 1883151582}
+      objectReference: {fileID: 778567873}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: 'postersDecoracion.Array.data[1]'
       value: 
-      objectReference: {fileID: 778567873}
+      objectReference: {fileID: 262081589}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: 'postersDecoracion.Array.data[2]'
       value: 
-      objectReference: {fileID: 262081589}
+      objectReference: {fileID: 293903165}
     - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
       propertyPath: 'postersDecoracion.Array.data[3]'
       value: 
-      objectReference: {fileID: 293903165}
+      objectReference: {fileID: 1630063821}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: 'postersDecoracion.Array.data[4]'
+      value: 
+      objectReference: {fileID: 1547015451}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: 'postersDecoracion.Array.data[5]'
+      value: 
+      objectReference: {fileID: 442049765}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: 'postersDecoracion.Array.data[6]'
+      value: 
+      objectReference: {fileID: 1474734476}
+    - target: {fileID: 7334187864551630232, guid: 1cf709994d9e7c546a9098d57125abfc, type: 3}
+      propertyPath: 'postersDecoracion.Array.data[7]'
+      value: 
+      objectReference: {fileID: 1474734476}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -34647,7 +34663,7 @@ MonoBehaviour:
   faseActual: 0
   diaActual: 1
   duracionDiaMinutos: 5
-  hayIntroAlInicio: 0
+  hayIntroAlInicio: 1
 --- !u!114 &1630949215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38149,7 +38165,7 @@ MonoBehaviour:
   - {fileID: 758438205}
   customerPrefab: {fileID: 1389916321450148745, guid: 92cdd1b166177be45878ae1b51b532de, type: 3}
   spawnPoint: {fileID: 1183575931}
-  spawnInterval: 5
+  spawnInterval: 10
   baseMaxCustomers: 30
   exitPointSuccess: {fileID: 732517842}
   exitPointFail: {fileID: 1013290129}
@@ -40012,17 +40028,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9219461260943625107, guid: 51526f1425e85764d8c56d3b23ce7e6e, type: 3}
   m_PrefabInstance: {fileID: 1169127357}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1883151582 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4612735149055434196, guid: 21874645228bbba43a3cc7919b8ef399, type: 3}
-  m_PrefabInstance: {fileID: 7723002430262359219}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1885889995
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47474,6 +47479,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1280600557}
     m_Modifications:
+    - target: {fileID: 6137389027327069927, guid: 21874645228bbba43a3cc7919b8ef399, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7005845815095934531, guid: 21874645228bbba43a3cc7919b8ef399, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -47519,7 +47528,8 @@ PrefabInstance:
       value: Poster Stand
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7942068214151301609, guid: 21874645228bbba43a3cc7919b8ef399, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21874645228bbba43a3cc7919b8ef399, type: 3}
