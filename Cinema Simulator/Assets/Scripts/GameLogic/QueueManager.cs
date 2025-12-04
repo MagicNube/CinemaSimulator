@@ -9,7 +9,7 @@ public class QueueManager : MonoBehaviour
     public Transform[] queuePositions;
 
     [Header("Configuración de Generación")]
-    public GameObject customerPrefab;
+    public GameObject[] customerPrefabs;   // <-- AHORA ES UN ARRAY
     public Transform spawnPoint;
 
     [Header("Ritmo y Cantidad")]
@@ -29,23 +29,26 @@ public class QueueManager : MonoBehaviour
     private int totalCustomersForToday = 0;
     private bool isSpawningActive = false;
 
-    // NUEVO: Para saber qué corrutina pertenece a cada cliente y poder cancelarla si la cola avanza
     private Dictionary<GameObject, Coroutine> walkingCoroutines = new Dictionary<GameObject, Coroutine>();
 
     void Start()
     {
-        if (GameManager.Instance != null) GameManager.Instance.AlCambiarFase += HandleCambioFase;
+        if (GameManager.Instance != null)
+            GameManager.Instance.AlCambiarFase += HandleCambioFase;
     }
 
     void OnDestroy()
     {
-        if (GameManager.Instance != null) GameManager.Instance.AlCambiarFase -= HandleCambioFase;
+        if (GameManager.Instance != null)
+            GameManager.Instance.AlCambiarFase -= HandleCambioFase;
     }
 
     public void HandleCambioFase(FaseJuego nuevaFase)
     {
-        if (nuevaFase == FaseJuego.Fase2_Servicio) StartSpawningDay();
-        else if (nuevaFase == FaseJuego.Fase3_Cierre) StopSpawning();
+        if (nuevaFase == FaseJuego.Fase2_Servicio)
+            StartSpawningDay();
+        else if (nuevaFase == FaseJuego.Fase3_Cierre)
+            StopSpawning();
     }
 
     public void StartSpawningDay()
@@ -54,7 +57,7 @@ public class QueueManager : MonoBehaviour
         isSpawningActive = true;
         totalCustomersForToday = baseMaxCustomers;
 
-        if (customerPrefab != null && spawnPoint != null && queuePositions.Length > 0)
+        if (customerPrefabs.Length > 0 && spawnPoint != null && queuePositions.Length > 0)
         {
             StartCoroutine(CustomerSpawner());
         }
@@ -73,9 +76,12 @@ public class QueueManager : MonoBehaviour
                 yield break;
             }
 
-            if (customerQueue.Count < queuePositions.Length)
+            if (customerQueue.Count < queuePositions.Length && customerPrefabs.Length > 0)
             {
-                GameObject newCustomer = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+                int randomIndex = Random.Range(0, customerPrefabs.Length);
+                GameObject prefabElegido = customerPrefabs[randomIndex];
+
+                GameObject newCustomer = Instantiate(prefabElegido, spawnPoint.position, Quaternion.identity);
                 AddCustomerToQueue(newCustomer);
                 customersSpawnedCount++;
             }
@@ -89,16 +95,18 @@ public class QueueManager : MonoBehaviour
             customerQueue.Enqueue(newCustomer);
             int targetPosIndex = customerQueue.Count - 1;
 
-            // Guardamos la referencia de la corrutina para poder pararla si la cola avanza
             Coroutine rutine = StartCoroutine(RutinaCaminarPorCamino(newCustomer, targetPosIndex));
 
-            if (walkingCoroutines.ContainsKey(newCustomer)) walkingCoroutines[newCustomer] = rutine;
-            else walkingCoroutines.Add(newCustomer, rutine);
+            if (walkingCoroutines.ContainsKey(newCustomer))
+                walkingCoroutines[newCustomer] = rutine;
+            else
+                walkingCoroutines.Add(newCustomer, rutine);
 
             if (customerQueue.Count == 1)
             {
                 PedidoCliente clienteScript = newCustomer.GetComponent<PedidoCliente>();
-                if (clienteScript != null) clienteScript.StartWaitingProcess();
+                if (clienteScript != null)
+                    clienteScript.StartWaitingProcess();
             }
         }
         else
@@ -113,30 +121,28 @@ public class QueueManager : MonoBehaviour
 
         if (agent != null && agent.isOnNavMesh)
         {
-            // Empezamos desde el último punto disponible de la fila física
             int startIndex = queuePositions.Length - 1;
 
             for (int i = startIndex; i >= targetIndex; i--)
             {
                 if (customer == null) yield break;
 
-                agent.SetDestination(queuePositions[i].position);
                 agent.isStopped = false;
+                agent.SetDestination(queuePositions[i].position);
 
-                // ESPERA MEJORADA: Usamos remainingDistance para ser más precisos con el NavMesh
-                // Esperamos hasta que el agente esté cerca o haya llegado
-                while (customer != null && agent.pathPending) { yield return null; } // Esperar a que calcule ruta
+                while (customer != null && agent.pathPending)
+                    yield return null;
 
                 while (customer != null && agent.remainingDistance > agent.stoppingDistance + 0.2f)
                 {
-                    // Si el agente se queda atascado o deja de tener ruta, salimos para evitar bucle infinito
-                    if(!agent.hasPath || agent.isStopped) break;
+                    if (!agent.hasPath || agent.isStopped)
+                        break;
+
                     yield return null;
                 }
             }
         }
 
-        // Al terminar el camino, borramos al cliente del diccionario de caminantes
         if (customer != null && walkingCoroutines.ContainsKey(customer))
         {
             walkingCoroutines.Remove(customer);
@@ -145,14 +151,14 @@ public class QueueManager : MonoBehaviour
 
     public void ClientLeavesQueue(GameObject leavingCustomer, bool success)
     {
-        // Limpieza del diccionario por si acaso
         if (walkingCoroutines.ContainsKey(leavingCustomer))
         {
             StopCoroutine(walkingCoroutines[leavingCustomer]);
             walkingCoroutines.Remove(leavingCustomer);
         }
 
-        customerQueue.Dequeue();
+        if (customerQueue.Count > 0)
+            customerQueue.Dequeue();
 
         Transform targetExit = success ? exitPointSuccess : exitPointFail;
         StartCoroutine(CustomerExitRoutine(leavingCustomer, targetExit.position));
@@ -163,7 +169,9 @@ public class QueueManager : MonoBehaviour
         {
             GameObject newFirstCustomer = customerQueue.Peek();
             PedidoCliente clienteScript = newFirstCustomer.GetComponent<PedidoCliente>();
-            if (clienteScript != null) clienteScript.StartWaitingProcess();
+
+            if (clienteScript != null)
+                clienteScript.StartWaitingProcess();
         }
 
         ComprobarFinDelDia();
@@ -172,21 +180,26 @@ public class QueueManager : MonoBehaviour
     private IEnumerator CustomerExitRoutine(GameObject customer, Vector3 exitPosition)
     {
         NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
+
         if (agent != null && agent.isOnNavMesh)
         {
             agent.isStopped = false;
+            agent.ResetPath();
             agent.SetDestination(exitPosition);
         }
 
+        float t = 0f;
+        float tiempoMax = 6f;
+
         while (customer != null && Vector3.Distance(customer.transform.position, exitPosition) > 1.5f)
         {
-            yield return new WaitForSeconds(0.5f);
+            t += Time.deltaTime;
+            if (t > tiempoMax) break;
+            yield return null;
         }
 
         if (customer != null)
-        {
             Destroy(customer);
-        }
     }
 
     void ComprobarFinDelDia()
@@ -196,17 +209,17 @@ public class QueueManager : MonoBehaviour
 
         if (yaNoVienenMas && colaVacia)
         {
-            if (GameManager.Instance != null) { GameManager.Instance.FinalizarServicioPorFaltaDeClientes(); }
+            if (GameManager.Instance != null)
+                GameManager.Instance.FinalizarServicioPorFaltaDeClientes();
         }
     }
 
     private void MoveQueueForward()
     {
         GameObject[] currentCustomers = customerQueue.ToArray();
+
         for (int i = 0; i < currentCustomers.Length; i++)
         {
-            // CRUCIAL: Si movemos la cola, debemos cancelar el "paseo bonito" de los que estén entrando
-            // y obligarles a ir a su nuevo puesto inmediatamente.
             GameObject c = currentCustomers[i];
 
             if (walkingCoroutines.ContainsKey(c))
@@ -222,20 +235,20 @@ public class QueueManager : MonoBehaviour
     private void MoveCustomer(GameObject customer, Vector3 targetPosition)
     {
         NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
+
         if (agent != null && agent.isOnNavMesh)
         {
-            agent.SetDestination(targetPosition);
             agent.isStopped = false;
+            agent.SetDestination(targetPosition);
         }
     }
 
     public GameObject GetCustomerAtOrderPoint()
     {
         if (customerQueue.Count > 0)
-        {
             return customerQueue.Peek();
-        }
-        return null;    
+
+        return null;
     }
 
     public void StopSpawning()

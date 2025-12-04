@@ -42,6 +42,13 @@ public class GestorPedidos : MonoBehaviour
     private Coroutine rutinaFlujoPrincipal;
     private Outline customerOutline;
 
+    private EconomyManager economy;
+
+    void Start()
+    {
+        economy = FindObjectOfType<EconomyManager>();
+    }
+
     void Awake()
     {
         customerOutline = GetComponent<Outline>();
@@ -175,15 +182,13 @@ public class GestorPedidos : MonoBehaviour
 
         if (coincidencia != null)
         {
-            Debug.Log("ME ESTAN DANDO UN ITEM");
+            Debug.Log("ME ESTAN DANDO UN ITEM" + EconomyManager.Instance.ToString());
             // Primero marcamos visualmente
             MarcarItemComoEntregado(coincidencia);
 
-            if (EconomyManager.Instance != null)
-            {
-                Debug.Log("Sumando dinero por item entregado: " + itemDelJugador.precio);
-                EconomyManager.Instance.SumarDinero(itemDelJugador.precio);
-            }
+            Debug.Log("Sumando dinero por item entregado: " + itemDelJugador.precio);
+            EconomyManager.Instance.SumarDinero(itemDelJugador.precio);
+
 
             pedidoActual.itemsPendientes.Remove(coincidencia);
 

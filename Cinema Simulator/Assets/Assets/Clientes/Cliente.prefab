@@ -87,8 +87,8 @@ GameObject:
   - component: {fileID: 2888102869460588292}
   - component: {fileID: 3952869281409925942}
   - component: {fileID: 2140421216196373828}
-  - component: {fileID: 1757393954047116276}
   - component: {fileID: 8319102642280540846}
+  - component: {fileID: 1757393954047116276}
   - component: {fileID: 1726834129357511900}
   - component: {fileID: 2436418800098394630}
   m_Layer: 0
@@ -190,19 +190,6 @@ CapsuleCollider:
   m_Height: 1.8045139
   m_Direction: 1
   m_Center: {x: -0.00543109, y: 0.052256927, z: -0.059252042}
---- !u!114 &1757393954047116276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2442889395758981124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef832bc34a418064bbb77e96e4415667, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxWaitTime: 45
 --- !u!195 &8319102642280540846
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -225,6 +212,19 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1757393954047116276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2442889395758981124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef832bc34a418064bbb77e96e4415667, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxWaitTime: 45
 --- !u!114 &1726834129357511900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,7 +426,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\xA1Perfecto, gracias!"
+  m_text: "Gracias. A\xFAn me falta: Entrada "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
