@@ -26,6 +26,8 @@ public class TransitionManager : MonoBehaviour
 
     private ControladorInteraccion jugador;
 
+    public QueueManager qm;
+
     void Awake()
     {
         // Configuración Singleton básica
@@ -94,6 +96,7 @@ public class TransitionManager : MonoBehaviour
             case FaseJuego.Fase3_Cierre:
                 textoTituloFase.text = "FASE DE CIERRE";
                 textoSubtitulo.text = "Gestión y Stock";
+                qm.DestroyClientsEnCola();
                 break;
 
             case FaseJuego.Fase4_Limpieza:

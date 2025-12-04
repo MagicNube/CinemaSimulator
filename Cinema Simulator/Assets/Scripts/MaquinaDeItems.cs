@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MaquinaDeItems : MonoBehaviour, IMaquinaReparable
+public class MaquinaDeItems : MonoBehaviour
 {
     public GameObject itemPrefab;
     public ItemData.TipoDeItem tipoDeCajaRequerida;
@@ -10,17 +10,11 @@ public class MaquinaDeItems : MonoBehaviour, IMaquinaReparable
     [SerializeField] private int capacidadMaxima = 10;
     [SerializeField] private int _capacidadActual = 0;
 
-    [Header("Configuración de Rotura")]
-    [Range(0, 100)] public float probabilidadDeRotura = 10f; // 10% de probabilidad
-    public bool estaRota = false;
     [SerializeField] private Color colorBarraNormal = Color.white;
     [SerializeField] private Color colorBarraRota = Color.red;
 
     [Header("UI")]
     [SerializeField] private Image barraRellenoImage;
-
-    // 2. AÑADE ESTA PROPIEDAD para cumplir con la interfaz
-    public bool EstaRota => estaRota;
 
 
     public int CapacidadActual
@@ -29,24 +23,11 @@ public class MaquinaDeItems : MonoBehaviour, IMaquinaReparable
         private set
         {
             _capacidadActual = Mathf.Clamp(value, 0, capacidadMaxima);
-            ActualizarBarraVisual();
         }
-    }
-
-    private void Start()
-    {
-        ActualizarBarraVisual();
     }
 
     public void Interactuar(ControladorInteraccion jugador)
     {
-        // 1. Si está rota, no hacemos nada
-        if (estaRota)
-        {
-            Debug.Log("¡La máquina está rota! Necesitas repararla.");
-            return;
-        }
-
         GameObject itemSujetado = jugador.itemActual;
 
         // --- CASO 1: MANO VACÍA (Coger Item) ---
@@ -57,9 +38,6 @@ public class MaquinaDeItems : MonoBehaviour, IMaquinaReparable
                 jugador.AsignarItem(itemPrefab);
                 CapacidadActual--;
                 Debug.Log("Has cogido un item.");
-
-                // Intentamos romper la máquina después de usarla
-                VerificarRotura();
             }
             else
             {
@@ -112,38 +90,6 @@ public class MaquinaDeItems : MonoBehaviour, IMaquinaReparable
         else
         {
             Debug.Log("Ese objeto no sirve para esta máquina.");
-        }
-    }
-
-    // Lógica para calcular si se rompe
-    private void VerificarRotura()
-    {
-        float randomVal = Random.Range(0f, 100f);
-        if (randomVal < probabilidadDeRotura)
-        {
-            estaRota = true;
-            Debug.LogWarning("¡CRACK! La máquina se ha roto.");
-            ActualizarBarraVisual(); // Para que se ponga roja inmediatamente
-        }
-    }
-
-    // Método público para llamar desde una herramienta (ej. Llave Inglesa)
-    public void Reparar()
-    {
-        estaRota = false;
-        ActualizarBarraVisual();
-        Debug.Log("Máquina reparada.");
-    }
-
-    private void ActualizarBarraVisual()
-    {
-        if (barraRellenoImage != null)
-        {
-            float porcentaje = (float)CapacidadActual / (float)capacidadMaxima;
-            barraRellenoImage.fillAmount = porcentaje;
-
-            // Cambiar color según estado
-            barraRellenoImage.color = estaRota ? colorBarraRota : colorBarraNormal;
         }
     }
 }

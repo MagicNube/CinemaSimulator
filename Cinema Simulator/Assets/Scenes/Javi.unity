@@ -3194,6 +3194,7 @@ MonoBehaviour:
   duracionFade: 1
   tiempoEsperaPantalla: 3
   transicionando: 0
+  qm: {fileID: 1798444017}
 --- !u!43 &190436111
 Mesh:
   m_ObjectHideFlags: 0
@@ -6943,6 +6944,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1595407262}
     m_Modifications:
+    - target: {fileID: 1512057351727999909, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
+      propertyPath: m_Size.x
+      value: 0.184212
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512057351727999909, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
+      propertyPath: m_Size.y
+      value: 0.40829086
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512057351727999909, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
+      propertyPath: m_Size.z
+      value: 0.20250763
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512057351727999909, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
+      propertyPath: m_Center.x
+      value: 0.0073971045
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512057351727999909, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
+      propertyPath: m_Center.y
+      value: 0.020285312
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512057351727999909, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
+      propertyPath: m_Center.z
+      value: -0.016541243
+      objectReference: {fileID: 0}
     - target: {fileID: 1882540186055622423, guid: 4cea0039f176c044eabb59aed1262d14, type: 3}
       propertyPath: m_Name
       value: StackedSTubs
@@ -13966,8 +13991,6 @@ MonoBehaviour:
   tipoDeCajaRequerida: 0
   capacidadMaxima: 10
   _capacidadActual: 0
-  probabilidadDeRotura: 0
-  estaRota: 0
   colorBarraNormal: {r: 1, g: 1, b: 1, a: 1}
   colorBarraRota: {r: 1, g: 0, b: 0, a: 1}
   barraRellenoImage: {fileID: 0}
@@ -26551,9 +26574,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7946345651544804735, guid: 36b1859a4af6c4b4f9f4eaf038848cfa, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 7426441903769669195, guid: 36b1859a4af6c4b4f9f4eaf038848cfa, type: 3}
+      propertyPath: _capacidadActual
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7426441903769669195, guid: 36b1859a4af6c4b4f9f4eaf038848cfa, type: 3}
+      propertyPath: barraRellenoImage
+      value: 
+      objectReference: {fileID: 2087975673}
+    - target: {fileID: 7426441903769669195, guid: 36b1859a4af6c4b4f9f4eaf038848cfa, type: 3}
+      propertyPath: colorBarraNormal.a
+      value: 0.42745098
+      objectReference: {fileID: 0}
+    - target: {fileID: 7426441903769669195, guid: 36b1859a4af6c4b4f9f4eaf038848cfa, type: 3}
+      propertyPath: colorBarraNormal.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7426441903769669195, guid: 36b1859a4af6c4b4f9f4eaf038848cfa, type: 3}
+      propertyPath: tipoDeCajaRequerida
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -36401,8 +36440,6 @@ MonoBehaviour:
   tipoDeCajaRequerida: 0
   capacidadMaxima: 10
   _capacidadActual: 0
-  probabilidadDeRotura: 0
-  estaRota: 0
   colorBarraNormal: {r: 1, g: 1, b: 1, a: 1}
   colorBarraRota: {r: 1, g: 0, b: 0, a: 1}
   barraRellenoImage: {fileID: 0}
@@ -40078,6 +40115,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6101794781159499318, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
+      propertyPath: m_Size.x
+      value: 0.29465395
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101794781159499318, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
+      propertyPath: m_Size.y
+      value: 0.42860004
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101794781159499318, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
+      propertyPath: m_Size.z
+      value: 0.32096952
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101794781159499318, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
+      propertyPath: m_Center.x
+      value: 0.0075578066
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101794781159499318, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
+      propertyPath: m_Center.y
+      value: 0.0304391
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101794781159499318, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
+      propertyPath: m_Center.z
+      value: -0.020709923
+      objectReference: {fileID: 0}
     - target: {fileID: 8798555697812848462, guid: d217bf679bb3b7942a457191830fa06d, type: 3}
       propertyPath: m_Name
       value: StackedLTubs
@@ -43618,6 +43679,22 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.06
       objectReference: {fileID: 0}
+    - target: {fileID: 8322029577294671738, guid: 3ed7a6747c0ebe7449498767bc8a8b55, type: 3}
+      propertyPath: m_Size.y
+      value: 5.160659
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322029577294671738, guid: 3ed7a6747c0ebe7449498767bc8a8b55, type: 3}
+      propertyPath: m_Center.x
+      value: 0.015191723
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322029577294671738, guid: 3ed7a6747c0ebe7449498767bc8a8b55, type: 3}
+      propertyPath: m_Center.y
+      value: 1.6933526
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322029577294671738, guid: 3ed7a6747c0ebe7449498767bc8a8b55, type: 3}
+      propertyPath: m_Center.z
+      value: -0.015399894
+      objectReference: {fileID: 0}
     - target: {fileID: 8359431265028564768, guid: 3ed7a6747c0ebe7449498767bc8a8b55, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -44769,6 +44846,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6fe2a125e4d589345a37eac2b3b0ea82, type: 3}
+--- !u!114 &2087975673 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6348891757122371472, guid: 36b1859a4af6c4b4f9f4eaf038848cfa, type: 3}
+  m_PrefabInstance: {fileID: 1247977149}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2088409258
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45377,6 +45465,30 @@ PrefabInstance:
     - target: {fileID: 669068437605289371, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
       propertyPath: m_Name
       value: StackedMTubs
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524274858015206229, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
+      propertyPath: m_Size.x
+      value: 0.2597985
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524274858015206229, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
+      propertyPath: m_Size.y
+      value: 0.40952536
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524274858015206229, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
+      propertyPath: m_Size.z
+      value: 0.26455685
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524274858015206229, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
+      propertyPath: m_Center.x
+      value: 0.019248778
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524274858015206229, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
+      propertyPath: m_Center.y
+      value: 0.020901294
+      objectReference: {fileID: 0}
+    - target: {fileID: 1524274858015206229, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
+      propertyPath: m_Center.z
+      value: -0.021624152
       objectReference: {fileID: 0}
     - target: {fileID: 8312048714351969857, guid: b586119ada5be7e4d9f8eac308dc8bc4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -47036,8 +47148,6 @@ MonoBehaviour:
   tipoDeCajaRequerida: 0
   capacidadMaxima: 10
   _capacidadActual: 0
-  probabilidadDeRotura: 0
-  estaRota: 0
   colorBarraNormal: {r: 1, g: 1, b: 1, a: 1}
   colorBarraRota: {r: 1, g: 0, b: 0, a: 1}
   barraRellenoImage: {fileID: 0}
@@ -47459,7 +47569,7 @@ PrefabInstance:
     - target: {fileID: 4632137769190712342, guid: 9d7890c707896bb4fb8c3fc8d1df8068, type: 3}
       propertyPath: barraProgresoReparacion
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1306019604}
     - target: {fileID: 6130239542481675207, guid: 9d7890c707896bb4fb8c3fc8d1df8068, type: 3}
       propertyPath: m_TagString
       value: MainCamera

@@ -167,7 +167,7 @@ public class ControladorInteraccion : MonoBehaviour
                 // Maquinas complejas
                 if (objetoMirado.GetComponent<MaquinaDePalomitas>() != null) { objetoMirado.GetComponent<MaquinaDePalomitas>().Interactuar(this); return; }
                 if (objetoMirado.GetComponent<MaquinaDeBebidas>() != null) { objetoMirado.GetComponent<MaquinaDeBebidas>().Interactuar(this); return; }
-                if (objetoMirado.GetComponent<MaquinaDeItems>() != null) { objetoMirado.GetComponent<MaquinaDeItems>().Interactuar(this); return; }
+                if (objetoMirado.GetComponent<MaquinaDePerritos>() != null) { objetoMirado.GetComponent<MaquinaDePerritos>().Interactuar(this); return; }
 
                 if (itemActual != null && objetoMirado.CompareTag("GHOST_BOX") && Input.GetMouseButtonDown(0))
                 {
@@ -232,6 +232,7 @@ public class ControladorInteraccion : MonoBehaviour
 
             if (barraProgresoReparacion != null)
             {
+                Debug.Log("Entro");
                 barraProgresoReparacion.gameObject.SetActive(true);
                 barraProgresoReparacion.value = _temporizadorReparacion / tiempoParaReparar;
             }

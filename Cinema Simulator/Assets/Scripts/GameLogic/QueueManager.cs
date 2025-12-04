@@ -255,4 +255,14 @@ public class QueueManager : MonoBehaviour
     {
         isSpawningActive = false;
     }
+
+    public void DestroyClientsEnCola()
+    {
+        while (customerQueue.Count > 0)
+        {
+            GameObject cliente = customerQueue.Dequeue();
+            if (cliente != null)
+                Destroy(cliente);
+        }
+    }
 }

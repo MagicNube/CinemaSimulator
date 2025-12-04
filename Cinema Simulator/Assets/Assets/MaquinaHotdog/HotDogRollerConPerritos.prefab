@@ -299,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: ae705f0c8b3fc1a499cc7c44f465dc3b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.151
+      value: -0.171
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: ae705f0c8b3fc1a499cc7c44f465dc3b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -373,10 +373,13 @@ PrefabInstance:
       addedObject: {fileID: 2384762825373967471}
     - targetCorrespondingSourceObject: {fileID: -6689036041284674117, guid: ae705f0c8b3fc1a499cc7c44f465dc3b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7894539993550708396}
+      addedObject: {fileID: 7946345651544804735}
     - targetCorrespondingSourceObject: {fileID: -6689036041284674117, guid: ae705f0c8b3fc1a499cc7c44f465dc3b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7946345651544804735}
+      addedObject: {fileID: 7426441903769669195}
+    - targetCorrespondingSourceObject: {fileID: -160758985722151952, guid: ae705f0c8b3fc1a499cc7c44f465dc3b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4100435713259727683}
   m_SourcePrefab: {fileID: -5645937942226959685, guid: ae705f0c8b3fc1a499cc7c44f465dc3b, type: 3}
 --- !u!1 &3546011732142468198 stripped
 GameObject:
@@ -404,23 +407,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 0.5}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7894539993550708396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3546011732142468198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fde3a84a0c8aad419daa5f15964950d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemPrefab: {fileID: 2111167549641718798, guid: b6d60ae02328fbb41ba40c8594125216, type: 3}
-  tipoDeCajaRequerida: 10
-  capacidadMaxima: 10
-  _capacidadActual: 10
-  barraRellenoImage: {fileID: 6348891757122371472}
 --- !u!114 &7946345651544804735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,11 +425,58 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &7426441903769669195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3546011732142468198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a3907d8f424cf4da4c0fdbbe003631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPrefab: {fileID: 2111167549641718798, guid: b6d60ae02328fbb41ba40c8594125216, type: 3}
+  tipoDeCajaRequerida: 0
+  capacidadMaxima: 10
+  _capacidadActual: 0
+  probabilidadDeRotura: 10
+  estaRota: 0
+  colorBarraNormal: {r: 1, g: 1, b: 1, a: 1}
+  colorBarraRota: {r: 1, g: 0, b: 0, a: 1}
+  barraRellenoImage: {fileID: 3826636170629163452}
 --- !u!4 &3791522347347060269 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2774220344278030320, guid: ae705f0c8b3fc1a499cc7c44f465dc3b, type: 3}
   m_PrefabInstance: {fileID: 1305537880009552349}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8060015363932097069 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -160758985722151952, guid: ae705f0c8b3fc1a499cc7c44f465dc3b, type: 3}
+  m_PrefabInstance: {fileID: 1305537880009552349}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4100435713259727683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8060015363932097069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a3907d8f424cf4da4c0fdbbe003631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPrefab: {fileID: 0}
+  tipoDeCajaRequerida: 0
+  capacidadMaxima: 10
+  _capacidadActual: 0
+  probabilidadDeRotura: 10
+  estaRota: 0
+  colorBarraNormal: {r: 1, g: 1, b: 1, a: 1}
+  colorBarraRota: {r: 1, g: 0, b: 0, a: 1}
+  barraRellenoImage: {fileID: 0}
 --- !u!1001 &2190194646972479002
 PrefabInstance:
   m_ObjectHideFlags: 0
