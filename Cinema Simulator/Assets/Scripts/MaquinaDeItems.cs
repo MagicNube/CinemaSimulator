@@ -10,12 +10,11 @@ public class MaquinaDeItems : MonoBehaviour
     [SerializeField] private int capacidadMaxima = 10;
     [SerializeField] private int _capacidadActual = 0;
 
-    [SerializeField] private Color colorBarraNormal = Color.white;
+    [SerializeField] private Color colorBarraNormal = Color.yellow;
     [SerializeField] private Color colorBarraRota = Color.red;
 
     [Header("UI")]
     [SerializeField] private Image barraRellenoImage;
-
 
     public int CapacidadActual
     {
@@ -23,14 +22,19 @@ public class MaquinaDeItems : MonoBehaviour
         private set
         {
             _capacidadActual = Mathf.Clamp(value, 0, capacidadMaxima);
+            ActualizarBarraVisual();
         }
+    }
+
+    private void Start()
+    {
+        ActualizarBarraVisual();
     }
 
     public void Interactuar(ControladorInteraccion jugador)
     {
         GameObject itemSujetado = jugador.itemActual;
 
-        // --- CASO 1: MANO VACÍA (Coger Item) ---
         if (itemSujetado == null)
         {
             if (CapacidadActual > 0)
@@ -46,7 +50,6 @@ public class MaquinaDeItems : MonoBehaviour
             return;
         }
 
-        // --- CASO 2: RELLENAR MÁQUINA ---
         ItemData data = itemSujetado.GetComponent<ItemData>();
         if (data == null) return;
 
@@ -69,14 +72,14 @@ public class MaquinaDeItems : MonoBehaviour
                 return;
             }
 
-            if (Input.GetMouseButton(1)) // Click Derecho (Llenar todo)
+            if (Input.GetMouseButton(1))
             {
                 int cantidadRecibida = cajaScript.SacarSuministros(espacioLibre);
                 CapacidadActual += cantidadRecibida;
                 if (cantidadRecibida > 0) Debug.Log($"Máquina rellenada. ({CapacidadActual}/{capacidadMaxima})");
                 else Debug.Log("¡La caja está vacía!");
             }
-            else // Click Izquierdo (Llenar 1)
+            else
             {
                 int cantidadRecibida = cajaScript.SacarSuministros(1);
                 if (cantidadRecibida > 0)
@@ -90,6 +93,16 @@ public class MaquinaDeItems : MonoBehaviour
         else
         {
             Debug.Log("Ese objeto no sirve para esta máquina.");
+        }
+    }
+
+    private void ActualizarBarraVisual()
+    {
+        if (barraRellenoImage != null)
+        {
+            float porcentaje = (float)CapacidadActual / (float)capacidadMaxima;
+            barraRellenoImage.fillAmount = porcentaje;
+            barraRellenoImage.color = colorBarraNormal;
         }
     }
 }

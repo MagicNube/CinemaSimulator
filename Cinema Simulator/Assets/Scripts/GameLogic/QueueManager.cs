@@ -14,7 +14,7 @@ public class QueueManager : MonoBehaviour
 
     [Header("Ritmo y Cantidad")]
     public float spawnInterval = 10f;
-    public int baseMaxCustomers = 30;
+    public int baseCustomers = 10;
 
     [Header("Configuración de Salida")]
     public Transform exitPointSuccess;
@@ -55,7 +55,7 @@ public class QueueManager : MonoBehaviour
     {
         customersSpawnedCount = 0;
         isSpawningActive = true;
-        totalCustomersForToday = baseMaxCustomers;
+        totalCustomersForToday = baseCustomers;
 
         if (customerPrefabs.Length > 0 && spawnPoint != null && queuePositions.Length > 0)
         {

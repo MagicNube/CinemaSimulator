@@ -14,7 +14,7 @@ public class MaquinaDeBebidas : MonoBehaviour, IMaquinaReparable
     [Header("Configuración de Rotura")]
     [Range(0, 100)] public float probabilidadDeRotura = 10f;
     public bool estaRota = false;
-    [SerializeField] private Color colorBarraNormal = Color.white;
+    [SerializeField] private Color colorBarraNormal = Color.yellow;
     [SerializeField] private Color colorBarraRota = Color.red;
 
     // 2. AÑADE ESTA PROPIEDAD para cumplir con la interfaz

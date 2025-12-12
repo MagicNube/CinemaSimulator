@@ -394,8 +394,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.16941296, y: 0.3677134, z: 0.16941303}
-  m_Center: {x: 0.000000007450581, y: 0, z: -0.000000014901161}
+  m_Size: {x: 0.184212, y: 0.40829086, z: 0.20250763}
+  m_Center: {x: 0.0073971045, y: 0.020285312, z: -0.016541243}
 --- !u!114 &7524951417485757457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,6 +412,8 @@ MonoBehaviour:
   tipoDeCajaRequerida: 8
   capacidadMaxima: 50
   _capacidadActual: 50
+  colorBarraNormal: {r: 1, g: 1, b: 1, a: 1}
+  colorBarraRota: {r: 1, g: 0, b: 0, a: 1}
   barraRellenoImage: {fileID: 6087639253121157973}
 --- !u!114 &3764711348123904743
 MonoBehaviour:

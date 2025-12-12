@@ -6,7 +6,7 @@ public class LightingManager : MonoBehaviour
     public Light sol;
 
     [Header("Configuración de Transición")]
-    public float velocidadTransicion = 0.5f; // Un poco más lento para que sea suave
+    public float velocidadTransicion = 0.5f;
 
     [System.Serializable]
     public struct AmbienteFase
@@ -17,7 +17,7 @@ public class LightingManager : MonoBehaviour
         public float intensidadSol;
 
         [Header("Nueva Variable de Oscuridad")]
-        public Color colorAmbiente; // <--- ESTO CONTROLA LA OSCURIDAD GENERAL
+        public Color colorAmbiente;
     }
 
     [Header("Configuración por Fases")]
@@ -41,11 +41,10 @@ public class LightingManager : MonoBehaviour
             GameManager.Instance.AlCambiarFase += ActualizarIluminacion;
             ActualizarIluminacion(GameManager.Instance.faseActual);
 
-            // Aplicar instantáneo al inicio
             sol.transform.rotation = rotacionObjetivo;
             sol.color = colorSolObjetivo;
             sol.intensity = intensidadSolObjetivo;
-            RenderSettings.ambientLight = colorAmbienteObjetivo; // Aplicar ambiente
+            RenderSettings.ambientLight = colorAmbienteObjetivo;
         }
     }
 
@@ -59,13 +58,10 @@ public class LightingManager : MonoBehaviour
     {
         if (sol == null) return;
 
-        // 1. SOL
         sol.transform.rotation = Quaternion.Slerp(sol.transform.rotation, rotacionObjetivo, Time.deltaTime * velocidadTransicion);
         sol.color = Color.Lerp(sol.color, colorSolObjetivo, Time.deltaTime * velocidadTransicion);
         sol.intensity = Mathf.Lerp(sol.intensity, intensidadSolObjetivo, Time.deltaTime * velocidadTransicion);
 
-        // 2. AMBIENTE (El truco de la oscuridad)
-        // Interpolamos el color general del mundo
         RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, colorAmbienteObjetivo, Time.deltaTime * velocidadTransicion);
     }
 

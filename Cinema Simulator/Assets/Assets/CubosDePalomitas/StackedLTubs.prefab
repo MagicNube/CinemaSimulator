@@ -108,8 +108,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.27953133, y: 0.3677134, z: 0.27953148}
-  m_Center: {x: 0, y: 0, z: 0.000000014901161}
+  m_Size: {x: 0.29465395, y: 0.42860004, z: 0.32096952}
+  m_Center: {x: 0.0075578066, y: 0.0304391, z: -0.020709923}
 --- !u!114 &7333082775147754246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,6 +144,8 @@ MonoBehaviour:
   tipoDeCajaRequerida: 8
   capacidadMaxima: 50
   _capacidadActual: 50
+  colorBarraNormal: {r: 1, g: 1, b: 1, a: 1}
+  colorBarraRota: {r: 1, g: 0, b: 0, a: 1}
   barraRellenoImage: {fileID: 5208272240894258784}
 --- !u!1 &8669603181179114542
 GameObject:

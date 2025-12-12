@@ -10,30 +10,28 @@ public class ControladorInteraccion : MonoBehaviour
     public Animator animadorDelPersonaje;
     public GameObject itemActual;
     public KeyCode teclaSoltar = KeyCode.G;
+
+    // Variables internas
     private Outline outlineScriptMirado;
     private Transform objetoMirado;
 
     // --- [SISTEMA DE REPARACIÓN] ---
     [Header("Sistema de Reparación")]
-    public Slider barraProgresoReparacion; // ASIGNA ESTO EN EL INSPECTOR
-    public float tiempoParaReparar = 3.0f; // Tiempo en segundos que define el desarrollador
+    public Slider barraProgresoReparacion;
+    public float tiempoParaReparar = 3.0f;
     private float _temporizadorReparacion = 0f;
     private bool _estaReparando = false;
-    // -------------------------------
 
-    [Header("Audio Reparación")] // <--- NUEVO
-    public AudioSource sourceReparacion;         // Arrastra aquí el componente AudioSource del Jugador
-    public AudioClip clipReparandoLoop;          // Arrastra el sonido de martillazos
+    [Header("Audio Reparación")]
+    public AudioSource sourceReparacion;
+    public AudioClip clipReparandoLoop;
     public AudioClip clipReparacionCompletada;
-
 
     // --- [VARIABLES DEL FANTASMA Y SNAP] ---
     [Header("Feedback Visual Fantasma")]
     [Tooltip("Asigna aquí el Prefab de la Caja Fantasma (transparente)")]
     public GameObject ghostPrefab;
-
     private MeshRenderer currentGhostRenderer = null;
-    // ------------------------------------------
 
     [Header("Interfaz UI")]
     public Image imagenAyudaSoltar;
@@ -44,8 +42,6 @@ public class ControladorInteraccion : MonoBehaviour
     void Start()
     {
         if (imagenAyudaSoltar != null) imagenAyudaSoltar.enabled = false;
-
-        // Inicializar barra de reparación oculta
         if (barraProgresoReparacion != null)
         {
             barraProgresoReparacion.gameObject.SetActive(false);
@@ -53,18 +49,31 @@ public class ControladorInteraccion : MonoBehaviour
         }
     }
 
-    [System.Obsolete]
+    // --- HELPER MÁGICO PARA BUSCAR EN PADRES ---
+    // Esto soluciona el problema de que el raycast choque con un hijo sin script
+    T ObtenerComponente<T>(Transform t)
+    {
+        T comp = t.GetComponent<T>();
+
+        // Comprobación de nulidad segura para Unity
+        if (comp != null && !comp.Equals(null)) return comp;
+
+        return t.GetComponentInParent<T>();
+    }
+    // -------------------------------------------
+
     void Update()
     {
         Ray ray = new Ray(camaraJugador.transform.position, camaraJugador.transform.forward);
         RaycastHit hit;
+
         Transform seleccionActual = null;
         Outline outlineActual = null;
         MeshRenderer nextGhostRenderer = null;
-
-        // Variable para controlar si estamos mirando algo reparable este frame
         bool mirandoObjetoReparable = false;
 
+        // IMPORTANTE: Usamos una máscara para ignorar la capa "Ignore Raycast" o Triggers si molestan
+        // (Por defecto Raycast choca con todo, asegúrate de que tus Triggers de zona no bloqueen el rayo)
         if (Physics.Raycast(ray, out hit, distanciaInteraccion))
         {
             seleccionActual = hit.transform;
@@ -75,33 +84,28 @@ public class ControladorInteraccion : MonoBehaviour
                 nextGhostRenderer = hit.collider.GetComponent<MeshRenderer>();
             }
 
-            // Lógica de Outline estándar
+            // 2. Lógica de Outline (Usamos el Helper)
             if (PuedeInteractuar(hit.transform))
             {
-                outlineActual = hit.collider.GetComponent<Outline>();
+                outlineActual = ObtenerComponente<Outline>(hit.transform);
             }
 
-            // --- LÓGICA DE REPARACIÓN (Outline específico o reutilizado) ---
-            // Si tenemos el martillo y miramos algo reparable que esté roto
-            if (TieneElMartillo() && hit.transform.GetComponent<IMaquinaReparable>() != null)
+            // 3. Lógica de Reparación
+            if (TieneElMartillo())
             {
-                IMaquinaReparable maquina = hit.transform.GetComponent<IMaquinaReparable>();
-                if (maquina.EstaRota)
+                IMaquinaReparable maquina = ObtenerComponente<IMaquinaReparable>(hit.transform);
+                if (maquina != null && maquina.EstaRota)
                 {
-                    outlineActual = hit.collider.GetComponent<Outline>(); // Reutilizamos el outline
+                    outlineActual = ObtenerComponente<Outline>(hit.transform);
                     mirandoObjetoReparable = true;
                     ProcesarReparacion(maquina);
                 }
             }
         }
 
-        // Si no estamos mirando nada reparable o dejamos de mirar, reseteamos la reparación
-        if (!mirandoObjetoReparable)
-        {
-            ResetearReparacion();
-        }
+        if (!mirandoObjetoReparable) ResetearReparacion();
 
-        // 2. Control de Visibilidad del Fantasma
+        // Control de Visibilidad del Fantasma
         if (currentGhostRenderer != nextGhostRenderer)
         {
             if (currentGhostRenderer != null) currentGhostRenderer.enabled = false;
@@ -109,7 +113,7 @@ public class ControladorInteraccion : MonoBehaviour
             currentGhostRenderer = nextGhostRenderer;
         }
 
-        // Gestión del Outline visual
+        // Gestión del Outline
         if (outlineScriptMirado != outlineActual)
         {
             if (outlineScriptMirado != null) outlineScriptMirado.enabled = false;
@@ -118,57 +122,57 @@ public class ControladorInteraccion : MonoBehaviour
         }
         objetoMirado = seleccionActual;
 
-        // --- DETECCIÓN DE CLICK (Interacciones normales) ---
-        // Solo permitimos interacciones normales si NO estamos reparando activamente
+        // --- DETECCIÓN DE CLICK ---
         if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && !_estaReparando)
         {
+            // Bloqueo de UI (Tu código anterior)
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
             if (objetoMirado != null)
             {
-                // Si la máquina está rota, impedimos interacción normal (Excepto repararla que ya se gestiona arriba)
-                IMaquinaReparable maquinaRota = objetoMirado.GetComponent<IMaquinaReparable>();
+                // Usamos el Helper para buscar los scripts, estén donde estén
+                IMaquinaReparable maquinaRota = ObtenerComponente<IMaquinaReparable>(objetoMirado);
                 if (maquinaRota != null && maquinaRota.EstaRota)
                 {
-                    // Si no tengo martillo, aviso. Si tengo martillo, la lógica de reparación va por otro lado (mantener click)
                     if (!TieneElMartillo()) Debug.Log("¡Está rota! Necesitas un martillo.");
                     return;
                 }
 
-                // ... [RESTO DE TU CÓDIGO DE INTERACCIONES ORIGINAL] ...
-                // (Lo he comprimido para ahorrar espacio, es idéntico al tuyo)
-                GestorPedidos cliente = objetoMirado.GetComponent<GestorPedidos>();
+                // --- INTERACCIONES ---
+
+                GestorPedidos cliente = ObtenerComponente<GestorPedidos>(objetoMirado);
                 if (cliente != null && Input.GetMouseButtonDown(0))
                 {
                     ItemData itemDataEnMano = (itemActual != null) ? itemActual.GetComponent<ItemData>() : null;
                     if (cliente.RecibirItem(itemDataEnMano)) DestruirItem();
                     return;
                 }
-                if (objetoMirado.GetComponent<TabletManager>() != null) { objetoMirado.GetComponent<TabletManager>().AbrirTablet(this); return; }
-                if (objetoMirado.GetComponent<CambiadorFase>() != null) { objetoMirado.GetComponent<CambiadorFase>().Interactuar(); return; }
 
-                // Tablet
-                if (objetoMirado.GetComponent<TabletManager>() != null)
+                TabletManager tablet = ObtenerComponente<TabletManager>(objetoMirado);
+                if (tablet != null) { tablet.AbrirTablet(this); return; }
+
+                CambiadorFase cambiador = ObtenerComponente<CambiadorFase>(objetoMirado);
+                if (cambiador != null)
                 {
-                    objetoMirado.GetComponent<TabletManager>().AbrirTablet(this);
+                    if (TransitionManager.Instance != null && !TransitionManager.Instance.transicionando)
+                        cambiador.Interactuar();
                     return;
                 }
 
-                //Boton cambiador de fase
-                if (objetoMirado.GetComponent<CambiadorFase>() != null)
-                {
-                    if (!TransitionManager.Instance.transicionando)
-                    {
-                        objetoMirado.GetComponent<CambiadorFase>().Interactuar();
-                    }
-                    return;
-                }
+                // Máquinas (Usando Helper)
+                MaquinaDePalomitas mPalomitas = ObtenerComponente<MaquinaDePalomitas>(objetoMirado);
+                if (mPalomitas != null) { mPalomitas.Interactuar(this); return; }
 
-                // Maquinas complejas
-                if (objetoMirado.GetComponent<MaquinaDePalomitas>() != null) { objetoMirado.GetComponent<MaquinaDePalomitas>().Interactuar(this); return; }
-                if (objetoMirado.GetComponent<MaquinaDeBebidas>() != null) { objetoMirado.GetComponent<MaquinaDeBebidas>().Interactuar(this); return; }
-                if (objetoMirado.GetComponent<MaquinaDePerritos>() != null) { objetoMirado.GetComponent<MaquinaDePerritos>().Interactuar(this); return; }
+                MaquinaDeBebidas mBebidas = ObtenerComponente<MaquinaDeBebidas>(objetoMirado);
+                if (mBebidas != null) { mBebidas.Interactuar(this); return; }
 
+                MaquinaDePerritos mPerritos = ObtenerComponente<MaquinaDePerritos>(objetoMirado);
+                if (mPerritos != null) { mPerritos.Interactuar(this); return; }
+
+                MaquinaDeItems mItems = ObtenerComponente<MaquinaDeItems>(objetoMirado);
+                if (mItems != null) { mItems.Interactuar(this); return; }
+
+                // Ghost Box Snap
                 if (itemActual != null && objetoMirado.CompareTag("GHOST_BOX") && Input.GetMouseButtonDown(0))
                 {
                     ItemData carriedData = itemActual.GetComponent<ItemData>();
@@ -185,23 +189,97 @@ public class ControladorInteraccion : MonoBehaviour
                     }
                 }
 
-                LightSwitch lightSwitch = objetoMirado.GetComponent<LightSwitch>();
+                LightSwitch lightSwitch = ObtenerComponente<LightSwitch>(objetoMirado);
                 if (lightSwitch != null && Input.GetMouseButtonDown(0)) { lightSwitch.Interact(); return; }
 
+                // Objetos Simples
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (objetoMirado.GetComponent<Papelera>() != null) { DestruirItem(); return; }
-                    if (objetoMirado.GetComponent<CampanaInteractiva>() != null) { objetoMirado.GetComponent<CampanaInteractiva>().Interactuar(); return; }
-                    if (objetoMirado.GetComponent<ItemData>() != null) { CogerItemDelSuelo(objetoMirado.gameObject); return; }
+                    Papelera papelera = ObtenerComponente<Papelera>(objetoMirado);
+                    if (papelera != null) { DestruirItem(); return; }
+
+                    CampanaInteractiva campana = ObtenerComponente<CampanaInteractiva>(objetoMirado);
+                    if (campana != null) { campana.Interactuar(); return; }
+
+                    ItemData itemData = ObtenerComponente<ItemData>(objetoMirado);
+                    // Ojo: Para coger del suelo, necesitamos el objeto físico exacto, no el padre
+                    // pero ObtenerComponente nos devuelve el script. Usamos su gameObject.
+                    if (itemData != null) { CogerItemDelSuelo(itemData.gameObject); return; }
                 }
             }
         }
         if (Input.GetKeyDown(teclaSoltar)) { SoltarItemAlSuelo(); }
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // --- LÓGICA DE REPARACIÓN ---
-    // -----------------------------------------------------------------------------------------------------
+    // --- VERIFICACIONES "INTELIGENTES" ---
+    bool PuedeInteractuar(Transform objeto)
+    {
+        // 1. Reparación
+        if (TieneElMartillo())
+        {
+            IMaquinaReparable rep = ObtenerComponente<IMaquinaReparable>(objeto);
+            if (rep != null && rep.EstaRota) return true;
+        }
+
+        // 2. Ghost Box
+        if (objeto.CompareTag("GHOST_BOX")) return (itemActual != null && itemActual.GetComponent<ItemData>() != null);
+
+        // 3. Máquinas (Comprobación Robusta con Helper)
+        MaquinaDePalomitas mPalomitas = ObtenerComponente<MaquinaDePalomitas>(objeto);
+        if (mPalomitas != null)
+        {
+            if (itemActual == null) return true;
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data == null) return false;
+            return (data.tipoDeItem == ItemData.TipoDeItem.CuboVacio || data.tipoDeItem == mPalomitas.tipoDeCajaRequerida);
+        }
+
+        MaquinaDeBebidas mBebidas = ObtenerComponente<MaquinaDeBebidas>(objeto);
+        if (mBebidas != null)
+        {
+            if (itemActual == null) return true;
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data == null) return false;
+            return (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio || data.tipoDeItem == mBebidas.tipoDeCajaRequerida);
+        }
+
+        // MÁQUINA DE PERRITOS (AÑADIDA QUE FALTABA EN TU CÓDIGO ORIGINAL EN ESTE CHECK)
+        MaquinaDePerritos mPerritos = ObtenerComponente<MaquinaDePerritos>(objeto);
+        if (mPerritos != null)
+        {
+            if (itemActual == null) return true;
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data == null) return false;
+            // Perritos no usa "Envase vacío", coge directo, o rellena con caja
+            return (data.tipoDeItem == mPerritos.tipoDeCajaRequerida);
+        }
+
+        MaquinaDeItems mItems = ObtenerComponente<MaquinaDeItems>(objeto);
+        if (mItems != null)
+        {
+            if (itemActual == null) return true;
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data != null && data.tipoDeItem == mItems.tipoDeCajaRequerida) return true;
+            return false;
+        }
+
+        // 4. Otros
+        if (ObtenerComponente<TabletManager>(objeto) != null) return true;
+        if (ObtenerComponente<CambiadorFase>(objeto) != null) return true;
+        if (ObtenerComponente<Papelera>(objeto) != null) return (itemActual != null);
+        if (ObtenerComponente<CampanaInteractiva>(objeto) != null) return true;
+        if (ObtenerComponente<ItemData>(objeto) != null) return (itemActual == null); // Coger del suelo
+        if (ObtenerComponente<GestorPedidos>(objeto) != null) return true;
+
+        return false;
+    }
+
+    // ... [RESTO DE TU CÓDIGO SIN CAMBIOS: ProcesarReparacion, CogerItemDelSuelo, etc.] ...
+    // Solo copia las funciones de abajo de tu script antiguo (SnapItemToGhost, AsignarItem, etc.)
+    // porque esas no necesitan cambios de lógica.
+
+    // --- PEGA AQUÍ EL RESTO DE TUS MÉTODOS (SnapItemToGhost, CogerItemDelSuelo, AsignarItem...) ---
+    // (Te los incluyo aquí resumidos para que el script esté completo al copiar y pegar)
 
     private bool TieneElMartillo()
     {
@@ -214,88 +292,51 @@ public class ControladorInteraccion : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            // INICIO: Si acabamos de empezar a pulsar
             if (!_estaReparando)
             {
                 _estaReparando = true;
-
-                // --- [AUDIO LOOP] ---
                 if (sourceReparacion != null && clipReparandoLoop != null)
                 {
                     sourceReparacion.clip = clipReparandoLoop;
-                    sourceReparacion.loop = true; // Importante para que no pare
+                    sourceReparacion.loop = true;
                     sourceReparacion.Play();
                 }
             }
-
             _temporizadorReparacion += Time.deltaTime;
-
             if (barraProgresoReparacion != null)
             {
-                Debug.Log("Entro");
                 barraProgresoReparacion.gameObject.SetActive(true);
                 barraProgresoReparacion.value = _temporizadorReparacion / tiempoParaReparar;
             }
-
-            // ÉXITO: Se ha completado el tiempo
             if (_temporizadorReparacion >= tiempoParaReparar)
             {
-                // --- [AUDIO COMPLETADO] ---
-                if (sourceReparacion != null)
-                {
-                    sourceReparacion.Stop(); // Paramos el martilleo
-                    if (clipReparacionCompletada != null)
-                        sourceReparacion.PlayOneShot(clipReparacionCompletada); // Sonido "DING"
-                }
-
+                if (sourceReparacion != null) { sourceReparacion.Stop(); if (clipReparacionCompletada != null) sourceReparacion.PlayOneShot(clipReparacionCompletada); }
                 maquina.Reparar();
-
-                // Reseteo manual de variables (sin llamar a ResetearReparacion para no cortar el OneShot)
                 _estaReparando = false;
                 _temporizadorReparacion = 0f;
                 if (barraProgresoReparacion != null) barraProgresoReparacion.gameObject.SetActive(false);
-
-                Debug.Log("¡Reparación completada!");
             }
         }
-        else
-        {
-            // Si soltamos el botón antes de tiempo
-            ResetearReparacion();
-        }
+        else { ResetearReparacion(); }
     }
-
     private void ResetearReparacion()
     {
-        // Si estábamos reparando (escuchando el loop) y cancelamos...
-        if (_estaReparando)
-        {
-            // Paramos el sonido
-            if (sourceReparacion != null && sourceReparacion.isPlaying)
-            {
-                sourceReparacion.Stop();
-            }
-        }
-
+        if (_estaReparando && sourceReparacion != null && sourceReparacion.isPlaying) sourceReparacion.Stop();
         _estaReparando = false;
         _temporizadorReparacion = 0f;
-        if (barraProgresoReparacion != null)
-        {
-            barraProgresoReparacion.value = 0;
-            barraProgresoReparacion.gameObject.SetActive(false);
-        }
+        if (barraProgresoReparacion != null) { barraProgresoReparacion.value = 0; barraProgresoReparacion.gameObject.SetActive(false); }
     }
-
-    // -----------------------------------------------------------------------------------------------------
-    // --- MÉTODOS AUXILIARES ORIGINALES ---
-    // -----------------------------------------------------------------------------------------------------
-
     public void SnapItemToGhost(GameObject carriedItem, GameObject ghostBox)
     {
         Transform anchor = ghostBox.transform.parent;
         Vector3 finalWorldPosition = ghostBox.transform.position;
         Quaternion finalWorldRotation = ghostBox.transform.rotation;
         Destroy(ghostBox);
+
+        // --- CORRECCIÓN: RESTAURAR LA CAPA ORIGINAL ---
+        SetLayerRecursively(carriedItem, 0); // Capa 0 = Default
+        // ----------------------------------------------
+
         carriedItem.transform.parent = null;
         carriedItem.transform.position = finalWorldPosition;
         carriedItem.transform.rotation = finalWorldRotation;
@@ -307,10 +348,14 @@ public class ControladorInteraccion : MonoBehaviour
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
         if (imagenAyudaSoltar != null) { imagenAyudaSoltar.enabled = false; }
     }
-
     void CogerItemDelSuelo(GameObject itemObject)
     {
         if (itemActual != null) return;
+
+        // --- CORRECCIÓN: HACER EL ITEM INVISIBLE AL RAYCAST ---
+        SetLayerRecursively(itemObject, 2); // Capa 2 = Ignore Raycast
+        // -----------------------------------------------------
+
         Transform parentAnchor = itemObject.transform.parent;
         Rigidbody rb = itemObject.GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
@@ -321,68 +366,26 @@ public class ControladorInteraccion : MonoBehaviour
         if (data != null) { itemObject.transform.localScale = data.escalaOriginal; }
         itemActual = itemObject;
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", true); }
-
         if (parentAnchor != null && parentAnchor.CompareTag("ANCHOR_POINT"))
         {
             Instantiate(ghostPrefab, parentAnchor.position, parentAnchor.rotation, parentAnchor);
         }
-
         if (imagenAyudaSoltar != null)
         {
             if (data == null || data.tipoDeItem != ItemData.TipoDeItem.Ticket) imagenAyudaSoltar.enabled = true;
         }
     }
-
-    bool PuedeInteractuar(Transform objeto)
-    {
-        // Prioridad: Si tengo martillo y es máquina rota
-        if (TieneElMartillo())
-        {
-            IMaquinaReparable rep = objeto.GetComponent<IMaquinaReparable>();
-            if (rep != null && rep.EstaRota) return true;
-        }
-
-        if (objeto.CompareTag("GHOST_BOX")) return (itemActual != null && itemActual.GetComponent<ItemData>() != null);
-
-        if (objeto.GetComponent<MaquinaDePalomitas>() != null)
-        {
-            if (itemActual == null) return true;
-            ItemData data = itemActual.GetComponent<ItemData>();
-            if (data == null) return false;
-            MaquinaDePalomitas maquina = objeto.GetComponent<MaquinaDePalomitas>();
-            return (data.tipoDeItem == ItemData.TipoDeItem.CuboVacio || data.tipoDeItem == maquina.tipoDeCajaRequerida);
-        }
-        if (objeto.GetComponent<MaquinaDeBebidas>() != null)
-        {
-            if (itemActual == null) return true;
-            ItemData data = itemActual.GetComponent<ItemData>();
-            if (data == null) return false;
-            MaquinaDeBebidas maquina = objeto.GetComponent<MaquinaDeBebidas>();
-            return (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio || data.tipoDeItem == maquina.tipoDeCajaRequerida);
-        }
-        if (objeto.GetComponent<MaquinaDeItems>() != null)
-        {
-            if (itemActual == null) return true;
-            ItemData data = itemActual.GetComponent<ItemData>();
-            MaquinaDeItems maquina = objeto.GetComponent<MaquinaDeItems>();
-            if (data != null && data.tipoDeItem == maquina.tipoDeCajaRequerida) return true;
-            return false;
-        }
-        if (objeto.GetComponent<TabletManager>() != null) return true;
-        if (objeto.GetComponent<CambiadorFase>() != null) return true;
-        if (objeto.GetComponent<Papelera>() != null) return (itemActual != null);
-        if (objeto.GetComponent<CampanaInteractiva>() != null) return true;
-        if (objeto.GetComponent<ItemData>() != null) return (itemActual == null);
-        if (objeto.GetComponent<GestorPedidos>() != null) return true;
-
-        return false;
-    }
-
     public void AsignarItem(GameObject nuevoItemPrefab)
     {
         if (itemActual != null) { Destroy(itemActual); itemActual = null; }
         if (nuevoItemPrefab == null) return;
+
         itemActual = Instantiate(nuevoItemPrefab);
+
+        // --- CORRECCIÓN: HACER EL ITEM INVISIBLE AL RAYCAST ---
+        SetLayerRecursively(itemActual, 2); // Capa 2 = Ignore Raycast
+        // -----------------------------------------------------
+
         ItemData data = itemActual.GetComponent<ItemData>();
         itemActual.transform.parent = puntoDeAgarre;
         itemActual.transform.localPosition = Vector3.zero;
@@ -394,12 +397,16 @@ public class ControladorInteraccion : MonoBehaviour
             if (data == null || data.tipoDeItem != ItemData.TipoDeItem.Ticket) imagenAyudaSoltar.enabled = true;
         }
     }
-
     void SoltarItemAlSuelo()
     {
         if (itemActual == null) return;
         ItemData data = itemActual.GetComponent<ItemData>();
         if (data != null && data.tipoDeItem == ItemData.TipoDeItem.Ticket) { Debug.Log("No puedes soltar este item."); return; }
+
+        // --- CORRECCIÓN: RESTAURAR LA CAPA ORIGINAL ---
+        SetLayerRecursively(itemActual, 0); // Capa 0 = Default
+        // ----------------------------------------------
+
         if (animadorDelPersonaje != null) { animadorDelPersonaje.SetBool("estaSujetando", false); }
         Rigidbody rb = itemActual.GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = false;
@@ -408,7 +415,6 @@ public class ControladorInteraccion : MonoBehaviour
         itemActual = null;
         if (imagenAyudaSoltar != null) imagenAyudaSoltar.enabled = false;
     }
-
     public void DestruirItem()
     {
         if (itemActual == null) return;
@@ -416,12 +422,23 @@ public class ControladorInteraccion : MonoBehaviour
         Destroy(itemActual);
         itemActual = null;
         if (animadorDelPersonaje != null) animadorDelPersonaje.SetBool("estaSujetando", false);
-        Debug.Log("Has tirado el item.");
         if (imagenAyudaSoltar != null) imagenAyudaSoltar.enabled = false;
     }
-
     public void AlternarControlJugador(bool activo)
     {
         if (scriptMovimiento != null) scriptMovimiento.enabled = activo;
+    }
+
+    // --- HELPER PARA CAMBIAR CAPAS (EVITAR QUE LA CAJA BLOQUEE LA VISTA) ---
+    void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        if (obj == null) return;
+
+        obj.layer = newLayer;
+
+        foreach (Transform child in obj.transform)
+        {
+            if (child != null) SetLayerRecursively(child.gameObject, newLayer);
+        }
     }
 }
