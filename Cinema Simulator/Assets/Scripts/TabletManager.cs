@@ -16,7 +16,7 @@ public class TabletManager : MonoBehaviour
 
     // Variables internas
     private ControladorInteraccion jugador;
-    private bool interfazAbierta = false;
+    public bool interfazAbierta = false;
 
     // ==========================================
     // SECCIÓN 1: TIENDA
