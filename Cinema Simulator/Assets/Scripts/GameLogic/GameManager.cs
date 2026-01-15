@@ -118,7 +118,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    [Obsolete]
     public void AvanzarSiguienteFase()
     {
         switch (faseActual)
@@ -164,8 +163,6 @@ public class GameManager : MonoBehaviour
     }
 
     // Llamado al terminar limpieza o saltarla en Fase 3
-    [Obsolete]
-
     public void FinalizarDia()
     {
         diaActual++;

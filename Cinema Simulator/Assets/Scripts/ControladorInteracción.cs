@@ -71,6 +71,7 @@ public class ControladorInteraccion : MonoBehaviour
         Outline outlineActual = null;
         MeshRenderer nextGhostRenderer = null;
         bool mirandoObjetoReparable = false;
+        string mensajeInteraccion = "";
 
         // IMPORTANTE: Usamos una máscara para ignorar la capa "Ignore Raycast" o Triggers si molestan
         // (Por defecto Raycast choca con todo, asegúrate de que tus Triggers de zona no bloqueen el rayo)
@@ -88,6 +89,7 @@ public class ControladorInteraccion : MonoBehaviour
             if (PuedeInteractuar(hit.transform))
             {
                 outlineActual = ObtenerComponente<Outline>(hit.transform);
+                mensajeInteraccion = ObtenerMensajeInteraccion(hit.transform);
             }
 
             // 3. Lógica de Reparación
@@ -98,12 +100,23 @@ public class ControladorInteraccion : MonoBehaviour
                 {
                     outlineActual = ObtenerComponente<Outline>(hit.transform);
                     mirandoObjetoReparable = true;
+                    mensajeInteraccion = "Mantener click izquierdo - Reparar";
                     ProcesarReparacion(maquina);
                 }
             }
         }
 
         if (!mirandoObjetoReparable) ResetearReparacion();
+
+        // Actualizar UI de interacción
+        if (!string.IsNullOrEmpty(mensajeInteraccion) && UIInteractionManager.Instance != null)
+        {
+            UIInteractionManager.Instance.MostrarInteraccion(mensajeInteraccion);
+        }
+        else if (UIInteractionManager.Instance != null)
+        {
+            UIInteractionManager.Instance.OcultarInteraccion();
+        }
 
         // Control de Visibilidad del Fantasma
         if (currentGhostRenderer != nextGhostRenderer)
@@ -117,7 +130,12 @@ public class ControladorInteraccion : MonoBehaviour
         if (outlineScriptMirado != outlineActual)
         {
             if (outlineScriptMirado != null) outlineScriptMirado.enabled = false;
-            if (outlineActual != null) outlineActual.enabled = true;
+            if (outlineActual != null)
+            {
+                outlineActual.enabled = true;
+                outlineActual.OutlineColor = Color.white; // Color blanco para interacción
+                outlineActual.OutlineWidth = 3f; // Ancho del outline
+            }
             outlineScriptMirado = outlineActual;
         }
         objetoMirado = seleccionActual;
@@ -155,7 +173,9 @@ public class ControladorInteraccion : MonoBehaviour
                 if (cambiador != null)
                 {
                     if (TransitionManager.Instance != null && !TransitionManager.Instance.transicionando)
+                    {
                         cambiador.Interactuar();
+                    }
                     return;
                 }
 
@@ -209,6 +229,115 @@ public class ControladorInteraccion : MonoBehaviour
             }
         }
         if (Input.GetKeyDown(teclaSoltar)) { SoltarItemAlSuelo(); }
+    }
+
+    // --- VERIFICACIONES "INTELIGENTES" ---
+    string ObtenerMensajeInteraccion(Transform objeto)
+    {
+        // 1. Reparación
+        if (TieneElMartillo())
+        {
+            IMaquinaReparable rep = ObtenerComponente<IMaquinaReparable>(objeto);
+            if (rep != null && rep.EstaRota) return "Mantener click izquierdo - Reparar";
+        }
+
+        // 2. Ghost Box (Colocar caja)
+        if (objeto.CompareTag("GHOST_BOX") && itemActual != null)
+        {
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data != null)
+            {
+                ItemData.TipoDeItem itemType = data.tipoDeItem;
+                if (itemType == ItemData.TipoDeItem.CajaPalomitas || itemType == ItemData.TipoDeItem.CajaBebidas ||
+                    itemType == ItemData.TipoDeItem.CajaEnvasesPalomitas || itemType == ItemData.TipoDeItem.CajaEnvasesBebidas ||
+                    itemType == ItemData.TipoDeItem.CajaPerritos)
+                {
+                    return "Click izquierdo - Colocar caja";
+                }
+            }
+        }
+
+        // 3. Máquina de Palomitas
+        MaquinaDePalomitas mPalomitas = ObtenerComponente<MaquinaDePalomitas>(objeto);
+        if (mPalomitas != null)
+        {
+            if (itemActual == null) return "";
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data != null)
+            {
+                if (data.tipoDeItem == ItemData.TipoDeItem.CuboVacio)
+                    return "Click izquierdo - Llenar cubo";
+                if (data.tipoDeItem == mPalomitas.tipoDeCajaRequerida)
+                    return "Click izquierdo - Reponer 1 | Click derecho - Reponer todo";
+            }
+        }
+
+        // 4. Máquina de Bebidas
+        MaquinaDeBebidas mBebidas = ObtenerComponente<MaquinaDeBebidas>(objeto);
+        if (mBebidas != null)
+        {
+            if (itemActual == null) return "";
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data != null)
+            {
+                if (data.tipoDeItem == ItemData.TipoDeItem.VasoVacio)
+                    return "Click izquierdo - Llenar vaso";
+                if (data.tipoDeItem == mBebidas.tipoDeCajaRequerida)
+                    return "Click izquierdo - Reponer 1 | Click derecho - Reponer todo";
+            }
+        }
+
+        // 5. Máquina de Perritos
+        MaquinaDePerritos mPerritos = ObtenerComponente<MaquinaDePerritos>(objeto);
+        if (mPerritos != null)
+        {
+            if (itemActual == null) return "Click izquierdo - Coger perrito";
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data != null && data.tipoDeItem == mPerritos.tipoDeCajaRequerida)
+                return "Click izquierdo - Reponer 1 | Click derecho - Reponer todo";
+        }
+
+        // 6. Máquina de Items (Envases)
+        MaquinaDeItems mItems = ObtenerComponente<MaquinaDeItems>(objeto);
+        if (mItems != null)
+        {
+            if (itemActual == null) return "Click izquierdo - Coger envase";
+            ItemData data = itemActual.GetComponent<ItemData>();
+            if (data != null && data.tipoDeItem == mItems.tipoDeCajaRequerida)
+                return "Click izquierdo - Reponer 1 | Click derecho - Reponer todo";
+        }
+
+        // 7. Papelera
+        if (ObtenerComponente<Papelera>(objeto) != null)
+        {
+            if (itemActual != null) return "Click izquierdo - Tirar objeto";
+        }
+
+        // 8. Campana
+        if (ObtenerComponente<CampanaInteractiva>(objeto) != null)
+        {
+            return "Click izquierdo - Pedir comanda";
+        }
+
+        // 9. Cliente
+        if (ObtenerComponente<GestorPedidos>(objeto) != null)
+        {
+            return itemActual != null ? "Click izquierdo - Entregar pedido" : "Cliente esperando";
+        }
+
+        // 10. Item en el suelo
+        if (ObtenerComponente<ItemData>(objeto) != null && itemActual == null)
+        {
+            return "Click izquierdo - Coger objeto";
+        }
+
+        // 11. Tablet
+        if (ObtenerComponente<TabletManager>(objeto) != null)
+        {
+            return "Click izquierdo - Abrir tablet";
+        }
+
+        return "";
     }
 
     // --- VERIFICACIONES "INTELIGENTES" ---
