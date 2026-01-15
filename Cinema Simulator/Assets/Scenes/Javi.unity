@@ -6401,7 +6401,7 @@ Transform:
   m_GameObject: {fileID: 323890726}
   serializedVersion: 2
   m_LocalRotation: {x: 0.00075122766, y: 0.7069009, z: 0.0014050828, w: 0.70731086}
-  m_LocalPosition: {x: -4.797, y: 0.497, z: 1.33}
+  m_LocalPosition: {x: -4.417, y: 0.497, z: 1.33}
   m_LocalScale: {x: 1.382394, y: 1.9314725, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -36605,6 +36605,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tiempoLimite: 60
   generadorBasura: {fileID: 627030294}
+  zonaActivacionCollider: {fileID: 323890730}
+  distanciaMovimiento: 1
   audioSourceMusica: {fileID: 1661247053}
   audioSourceSFX: {fileID: 1661247053}
   musicaTension: {fileID: 8300000, guid: 777167bbdb526c34aa108d54b25fcb12, type: 3}
@@ -39767,7 +39769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7720474528263712003, guid: 3a9e76fc6e84d0448bad9f40a598c17b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.716
+      value: 4.58
       objectReference: {fileID: 0}
     - target: {fileID: 7720474528263712003, guid: 3a9e76fc6e84d0448bad9f40a598c17b, type: 3}
       propertyPath: m_LocalPosition.y

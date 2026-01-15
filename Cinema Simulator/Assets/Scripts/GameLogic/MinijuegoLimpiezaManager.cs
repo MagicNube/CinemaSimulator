@@ -15,6 +15,13 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
 
     [Header("Referencias Generales")]
     public ControlAleatorioBasura generadorBasura;
+    [Tooltip("Arrastra la zona de activación del minijuego para bloquearla")]
+    public Collider zonaActivacionCollider;
+    [Tooltip("Distancia en unidades que se moverá el collider para bloquear (ejemplo: 2 para mover 2 metros hacia un lado)")]
+    public float distanciaMovimiento = 2f;
+    
+    private Vector3 posicionOriginalCollider;
+    private bool posicionGuardada = false;
 
     [Header("Audio")]
     [Tooltip("Arrastra aqu� el componente AudioSource que usar� la M�SICA DE FONDO")]
@@ -61,6 +68,13 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
         tiempoRestante = tiempoLimite;
         basuraEnJuego.Clear();
         jugador = FindObjectOfType<ControladorInteraccion>();
+        
+        // Guardar posición original del collider si aún no se ha guardado
+        if (zonaActivacionCollider != null && !posicionGuardada)
+        {
+            posicionOriginalCollider = zonaActivacionCollider.transform.position;
+            posicionGuardada = true;
+        }
     }
 
     void Update()
@@ -112,6 +126,9 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
             textoContadorBasura.color = Color.white;
         }
 
+        // --- BLOQUEAR LA SALIDA DE LA SALA (con delay para que el jugador pueda entrar primero) ---
+        StartCoroutine(BloquearSalaConDelay());
+
         // --- AUDIO: INICIAR M�SICA ---
         if (audioSourceMusica != null && musicaTension != null)
         {
@@ -121,6 +138,23 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
         }
 
         ActualizarHUD();
+    }
+
+    IEnumerator BloquearSalaConDelay()
+    {
+        // Esperar medio segundo para que el jugador entre completamente
+        yield return new WaitForSeconds(0.5f);
+        
+        if (zonaActivacionCollider != null)
+        {
+            // Convertir el trigger en collider sólido
+            zonaActivacionCollider.isTrigger = false;
+            
+            // Mover el collider sobre el eje X global (izquierda/derecha)
+            zonaActivacionCollider.transform.position = posicionOriginalCollider + Vector3.right * distanciaMovimiento;
+            
+            Debug.Log("Puerta bloqueada - No se puede salir hasta terminar el minijuego");
+        }
     }
 
     void GestionarTiempo()
@@ -160,6 +194,18 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
     void FinDelJuego(bool victoria)
     {
         juegoActivo = false;
+
+        // --- DESBLOQUEAR LA SALIDA DE LA SALA ---
+        if (zonaActivacionCollider != null)
+        {
+            // Devolver el collider a su posición original
+            zonaActivacionCollider.transform.position = posicionOriginalCollider;
+            
+            // Convertir de nuevo en trigger
+            zonaActivacionCollider.isTrigger = true;
+            
+            Debug.Log("Puerta desbloqueada - Ya puedes salir de la sala");
+        }
 
         // --- AUDIO: PARAR M�SICA Y LANZAR SFX ---
         if (audioSourceMusica != null) audioSourceMusica.Stop();
