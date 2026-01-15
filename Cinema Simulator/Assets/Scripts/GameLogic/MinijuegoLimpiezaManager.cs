@@ -39,15 +39,27 @@ public class MinijuegoLimpiezaManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
 
     [System.Obsolete]
     void Start()
     {
+        ResetearMinijuego();
+    }
+
+    void ResetearMinijuego()
+    {
         if (panelPregunta != null) panelPregunta.SetActive(false);
         if (panelTimer != null) panelTimer.SetActive(false);
+        juegoActivo = false;
+        tiempoRestante = tiempoLimite;
+        basuraEnJuego.Clear();
         jugador = FindObjectOfType<ControladorInteraccion>();
     }
 

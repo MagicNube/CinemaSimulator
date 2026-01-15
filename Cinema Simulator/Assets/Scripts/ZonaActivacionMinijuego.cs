@@ -6,6 +6,34 @@ public class ZonaActivacionMinijuego : MonoBehaviour
     // Nueva variable para controlar si ya se usó esta zona
     private bool yaActivado = false;
 
+    void Start()
+    {
+        // Nos suscribimos al evento de cambio de fase para resetear yaActivado
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AlCambiarFase += ResetearZona;
+        }
+    }
+
+    void OnDestroy()
+    {
+        // Desuscribirse cuando se destruye el objeto
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AlCambiarFase -= ResetearZona;
+        }
+    }
+
+    void ResetearZona(FaseJuego fase)
+    {
+        // Resetear cuando llegamos a Fase 4 (Limpieza) de un nuevo día
+        if (fase == FaseJuego.Fase4_Limpieza)
+        {
+            yaActivado = false;
+            Debug.Log("Zona de minijuego reseteada para el nuevo día");
+        }
+    }
+
     void OnTriggerEnter(Collider other)
     {
         // Añadimos !yaActivado a la condición

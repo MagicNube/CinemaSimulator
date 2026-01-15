@@ -1,4 +1,3 @@
-using UnityEditorInternal;
 using UnityEngine;
 
 public class CambiadorFase : MonoBehaviour
@@ -7,10 +6,9 @@ public class CambiadorFase : MonoBehaviour
     [System.Obsolete]
     public void Interactuar()
     {
-
         if (GameManager.Instance != null)
-        Debug.Log(GameManager.Instance.ToString());
         {
+            Debug.Log(GameManager.Instance.ToString());
             if (!TransitionManager.Instance.transicionando)
             {
                 GameManager.Instance.AvanzarSiguienteFase();
