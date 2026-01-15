@@ -9,7 +9,7 @@ public class QueueManager : MonoBehaviour
     public Transform[] queuePositions;
 
     [Header("Configuración de Generación")]
-    public GameObject[] customerPrefabs;   // <-- AHORA ES UN ARRAY
+    public GameObject[] customerPrefabs;
     public Transform spawnPoint;
 
     [Header("Ritmo y Cantidad")]
@@ -95,6 +95,7 @@ public class QueueManager : MonoBehaviour
             customerQueue.Enqueue(newCustomer);
             int targetPosIndex = customerQueue.Count - 1;
 
+            // Iniciar caminata
             Coroutine rutine = StartCoroutine(RutinaCaminarPorCamino(newCustomer, targetPosIndex));
 
             if (walkingCoroutines.ContainsKey(newCustomer))
@@ -102,6 +103,7 @@ public class QueueManager : MonoBehaviour
             else
                 walkingCoroutines.Add(newCustomer, rutine);
 
+            // Si es el primero, activar espera (aunque la lógica real ahora depende de llegar al sitio)
             if (customerQueue.Count == 1)
             {
                 PedidoCliente clienteScript = newCustomer.GetComponent<PedidoCliente>();
@@ -118,11 +120,16 @@ public class QueueManager : MonoBehaviour
     private IEnumerator RutinaCaminarPorCamino(GameObject customer, int targetIndex)
     {
         NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
+        PedidoCliente pc = customer.GetComponent<PedidoCliente>();
+
+        // Al empezar a andar, NO está en mostrador
+        if (pc != null) pc.EstaEnMostrador = false;
 
         if (agent != null && agent.isOnNavMesh)
         {
             int startIndex = queuePositions.Length - 1;
 
+            // Lógica de ir punto por punto (si quieres saltar directo, cambia el loop)
             for (int i = startIndex; i >= targetIndex; i--)
             {
                 if (customer == null) yield break;
@@ -130,18 +137,21 @@ public class QueueManager : MonoBehaviour
                 agent.isStopped = false;
                 agent.SetDestination(queuePositions[i].position);
 
-                while (customer != null && agent.pathPending)
-                    yield return null;
+                while (customer != null && agent.pathPending) yield return null;
 
-                while (customer != null && agent.remainingDistance > agent.stoppingDistance + 0.2f)
+                while (customer != null && agent.remainingDistance > agent.stoppingDistance + 0.1f)
                 {
-                    if (!agent.hasPath || agent.isStopped)
-                        break;
-
                     yield return null;
                 }
             }
         }
+
+        // --- LÓGICA CLAVE: Si el destino era 0, marcamos que ha llegado ---
+        if (targetIndex == 0 && pc != null)
+        {
+            pc.EstaEnMostrador = true;
+        }
+        // -----------------------------------------------------------------
 
         if (customer != null && walkingCoroutines.ContainsKey(customer))
         {
@@ -169,7 +179,6 @@ public class QueueManager : MonoBehaviour
         {
             GameObject newFirstCustomer = customerQueue.Peek();
             PedidoCliente clienteScript = newFirstCustomer.GetComponent<PedidoCliente>();
-
             if (clienteScript != null)
                 clienteScript.StartWaitingProcess();
         }
@@ -180,7 +189,6 @@ public class QueueManager : MonoBehaviour
     private IEnumerator CustomerExitRoutine(GameObject customer, Vector3 exitPosition)
     {
         NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
-
         if (agent != null && agent.isOnNavMesh)
         {
             agent.isStopped = false;
@@ -189,17 +197,14 @@ public class QueueManager : MonoBehaviour
         }
 
         float t = 0f;
-        float tiempoMax = 6f;
-
-        while (customer != null && Vector3.Distance(customer.transform.position, exitPosition) > 1.5f)
+        while (customer != null && t < 6f)
         {
+            if (Vector3.Distance(customer.transform.position, exitPosition) < 1.5f) break;
             t += Time.deltaTime;
-            if (t > tiempoMax) break;
             yield return null;
         }
 
-        if (customer != null)
-            Destroy(customer);
+        if (customer != null) Destroy(customer);
     }
 
     void ComprobarFinDelDia()
@@ -221,33 +226,29 @@ public class QueueManager : MonoBehaviour
         for (int i = 0; i < currentCustomers.Length; i++)
         {
             GameObject c = currentCustomers[i];
-
             if (walkingCoroutines.ContainsKey(c))
             {
                 StopCoroutine(walkingCoroutines[c]);
                 walkingCoroutines.Remove(c);
             }
-
-            MoveCustomer(c, queuePositions[i].position);
+            // Pasamos 'i' como targetIndex
+            MoveCustomer(c, queuePositions[i].position, i);
         }
     }
 
-    private void MoveCustomer(GameObject customer, Vector3 targetPosition)
+    private void MoveCustomer(GameObject customer, Vector3 targetPosition, int targetIndex)
     {
-        NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
+        Coroutine rutine = StartCoroutine(RutinaCaminarPorCamino(customer, targetIndex));
 
-        if (agent != null && agent.isOnNavMesh)
-        {
-            agent.isStopped = false;
-            agent.SetDestination(targetPosition);
-        }
+        if (walkingCoroutines.ContainsKey(customer))
+            walkingCoroutines[customer] = rutine;
+        else
+            walkingCoroutines.Add(customer, rutine);
     }
 
     public GameObject GetCustomerAtOrderPoint()
     {
-        if (customerQueue.Count > 0)
-            return customerQueue.Peek();
-
+        if (customerQueue.Count > 0) return customerQueue.Peek();
         return null;
     }
 
@@ -261,8 +262,7 @@ public class QueueManager : MonoBehaviour
         while (customerQueue.Count > 0)
         {
             GameObject cliente = customerQueue.Dequeue();
-            if (cliente != null)
-                Destroy(cliente);
+            if (cliente != null) Destroy(cliente);
         }
     }
 }

@@ -14,46 +14,64 @@ public class CampanaInteractiva : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
-        // Obtener el Manager de Colas una vez
         queueManager = FindObjectOfType<QueueManager>();
     }
 
-    // Esta función será llamada por el jugador
     public void Interactuar()
     {
         if (!puedeSonar || queueManager == null) return;
 
-        // 1. BUSCAR AL CLIENTE ACTIVO EN LA POSICIÓN DE PEDIDO
+        // 1. Obtener cliente en posición
         GameObject clienteEnFrente = queueManager.GetCustomerAtOrderPoint();
 
         if (clienteEnFrente == null)
         {
-            Debug.Log("¡DING! No hay cliente en el punto de pedido para llamar.");
+            // Sonido opcional si no hay nadie
+            SonarCampana(false);
             return;
         }
 
-        // 2. Obtener el GestorPedidos del cliente que está al frente
-        GestorPedidos gestorDelCliente = clienteEnFrente.GetComponent<GestorPedidos>();
+        PedidoCliente estado = clienteEnFrente.GetComponent<PedidoCliente>();
+        GestorPedidos gestor = clienteEnFrente.GetComponent<GestorPedidos>();
 
-        if (gestorDelCliente != null)
+        // --- VALIDACIONES SIMPLES ---
+
+        // 1. Si no ha llegado físicamente al mostrador -> Salimos
+        if (estado != null && !estado.EstaEnMostrador)
         {
-            // 3. Sonar y llamar al cliente
-            audioSource.Play();
-            if (animator != null) animator.SetTrigger("Sonar");
+            SonarCampana(false); // Suena pero no hace nada
+            return;
+        }
 
-            // 4. INICIAMOS EL PEDIDO DEL CLIENTE QUE ESTÁ AL FRENTE
-            gestorDelCliente.GenerarNuevoPedido();
+        // 2. Si ya tiene pedido -> Salimos
+        if (estado != null && estado.TienePedidoActivo)
+        {
+            SonarCampana(false);
+            return;
+        }
+        // -----------------------------
 
-            // 5. Iniciar cooldown
+        // SI PASA LAS VALIDACIONES:
+        if (gestor != null)
+        {
+            SonarCampana(true);
+
+            gestor.GenerarNuevoPedido();
+
+            // Bloquear para que no pueda pedir otra vez
+            if (estado != null) estado.TienePedidoActivo = true;
+
+            // Pequeño cooldown
             puedeSonar = false;
-            Invoke("ResetearCooldown", 2.0f);
+            Invoke("ResetearCooldown", 1.0f);
+        }
+    }
 
-            Debug.Log("¡DING! Llamando al cliente en posición de pedido.");
-        }
-        else
-        {
-            Debug.LogError("El cliente en el punto de pedido no tiene el script GestorPedidos.");
-        }
+    void SonarCampana(bool exito)
+    {
+        if (audioSource) audioSource.Play();
+        if (animator) animator.SetTrigger("Sonar");
+        if (exito) Debug.Log("¡DING! Nuevo pedido generado.");
     }
 
     void ResetearCooldown()
