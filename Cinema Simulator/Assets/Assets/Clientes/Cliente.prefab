@@ -225,6 +225,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxWaitTime: 45
+  EstaEnMostrador: 0
+  TienePedidoActivo: 0
 --- !u!114 &1726834129357511900
 MonoBehaviour:
   m_ObjectHideFlags: 0
