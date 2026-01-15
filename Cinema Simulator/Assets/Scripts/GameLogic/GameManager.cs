@@ -20,8 +20,8 @@ public class GameManager : MonoBehaviour
     public int diaActual = 1;
 
     [Header("Configuración Fase Servicio")]
-    public float duracionDiaMinutos = 20f; // 20 minutos reales
-    private float tiempoRestanteServicio;
+    public float duracionDiaMinutos = 5f; // 5 minutos reales
+    public float tiempoRestanteServicio;
 
     // Evento al que otros scripts se pueden suscribir para saber cuándo cambia la fase
     // Ejemplo: Los clientes escuchan esto para dejar de venir.
